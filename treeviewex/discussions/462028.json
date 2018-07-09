@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1106897",
+    "ThreadId": "462028",
+    "Html": "Is there any reason the main project (TreeViewEx) targets x86 Platform? Wouldn't &quot;Any cpu&quot; be better? (I personally use any cpu and compiler throws warning about treviewex using x86 platform)<br />\n",
+    "PostedDate": "2013-10-13T11:03:49.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1107019",
+    "ThreadId": "462028",
+    "Html": "Just for Debugging convinience (Edit&amp;Continue). I'm going to change that for the release. In the meantime, you can compile it for yourself.<br />\n",
+    "PostedDate": "2013-10-14T00:50:39.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

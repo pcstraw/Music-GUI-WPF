@@ -1,0 +1,81 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-09-14T11:46:17.08-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Setting TreeViewExItem.IsSelected renders the item as if it was selected, but the selection logic behind it doesn't know about it and will for example select the item again when Ctrl+clicking on it, instead of deselecting it (which would be obvious to the user who can only see the screen).\n \nI have databound that property to the ViewModel class and want to select an item through the view model's property. This is how I found this issue.\n \nThe item's IsSelected property seems to be written to by the selection strategy, but remote changes are not observed.",
+    "LastUpdatedDate": "2013-05-16T01:29:11.35-07:00",
+    "PlannedForRelease": "TreeViewEx 0.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-07-25T09:26:32.883-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Setting IsSelected doesn't select",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 23090
+  },
+  "FileAttachments": [
+    {
+      "FileId": 5915,
+      "FileName": "TreeViewExItem_IsSelected.cs",
+      "DownloadUrl": ".\\5915"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I have fixed that bug for me. Not 100% sure whether it's correct but at least it works well in my test sample.\r\n\r\nI can't easily create a patch file because I've made numerous other changes by now. But the two relevant changes are attached in the file.",
+      "PostedDate": "2012-07-26T08:18:04.353-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "IsSelected is not supposed to be an public property. Its just public to be visible to WPF. To select an item in treeview, please add it to the SelectedItems-collection.\r\n\r\nWhat was the usecase? Sth with Binding?",
+      "PostedDate": "2012-07-27T08:08:01.813-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "In a view model, you don't have access to the view. So everything you want to modify in the UI has to be done through the view model class. (This is what the MVVM design pattern suggests.) And I find it more intuitive to select items by a property of themselves, not by interacting with some other controls.",
+      "PostedDate": "2012-07-27T08:42:08.063-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2012-08-10T10:08:01.437-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2012-09-14T11:46:17.08-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:34.43-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:11.35-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

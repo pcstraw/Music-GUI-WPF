@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "933857",
+    "ThreadId": "401135",
+    "Html": "\r\n<p>Hello, is the drag &amp; drop&nbsp;functionality&nbsp;supported? I saw some files on the project not included.</p>\r\n",
+    "PostedDate": "2012-10-29T08:45:57.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934380",
+    "ThreadId": "401135",
+    "Html": "<p>Hi</p>\r\n<p>DragNDrop will be supported in the next release. Im currently developping it. You may want to look at the dragndrop branch, to get an idea how it is going to be used.</p>\r\n<p>Regards,</p>\r\n<p>Torsten</p>",
+    "PostedDate": "2012-10-30T13:00:27.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1013791",
+    "ThreadId": "401135",
+    "Html": "Hi,\r<br />\n<br />\nI want to drag item from TreeView and drop it on some text-box can I do that with this version or should I have to wait for your next release. \r<br />\n<br />\nThanks,\r<br />\nAttiqe <br />\n",
+    "PostedDate": "2013-03-12T03:25:52.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

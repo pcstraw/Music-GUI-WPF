@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="MusicWindow.PlaybackControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicWindow"
+             mc:Ignorable="d" Height="120" Width="820">
+    <Grid Background="#FFFFD393" VerticalAlignment="Top" Height="120">
+        <Grid.Resources>
+            <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row ="0" Style ="{StaticResource TrackLabelStyle}" Template="{StaticResource TrackLabel}" Background="#FFEEEEEE" FontSize="24" HorizontalContentAlignment="Center" Loaded="Loaded_Trackname_Label"
+               Content="{Binding Path= Track, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonUp="DoubleClick_Trackname_Label" Margin="0,0,0,1.333" VerticalContentAlignment="Center"/>
+
+        <Grid Height="76" Background="#FFE5D9B3" Grid.RowSpan="2" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Style ="{StaticResource MediaButtonStyle}" Template="{StaticResource MediaButton}" Content="Last" Grid.Column="3" Margin="0" Click="Click_Last_Button"/>
+            <Button Style ="{StaticResource MediaButtonStyle}" Template="{StaticResource MediaButton}" Content="Next" Grid.Column="5" Margin="0" Click="Click_Next_Button"/>
+            <Button x:Name="PlayButton" Style ="{StaticResource MediaButtonStyle}" Template="{StaticResource MediaButton}" Content="Play" Grid.Column="4" Margin="0" PreviewMouseLeftButtonUp="MouseLeftButtonUp_Play_Button"/>
+            <Button Style ="{StaticResource MediaButtonStyle}" Template="{StaticResource MediaButton}" Content="Stop" Grid.Column="6" Margin="0" Click="Click_Stop_Button"/>
+            <Button Style ="{StaticResource MediaButtonStyle}" Template="{StaticResource MediaButton}" Content="Loop" Grid.Column="2" Margin="0"/>
+            <Label Content="{Binding Path= trackLength, UpdateSourceTrigger=PropertyChanged}" Style ="{StaticResource DurationLabelStyle}" Grid.Column="7" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+            <Label Content="{Binding Path= trackPosition, UpdateSourceTrigger=PropertyChanged}" Style ="{StaticResource DurationLabelStyle}" Grid.Column="1" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

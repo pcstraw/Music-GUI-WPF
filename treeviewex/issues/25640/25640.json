@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-08-03T08:14:48.35-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I got a crash when I  remove an item from the model before the tree view is displayed for the first time (for example, when the item is hidden in another tab in a tabcontrol.\nThis happens only if I create the root TreeViewExItem in the XAML file\n\nThe crash is located at TreeViewExItem.cs in function \"OnItemsChanged\", in case \"Remove\", the ParentTreeView is null.\n\nCould you please fix that?",
+    "LastUpdatedDate": "2017-11-30T15:06:49.69-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-07-31T06:10:51.567-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NullReferenceException at remove when TreeView not visible",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25640
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6942,
+      "FileName": "BugTreeViewEx.zip",
+      "DownloadUrl": ".\\6942"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 74785: Fix for 25640",
+      "PostedDate": "2014-08-03T08:14:48.35-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:49.69-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

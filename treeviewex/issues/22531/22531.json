@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-09-14T11:59:09.877-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Is there drag and drop functionality with visual feedback?",
+    "LastUpdatedDate": "2013-05-16T01:29:13.163-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-04-21T21:14:01.387-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Drag and Drop",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 22531
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Not at the moment. What do you think about?",
+      "PostedDate": "2012-05-04T06:17:07.94-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2012-05-04T06:18:23.69-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Dont know what to do here.",
+      "PostedDate": "2012-07-23T23:34:10.587-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2012-09-14T11:59:09.877-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:36.48-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:13.163-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

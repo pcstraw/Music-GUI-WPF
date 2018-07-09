@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Should not happen anymore, because we do not use a flat list.",
+    "ClosedDate": "2013-07-17T04:15:45.86-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Based on 72437, fix provided below\n\nRepro:\nGiven the following code based on the SimpleSample, on which I have added a button to add an \"element16\" item:\n\n    public partial class MainWindow : Window\n    {\n        Node firstNode;\n\n        public MainWindow()\n        {\n            InitializeComponent();\n            firstNode = new Node { Name = \"element\" };\n            var first1 = new Node { Name = \"element1\" };\n            var first2 = new Node { Name = \"element2\" };\n            var first11 = new Node { Name = \"element11\" };\n            var first12 = new Node { Name = \"element12\" };\n            var first13 = new Node { Name = \"element13\", IsExpandedValue = false };\n            var first14 = new Node { Name = \"element14\", IsExpandedValue = false };\n            var first15 = new Node { Name = \"element15\" };\n            var first131 = new Node { Name = \"element131\" };\n            var first132 = new Node { Name = \"element132\" };\n            firstNode.Children.Add(first1);\n            firstNode.Children.Add(first2);\n            first1.Children.Add(first11);\n            first1.Children.Add(first12);\n            first1.Children.Add(first13);\n            first1.Children.Add(first14);\n            first1.Children.Add(first15);\n            first13.Children.Add(first131);\n            first13.Children.Add(first132);\n\n            DataContext = firstNode;\n        }\n\n        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)\n        {\n            firstNode.Children[0].Children.Add(new Node { Name = \"element16\" });\n        }\n    }\n\nThe result of pressing the button will mess the current tree, element16 being added between element13 and its own child element131. The reason is that to find the index to use to insert the new element on the flatten collection, the iterator stops as soon as a node (starting from IndexOf(element1)+1, ie. element11) has a different parent, which is the case for element131.\n\nHere is the fix, in the function GetIndexInFlatList: (I'm putting the whole function so you can merge easily\n\n        private int GetIndexInFlatList(int indexInFlatListOfParent, int indexInParent)\n        {\n            int ret = collection.Count;\n\n            if (indexInFlatListOfParent < 0)\n            {\n                for (int i = 0 + 1; i < collection.Count; i++)\n                {\n                    if (collection[i].ParentItem != null) continue; ;\n                    if (collection[i].IndexInParent == indexInParent) { ret = i; break; }\n                }\n            }\n            else\n            {\n                TreeViewExItem parentItem = collection[indexInFlatListOfParent].Item;\n                TreeViewExItem prevItem = null;\n                bool isInSubTree = false;\n\n                for (int i = indexInFlatListOfParent + 1; i < collection.Count; i++)\n                {\n                    // If the current item has a different parent...\n                    if (collection[i].ParentItem != parentItem)\n                    {\n                        // If the parent is the item of the previous iteration, then we're entering a sub-tree.\n                        // Note that if prevItem is null, we are on the first item of the tree so this does not apply\n                        if (collection[i].ParentItem == prevItem && prevItem != null)\n                        {\n                            isInSubTree = true;\n                        }\n                        else if (!isInSubTree)\n                        {\n                            // If we're not in a sub-tree, then we've reached a sister node of our actual parent and we should stop here\n                            ret = i;\n                            break;\n                        }\n                        continue;\n                    }\n\n                    isInSubTree = false;\n                    prevItem = collection[i].Item;\n\n                    if (collection[i].IndexInParent == indexInParent) { ret = i; break; }\n                }\n            }\n\n            return ret;\n        }",
+    "LastUpdatedDate": "2013-07-17T04:15:45.86-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-07-11T04:22:34.507-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "Adding a node after another node that has child doesn't work as expected",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 24503
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

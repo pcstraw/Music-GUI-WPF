@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-08-15T02:37:01.987-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Since a recent change, it is not possible to drop an item over another item which is a \"root node\".\nThe reason is that OnDrop do the following check : \n\n            // check if insertion is possible\n            TreeViewExItem parentItem = item.ParentTreeViewItem;\n            if (parentItem == null) return;\n\nThis test is perfectly valid for insertion, but should not be done for an actual \"drop\" action.\n\nReproduction is easy by tweaking the DragNDropSample to allow dropping on \"element1\"",
+    "LastUpdatedDate": "2017-11-30T15:06:43.34-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-07-30T01:00:51.93-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Unable to drop over an root item",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24564
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72840: Fix for 24564",
+      "PostedDate": "2013-08-15T02:37:01.987-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:43.34-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

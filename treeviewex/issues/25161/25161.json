@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-02-06T07:26:51.533-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "To reproduce the error:\n\nRun The SimpleSample application.\nClick Element1 with the mouse to get focus on the control. Using the up arrow and down arrow keys exclusively for navigation: move down to item \"Element 15\", move back up to \"Element 14\".  Expand Element 14 using \"+\". Collapse Element 14 using \"-\". Move down to \"Element 15\". Now attempt to move back up to \"Element 14\". Element 15 turns Blue and keyboard movement is no longer correct.\n\nLooking into the code, I believe the issue is caused by an incorrect setting inside SelectPreviousFromKey when it calls the static method FindAll. I believe the second parameter in the call should be true to ignore invisible items.\n\n        public void SelectPreviousFromKey()\n        {\n            List<TreeViewExItem> items = TreeViewElementFinder.FindAll(treeViewEx, -->false<--).ToList();\n            TreeViewExItem item = GetFocusedItem();\n            item = treeViewEx.GetPreviousItem(item, items);\n            if (item == null) return;\n\n            // if ctrl is pressed just focus it, so it can be selected by space. Otherwise select it.\n            if (!IsControlKeyDown)\n            {\n                SelectSingleItem(item);\n            }\n\n            FocusHelper.Focus(item);\n        }",
+    "LastUpdatedDate": "2017-11-30T15:06:47.753-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-02-05T12:32:00.457-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Select Previous From Key Error - v.73736",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25161
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "thx for the fix",
+      "PostedDate": "2014-02-06T07:25:52.21-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 73757: Fix for 25161",
+      "PostedDate": "2014-02-06T07:26:51.533-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:47.753-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

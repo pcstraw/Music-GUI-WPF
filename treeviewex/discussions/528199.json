@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1200232",
+    "ThreadId": "528199",
+    "Html": "First of all, you guys have made a great alternative to the default P.O.S. TreeView control. So thanks for that.\r<br />\n<br />\nHowever I do have a problem:\r<br />\nI basically copied your DragNDrop sample xaml for the drag template but I'm having trouble getting the content presenter to show consistently. The drag and drop works fine but visually I cant tell that I'm even trying to drag items because sometimes the content presenter will show up, other times it wont. Also, I've noticed that if I have my TreeViewExItem context menu visible prior to the drag event then it <em>will</em> show up every time. Very strange.\r<br />\n<br />\nAny ides? I can post some &quot;code&quot; (xaml) if that will help.<br />\n",
+    "PostedDate": "2014-01-28T16:47:03.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1202012",
+    "ThreadId": "528199",
+    "Html": "Hi,\r<br />\n<br />\nI'm not sure if I understood your problem correctly. A small sample application to reproduce the error would be great.\r<br />\n<br />\nRegards,\r<br />\nTorsten<br />\n",
+    "PostedDate": "2014-02-03T04:42:08.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

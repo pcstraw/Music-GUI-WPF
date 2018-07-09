@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-05-30T17:20:53.76-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Repro steps on SimpleEditSample\n\n1. Run sample and select all nodes from element1 to element2 (with Shift)\n2. Expand element13 and element14 - subnodes __are not selected__. Selected items collection contains 7 elements\n3. Unselect\n4. Collapse element13 and element14\n5. Once again select elements from element1 to element2\n6. Expand element13 and element14 - subnodes __are selected__. Selected items collection contains 59 elements",
+    "LastUpdatedDate": "2017-11-30T15:06:48.683-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-05-22T01:01:41.14-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Multiselection: sometimes child nodes are selected, sometimes not...",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25495
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "The items are not selected, because they were never realized by the layout system. I will implement a consistent behaviour. Only visible items will be seledted by shift.",
+      "PostedDate": "2014-05-30T17:17:27.47-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 74511: Fix for 25495",
+      "PostedDate": "2014-05-30T17:20:53.76-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:48.683-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

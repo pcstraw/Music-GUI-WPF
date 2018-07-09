@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1239474",
+    "ThreadId": "543787",
+    "Html": "At runtime, when I pull up the window with my TreeViewEx control, I get an error in the InputEventRouter constructor that treeview.ScrollViewer is null. Shouldn't it be getting that from the Control Template?<br />\n",
+    "PostedDate": "2014-04-29T11:22:17.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1239512",
+    "ThreadId": "543787",
+    "Html": "I found my issue. We are overriding the Default ControlTemplate and including a ScrollViewer but not giving it the x:Name=&quot;scroller&quot; attribute.<br />\n",
+    "PostedDate": "2014-04-29T12:30:33.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

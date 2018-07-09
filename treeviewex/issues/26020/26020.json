@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Would it be possible to have IsEditing setter public?\n\nThe purpose is to be able to use binding to trigger an edit.\nBasically I have a Rename command that set an IsEditing property to true in my view model, so I would like to trigger edition of the item via binding update.\nOtherwise it's impossible to trigger an edit from a Command without having the view model to interact with the view (my view models here do not have access to the view)",
+    "LastUpdatedDate": "2015-03-09T01:53:59.623-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2015-03-09T01:53:59.623-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "IsEditing is not writable",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 26020
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

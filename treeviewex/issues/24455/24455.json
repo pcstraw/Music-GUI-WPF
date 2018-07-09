@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "Implemented new virtualization.",
+    "ClosedDate": "2013-07-17T04:17:00.127-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Loading the items and scrolling then throws exceptions:",
+    "LastUpdatedDate": "2013-07-17T04:17:00.127-07:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-06-30T04:55:27.6-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "Scrolling in VirtualizationSample throws",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24455
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I've checked this issue and tried some solutions. But I have to say, that this is an conceptual issue, which will take me some time to fix. Eventually I will have to implement some kind of virtualization control by myself...\r\n\r\nI will report when I have implemented a solution. Until then: the control should work quite good, if virtualization is disabled.",
+      "PostedDate": "2013-07-03T11:53:47.673-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-07-17T04:17:00.127-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

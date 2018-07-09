@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "This is more of a feature request than an issue.\n\nI think it would be nice if it scrolls automatically to display any newly added tree items. Scroll up or down just enough to get the new item fully in the view.\n\nIf there is a way to do this from outside the tree I could do that instead.\n\nThanks again for your efforts! :)\n\nCheers,\n Simon",
+    "LastUpdatedDate": "2014-10-29T03:35:02.073-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-10-22T16:09:19.033-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scroll to display newly added tree items",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 3,
+    "Id": 25795
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I am using this code to do so when an item is selected:\n```\nTreeViewExItem tvei = treeView.GetTreeViewItemFor((object)treeItem);\nif (tvei != null) tvei.BringIntoView(new Rect(1, 1, 1, 1));\n```\nIf i remember correctly the functions GetTreeViewItemFor() & BringIntoView were not public.\r\n\r\nI agree with Simon, The view should scroll automatically to show new items and selected items (when selected/added from the ViewModel).\r\n\r\n\nIn general it would be better if we get a clean seperation between Input and UI changes.\nFor example: If someone click on an item, that shouldn't cause any UI changes down the line. It should only change the observable SelectedItems. Other parts of the control would react to the change.\nThe control would initiallise SelectedItems with it's own at the beggining or use a shadow collection when SelectedItems is null.\n ",
+      "PostedDate": "2014-10-23T07:17:25.88-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I send patch 16913 that BringIntoView selected items.\r\n\r\nDoing the same thing for new items is a bit tricky, by the time we get a ChangeNotify event for the item there is no corresponding visual TreeItemEx. The TreeItemEx is created in the MessureOveride() overload of VirtualizingTreePanel but it's not attacked to the visual tree yet so a call to BringIntoView has unspecified results.\n",
+      "PostedDate": "2014-10-23T09:48:32.59-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "That sounds like a good workaround nkast. \nI could easily select & unselect any newly added items to bring them into the view.",
+      "PostedDate": "2014-10-23T11:12:52.973-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "@thekapptin Try patch 16914.\nexample:\n```\nvar newNode = new Node { Name = \"elementNew\" };\nfirstNode.Children.Add(newNode);                \nmyTreeViewEx.BringIntoView(newNode);\n```\r\n\r\nMaybe autoscroll to new items is not a good idea anyway, especially during initialization when the user might add millions of items. \nThis still could have a few issues, haven't tested it what happens if you add/select an item that's inside a collapsed item. We probably need to expand all ancestor items.",
+      "PostedDate": "2014-10-23T15:39:51.903-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-10-29T03:35:02.073-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

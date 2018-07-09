@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1244329",
+    "ThreadId": "545082",
+    "Html": "Hi,\r<br />\n<br />\nVirtualisation works for first level nodes.\r<br />\nHow to get it working for child nodes?\r<br />\n<br />\nThanks for your help,\r<br />\nKind Regards,\r<br />\nVinay<br />\n",
+    "PostedDate": "2014-05-12T05:36:53.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245652",
+    "ThreadId": "545082",
+    "Html": ".<br />\n",
+    "PostedDate": "2014-05-15T02:30:22.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251462",
+    "ThreadId": "545082",
+    "Html": "Ok, it took me days to fix that. Virtualization of a tree is like a glibbery ale. You never get a grip on it. Maybe you could have a look at changeset  74507. \r<br />\n<br />\n<br />\nBut still it is not perfekt. Estimation of the height of virtualized items depends on all items of the same Level having approximately the same size. It gets better the more items are in the tree. Because then the scrollbar thumb is that little, it cant jump that much if the estimated size changes.\r<br />\n<br />\nRegards,\r<br />\nTorsten<br />\n",
+    "PostedDate": "2014-05-30T15:00:43.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1252816",
+    "ThreadId": "545082",
+    "Html": "Hi Torsten,\r<br />\n<br />\nThanks a lot for your efforts.\r<br />\nIt works now.\r<br />\n<br />\nKind Regards,\r<br />\nVinay<br />\n",
+    "PostedDate": "2014-06-04T05:10:36.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

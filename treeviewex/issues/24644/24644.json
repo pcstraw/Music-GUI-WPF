@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-08-21T02:06:43.177-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Repro:\n\n- Edit MainWindow.cs from SimpleSample and make a very long string for one of the element:\n```\nvar first1 = new Node { Name = \"element1element1element1element1element1element1element1element1element1element1element1element1\" };\n```\n- Run the project, use the scrollbar to go to completely to the right\n- Resize up horizontally the window until the scrollbar desappear\n- Observe: the left part of the TreeView is not visible.\n\nWhen resizing up the control, the TreeViewEx should first extend to the right side of its content, but when this side is completely visible, it should extend the left side.\n\nA correct behavior can be observed from the Windows Explorer. The ListView displaying files and folder works correctly (check in Details mode) when resized.",
+    "LastUpdatedDate": "2017-11-30T15:06:44.227-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-08-20T23:23:42.807-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Treeview doesn't properly resize when the horizontal scrollbar is not at the far left",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24644
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72867: Fix for 24644",
+      "PostedDate": "2013-08-21T02:06:43.177-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.227-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

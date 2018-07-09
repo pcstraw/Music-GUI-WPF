@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-01-02T05:22:11.38-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When you begin editing a node (after editing another different node), the focus jumps to the node that was previously edited.\n\nTo reproduce:\n\n1, Run SimpleEditSample\n2. Select element11 and hit F2 to edit\n3. Hit Escape to stop editing\n4. Select element12 and hit F2 to edit; *** notice focus jumps to element11 ***\n\nI think the problem can fixed by adding 1 line to end of IsEditingManager::StopEditing()\n\n        internal void StopEditing()\n        {\n            if (editedItem == null) return;\n\n            Keyboard.Focus(editedItem);\n            editedItem.IsEditing = false;\n            FocusHelper.Focus(editedItem);\n            editedItem = null; // <--- add this line to prevent focus jumping\n        }",
+    "LastUpdatedDate": "2017-11-30T15:06:47.243-08:00",
+    "PlannedForRelease": "TreeViewEx 2.9",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-12-30T13:07:43.69-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Focus jumping when starting to edit node",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25036
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for finding and fixing.",
+      "PostedDate": "2014-01-02T05:20:45.863-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Aufgelöst mit Changeset 73588: Fix for 25036",
+      "PostedDate": "2014-01-02T05:22:11.38-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:47.243-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

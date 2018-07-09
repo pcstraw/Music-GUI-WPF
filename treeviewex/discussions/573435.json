@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1327003",
+    "ThreadId": "573435",
+    "Html": "Hi,\r<br />\nWe are using TreeViewEx control for some time and found it very useful.\r<br />\nRecently we discovered a bug that seems to be in the control. In TreeViewExItem class there's an event handler OnKeyDown where in case of ENTER key handling the following code is executed:<br />\n<pre><code>case Key.Return:\n   StopEditing();\n   e.Handled = true;\n   break;</code></pre>\n\nAs far as I understand it this should finalize node rename event. It looks fine however the consequences are quite nasty because if the node is not in the edit mode the control grabs the ENTER key anyway. In our application under the enter key we would like to open the editor for selected node (similar to Visual Studio behaviour) but this code makes it impossible.\r<br />\nThere's a simple and I believe logical fix:<br />\n<pre><code>case Key.Return:\n   if(StopEditing())\n      e.Handled = true;\n   break;</code></pre>\n\nSo we are handling ENTER only if we need to do this i.e. we are in the node edit mode. Of course this requires additional change in StopEditing method signature and ParentTreeView.IsEditingManager.StopEditing() method itself but these are very simple and straightforward changes. \r<br />\nI've tested it and seems to be working without any issues. So I think it would be useful to commit such change on your repository. I could send you SVN patch file with all required changes if it help you.\r<br />\n<br />\nThanks,\r<br />\nPawel<br />\n",
+    "PostedDate": "2014-11-28T04:59:06.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1328211",
+    "ThreadId": "573435",
+    "Html": "Hi @pkoselski,\r<br />\nI would like to include those fixes to my fork. Can you please post a patch? <br />\n",
+    "PostedDate": "2014-12-02T14:21:43.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1329057",
+    "ThreadId": "573435",
+    "Html": "Sorry for delayed response. Here you can find the patch file:\r<br />\n<a href=\"http://tinyurl.com/TreeViewEx-patch\" rel=\"nofollow\">http://tinyurl.com/TreeViewEx-patch</a><br />\n",
+    "PostedDate": "2014-12-05T03:06:13.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

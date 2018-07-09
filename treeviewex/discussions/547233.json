@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1251805",
+    "ThreadId": "547233",
+    "Html": "Hello! Can tree view items be selected by mouse left click, before context menu is shown?<br />\nAlso, is there a nice way in this control to call context menu depending on item type?<br />\n",
+    "PostedDate": "2014-06-01T21:50:45.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1256496",
+    "ThreadId": "547233",
+    "Html": "Whoops, sorry. Meant right-click, of course.<br />\nAlso, found this<br />\n<a href=\"https://treeviewex.codeplex.com/discussions/528953\" rel=\"nofollow\">https://treeviewex.codeplex.com/discussions/528953</a><br />\nThere's the solution. Hope that will be implemented as default behaviour.<br />\n",
+    "PostedDate": "2014-06-15T10:42:38.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

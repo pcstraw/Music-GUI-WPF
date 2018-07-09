@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-06-13T05:35:35.223-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If you have a tree node which has children's under it and it is in the collapsed state. Now you try to double click on the node it does not expand the tree node. Ideally it should expand the tree node.\n \nIs it in your backlog to fix this issue?\n \nRegards,\nSachin",
+    "LastUpdatedDate": "2017-11-30T15:06:39.17-08:00",
+    "PlannedForRelease": "TreeViewEx 0.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-05-21T02:23:31.36-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Double clicking on a tree node does not expand the tree node",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 22792
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 67634.",
+      "PostedDate": "2012-06-13T05:35:35.223-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:35.587-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:12.427-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:39.17-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

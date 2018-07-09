@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-03-19T08:40:15.75-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hello,\nThe control crashes (NullReferenceException )when I click on empty space in the control area. The crash is coming from  OnMouseDown(MouseButtonEventArgs e) in SelectionMultiple class (the item is null and the first condition does not check for null when accessing ContextMenu property):\n\n            TreeViewExItem item = GetTreeViewItemUnderMouse(e.GetPosition(treeViewEx));\n            if (e.ChangedButton != MouseButton.Left && !(e.ChangedButton == MouseButton.Right && item.ContextMenu != null)) return;\n            \n            if (item == null || item.IsEditing) return;\n\n            SelectSingleItem(item);\n\n            FocusHelper.Focus(item);\n        }\n\nJust an easy fix - I think worth adding to the official version of the control.\n\nRegards,\nOla",
+    "LastUpdatedDate": "2017-11-30T15:06:48.247-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-03-19T03:19:08.04-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Crash with context menu",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25287
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 74064: Fix for 25287",
+      "PostedDate": "2014-03-19T08:37:58.75-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-03-19T08:38:02.047-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-03-19T08:39:54.59-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-03-19T08:40:15.75-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-03-19T08:40:16.27-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:48.247-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

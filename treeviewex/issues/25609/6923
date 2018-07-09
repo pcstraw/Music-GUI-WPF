@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace System.Windows.Controls
+{
+  internal interface IDragNDrop
+  {
+    Func<bool> CanDrag{get;}
+    Func<object> Drag{get;}
+    Action<int, object> Insert{get;}
+    Func<int, string, bool> CanInsertFormat{get;}
+    Func<int, object, bool> CanInsert{get;}
+    Action<object> DropAction{get;}
+    Func<string, bool> CanDropFormat{get;}
+    Func<object, bool> CanDrop{ get;}
+
+    ItemContainerGenerator ItemContainerGenerator { get; }
+  }
+}

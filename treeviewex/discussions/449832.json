@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1067586",
+    "ThreadId": "449832",
+    "Html": "The new Virtualisation looks good, It's now working again on my system ;-)\r<br />\n<br />\nI've one Problem, in the DragDrop Exaple after Changing HirachicalDataTemplateEx to HirachicalDataTemplate, and the Itemssource, I can DragDrop, but the Insert is not working!<br />\n",
+    "PostedDate": "2013-07-12T09:57:50.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1069475",
+    "ThreadId": "449832",
+    "Html": "Should be fixed, with the latest changeset.<br />\n",
+    "PostedDate": "2013-07-17T04:18:23.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

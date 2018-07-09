@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-03-15T00:32:51.583-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "In the simple sample, directly after running the app, do the following:\n Expand the node element14.\n After that, click on element14_7.\n On my system, element14_7 is not properly selected now (border is set but the background is white). This also happens occasionally with other nodes.\n What's going on there?",
+    "LastUpdatedDate": "2017-11-30T15:06:41.513-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-03-14T09:26:20.087-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Element not properly selected",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24074
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 71521: Fix for 24074",
+      "PostedDate": "2013-03-15T00:32:51.583-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:08.35-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:41.513-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

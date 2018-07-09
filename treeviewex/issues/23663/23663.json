@@ -1,0 +1,76 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-01-25T01:12:45.54-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If you use right-click to make selection rectangles, and move your mouse out of the area of the TreeViewEx in a certain way, you can make lots of little rectangles that stay on the component.\n\n1) Click-and-hold RMB inside\n2) Drag cursor outside\n3) Release RMB\n4) Move mouse back inside\n5) Click-and-hold RMB inside\nrepeat from step 2\n\nYou can make lots of rectangles like in the screenshot, and I can't find a way to remove them either. (Resizing or populating the TreeViewEx doesn't do anything to them)",
+    "LastUpdatedDate": "2017-11-30T15:06:40.47-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-11-28T02:15:34.467-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Selection rectangle bug",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 23663
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6114,
+      "FileName": "Capture.PNG",
+      "DownloadUrl": ".\\6114"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Problem occurs because rectangle isn't properly cleared on mousedown event. To resolve this problem add this code to OnMouseDOwn in BorderSelectionLogic:\nif (border != null)\n{\n\tborder.Visibility = Visibility.Collapsed;\n\tborder.Dispose();\n}",
+      "PostedDate": "2012-12-29T00:47:05.253-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-01-25T01:08:44.903-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 70930: Fix for 23663",
+      "PostedDate": "2013-01-25T01:12:45.54-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:32.713-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:09.94-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:40.47-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

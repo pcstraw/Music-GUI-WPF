@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1134227",
+    "ThreadId": "472847",
+    "Html": "Hi, \r<br />\n<br />\nIs there a way to select multiple items in a treeviewex control and dragdrop them above or below in the same control.<br />\n",
+    "PostedDate": "2013-12-11T03:28:33.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135383",
+    "ThreadId": "472847",
+    "Html": "That was a bug. It is fixed with changeset 73509. Start the DragNDropSample to see it working.<br />\n",
+    "PostedDate": "2013-12-13T00:24:43.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

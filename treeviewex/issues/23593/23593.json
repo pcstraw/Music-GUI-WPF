@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-11-07T11:52:04.04-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If you select an item in the tree and delete it from the source collection (from code), the item will be removed from the tree (visually) but the SelectedItems property still contains it.",
+    "LastUpdatedDate": "2017-11-30T15:06:40.337-08:00",
+    "PlannedForRelease": "TreeViewEx 0.9",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-11-06T23:59:55.41-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SelectedItems not updated when items deleted from the items source",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 23593
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 70201: Fix for 23593",
+      "PostedDate": "2012-11-07T11:52:04.04-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:33.053-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:10.247-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:40.337-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-11T01:48:53.81-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Repro:\n- edit SimpleSample to make one of the node very long (to display a horizontal scrollbar)\n```\nvar first1 = new Node { Name = \"element1elemelement1element1element1element1element1element1element1ent1\" };\n```\n- execute, resize the form to have both scrollbars visible. (expanding element14 may help)\n- if you click on the empty part of the vertical scrollbar, it will scroll a page down, the first element displayed being the first element hidden before clicking.\n- if you click on the empty part of the horizontal scrollbar, it will scroll a \"line\" right, moving of the same offset than clicking on the arrow of the scrollbar\n\nThe horizontal scrollbar should scroll page by page when clicking on the empty area of the scrollbar.",
+    "LastUpdatedDate": "2017-11-30T15:06:45.667-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-10-03T22:16:09.763-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scrolling \"pages\" does not work horizontally",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24756
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73148: Fix for 24756",
+      "PostedDate": "2013-10-11T01:48:53.81-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:45.667-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

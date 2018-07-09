@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1207124",
+    "ThreadId": "531446",
+    "Html": "Hi, I needed to turn the focusing off (by uncommenting the FocusHelper calls), since I faced problems when working with a search box. \r<br />\nThis searchbox (TextBox) executes a search in the TreeViewEx when I hit a key. The matching TreeItems are then selected. With focusing ON the searchbox obviously loses its focus when something is selected.\r<br />\nWhat is the use case for the focus feature? I think that I didn't realize it so far :-)\r<br />\nIs there a better way to turn it off, than uncommenting?\r<br />\n<br />\nRegards, Matthias<br />\n",
+    "PostedDate": "2014-02-11T22:29:26.01-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209708",
+    "ThreadId": "531446",
+    "Html": "Hi,\r<br />\n<br />\nfocusing is setting the keyboard focus, too. Therefor it is needed, if a user selects an item. It should probably not happen, if sth is selected over the api. I will have a look at this.\r<br />\n<br />\nRegards, Torsten<br />\n",
+    "PostedDate": "2014-02-17T23:35:51.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209711",
+    "ThreadId": "531446",
+    "Html": "Hmm, I was trying to reproduce that. I put a button in the simple sample and calling tree.SelectedItems.Add(&lt;some node&gt;). Clicking the button does not result in a call to the Focushelper and the button is still selected after the click.\r<br />\n<br />\nSo it seems I need more information, to reproduce the described behavior.<br />\n",
+    "PostedDate": "2014-02-17T23:46:44.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

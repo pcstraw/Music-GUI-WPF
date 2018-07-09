@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-01-25T01:26:10.533-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When removing an item from the Children list in the sample applications, nothing happens. The item is removed from the list, but it's still visible on screen. Deleting it again leads to a NotImplementedException in TreeViewExItem.OnChildrenChanging for NotifyCollectionChangedAction.Remove.",
+    "LastUpdatedDate": "2017-11-30T15:06:40.657-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-01-22T08:43:56.62-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Items cannot be deleted",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 23818
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 70931: Fix for 23818",
+      "PostedDate": "2013-01-25T01:26:10.533-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:32.533-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:09.8-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:40.657-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1070225",
+    "ThreadId": "450530",
+    "Html": "What I want to achieve is to select the next item in the tree that starts with a specific letter.\r<br />\nFor example, when I press 'K' the first expanded item that begins with &quot;K&quot; will be selected.\r<br />\nIf I press 'K'  again , the selection moves to the next one, etc\r<br />\n<br />\nIs this possible? I set the IsTextSearchEnabled=&quot;True&quot; &amp; TextSearch.TextPath=&quot;Name&quot; but to effect.  I guess this has to be implemented on top of TreeViewEx.<br />\n",
+    "PostedDate": "2013-07-18T15:34:14.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1070504",
+    "ThreadId": "450530",
+    "Html": "I tried to hack my way into it and found it's impossible to catch the KeyDown event on the TreeViewEx control. Also a lot of stuff that's already there -like the SelectNextFromKey() - don't seem to work.\r<br />\nAny ideas?\r<br />\n<br />\nI am thinking about implement an alternative ISelectionStrategy in order to implement this one and also solve the problems I have with MVVMC. <br />\n",
+    "PostedDate": "2013-07-19T08:02:26.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1070715",
+    "ThreadId": "450530",
+    "Html": "@slompf<br />\n<br />\nHere is little hack to implement the selection by first character.<br />\n<a href=\"http://sdrv.ms/1bxqlwE\" rel=\"nofollow\">http://sdrv.ms/1bxqlwE</a><br />\n<br />\nThere is also a new file called SelectionMultipleMVVMC.cs where i'm refactoring the code in order to make it more MVVMC friendly.<br />\nI am moving every call to CheckSelectionAllowed and modifications to SelectedItems to a single place, inside ModifySelection(...). All actions coming from user UI must construct a list of items that need to be selected/unselected and call ModifySelection(...) at the end.<br />\n<br />\nYou can check the controller in the sample by pressing Ctrl-Z, Ctrl-Y (do/undo selection).<br />\n",
+    "PostedDate": "2013-07-19T18:16:12.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1071094",
+    "ThreadId": "450530",
+    "Html": "Hi\r<br />\n<br />\nI've first checked if the methods next/previous from key are working. They seem to do, because I can navigate the tree with the keys.\r<br />\n<br />\nBut the refactoring looks goog, I am going to integrate it in my code.\r<br />\n<br />\nFor your initial request: yes we cant do it at the moment and yes, where you do it is the right place. But to make it useable for all usecases, we would have to introduce a mechanism, where a treeviewitem model can provide a way to return a search string. Such stuff I would like to introduce in the next version.<br />\n",
+    "PostedDate": "2013-07-21T23:04:13.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-11T01:21:55.107-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Well, at least it does not work as selection with shift usually work. So, select some node in a treeview, hold the shift button, select some other nodes with arrow keys, then go backwards while still holding shift. This should deselect previously selected nodes, but it does not.",
+    "LastUpdatedDate": "2017-11-30T15:06:45.26-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-09-25T11:14:00.083-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Selection with shift and arrow keys does not work right",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24731
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73146: Fix for 24731",
+      "PostedDate": "2013-10-11T01:21:55.107-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:45.26-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

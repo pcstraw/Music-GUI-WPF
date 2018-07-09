@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-06-05T05:48:03.37-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Great library! I found a small bug: I'm binding TreeViewEx.SelectedItems to a property on a view model. When WPF initializes my user control, the view model has not yet been bound, and so WPF resolves the binding to a null value. This causes a crash in TreeViewExItem, line 443:\n\n```\nif (ParentTreeView.SelectedItems.Contains(DataContext)) // ParentTreeView.SelectedItems is null\n```\n\nThis can be fixed by changing line 443 to:\n\n```\nif (ParentTreeView.SelectedItems != null && ParentTreeView.SelectedItems.Contains(DataContext))\n```",
+    "LastUpdatedDate": "2017-11-30T15:06:41.973-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-05-10T23:03:57.14-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "TreeViewExItem crashes if DataContext is bound after initialization",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24271
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thank you for fixing this.",
+      "PostedDate": "2013-06-05T21:48:53.763-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:41.973-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

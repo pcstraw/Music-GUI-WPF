@@ -1,0 +1,49 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicWindow"
+             xmlns:MultiSelection="clr-namespace:MultiSelection;assembly=MultiSelectionTreeView" x:Class="MusicWindow.MusicFileControl"
+             mc:Ignorable="d" Width="320" Height="320">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <MultiSelection:MSTreeView 
+                Name="treeView"
+                ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
+                Background="#FF131627" 
+                Grid.Row="1"
+                SelectionMode="KeyboardModifiersMode" 
+                FontSize="16" Foreground="#FFFEF8A5">
+            <MultiSelection:MSTreeView.ItemContainerStyle>
+                <Style TargetType="MultiSelection:MSTreeViewItem" 
+                       BasedOn="{StaticResource FileTreeStyle}">
+                    <EventSetter Event="Selected" Handler="MusicFileTreeViewItem_Selected"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="MusicFileNode_MouseDoubleClick" />
+                </Style>
+            </MultiSelection:MSTreeView.ItemContainerStyle>
+            <MultiSelection:MSTreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
+                    <TextBlock Text="{Binding Name}" Margin="0,-4" Foreground="#FFF3F694"/>
+                    <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
+                </HierarchicalDataTemplate>
+            </MultiSelection:MSTreeView.ItemTemplate>
+
+            <MultiSelection:MSTreeView.ContextMenu>
+                <ContextMenu Name="PlaylistContext">
+                    <MenuItem Header="Open As Playlist" Click="OpenFileAsPlaylistContext_Click"/>
+                    <MenuItem Header="Add Directory" Click="AddDirectoryFileContext_Click"/>
+                    <MenuItem Header="Remove Directory" Click="RemoveDirectoryContext_Click"/>
+                </ContextMenu>
+            </MultiSelection:MSTreeView.ContextMenu>
+        </MultiSelection:MSTreeView>
+        <TextBox TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;"/>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-11T01:40:47.807-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Repro:\n\n- edit SimpleSample to make one of the node very long (to display a horizontal scrollbar)\n```\nvar first1 = new Node { Name = \"element1elemelement1element1element1element1element1element1element1ent1\" };\n```\n\n- execute, resize the form to have both scrollbars visible.\n- then start dragging the horizontal scrollbar and move the mouse up and down while holding the mouse button\n- observe: the treeview scrolls vertically, as it should if we were dragging an item or drawing a selection rectangle. But it should not scroll vertically in this case because we're restrained to horizontal scrolling",
+    "LastUpdatedDate": "2017-11-30T15:06:45.53-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-10-02T02:21:47.977-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Conflict between scrollbar and dragging features",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24749
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73147: Fix for 24749",
+      "PostedDate": "2013-10-11T01:40:47.807-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:45.53-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

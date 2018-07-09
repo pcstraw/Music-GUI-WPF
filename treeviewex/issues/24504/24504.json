@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "Should not happen in most current version, because the whole system has changed and I do not use a flat list anymore.",
+    "ClosedDate": "2013-07-17T04:14:35.877-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Based on 72437, fix provided below.\n\nThis mess-up the following calls to GetIndexInFlatList as the IndexInParent are then incorrect.\n\nHere's my fix. For removal:\n\n        internal void Remove(object data, TreeViewExItem parentItem)\n        {\n            List<ItemWrapper> itemToDelete = collection.Where(x => x.Data == data && x.ParentItem == parentItem).ToList();\n            foreach (var item in itemToDelete)\n            {\n                int index = collection.IndexOf(item);\n                collection.RemoveAt(index);\n                foreach (var nextChild in collection.Skip(index).Where(x => x.ParentItem == item.ParentItem))\n                {\n                    --nextChild.IndexInParent;\n                }\n            }\n        }\n\nFor addition:\n\n        private void AddOrInsert(int index, ItemWrapper wrapper)\n        {\n            if (index < collection.Count)\n            {\n                collection.Insert(index, wrapper);\n                foreach (var nextChild in collection.Skip(index + 1).Where(x => x.ParentItem == wrapper.ParentItem))\n                {\n                    ++nextChild.IndexInParent;\n                }\n            }\n            else\n            {\n                collection.Add(wrapper);\n            }\n        }",
+    "LastUpdatedDate": "2017-11-30T15:06:42.483-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-07-11T04:27:36.383-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "IndexInParent of ItemWrapper is not updated after adding/removing items",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24504
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

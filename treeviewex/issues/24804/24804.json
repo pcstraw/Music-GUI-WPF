@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-25T01:46:34.747-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If I bind IsEditing to a property of my ViewModel, the TreeViewEx does not prevent several items to be \"editing\" at the same time.\n\nIf an item has its IsEditing property set to true, every other item should set it to false.",
+    "LastUpdatedDate": "2017-11-30T15:06:46.33-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-10-15T20:09:41.867-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Several items can have IsEditing = true at the same time",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24804
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Ok, IsEditing was never supposed to be set. I'm going to prevent that. The only way to start editing is press F2.\r\n\r\nIs there a usecase you need it?",
+      "PostedDate": "2013-10-25T01:04:06.12-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-10-25T01:04:23.123-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 73221: Fix for 24805, 24804",
+      "PostedDate": "2013-10-25T01:46:34.747-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I want to be able to start edition from a contextual menu (right click > edit) and maybe from other commands. Also I might want to force to stay in edition mode if an invalid value is entered by forcing IsEditing to true.\n",
+      "PostedDate": "2013-10-25T02:11:56.36-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:46.33-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

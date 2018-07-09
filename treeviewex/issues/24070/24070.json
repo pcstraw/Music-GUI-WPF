@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Closed because no reaction.",
+    "ClosedDate": "2013-04-11T01:35:42.177-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hi, \n\nI have a tree-view with a lot of data and branches and I want to restrict the selection of nodes to certain level lets say level 3 and when user select multiple nodes or one, user will drag the nodes and drop it on the text-box and full path of the nodes will appear in the text-box or list-box. \n\nLet me know can I achieve this with this Tree-view. \n\nThanks, \nAttiqe",
+    "LastUpdatedDate": "2013-05-16T01:29:09-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-03-14T05:40:03.483-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Drag from Tree view & Drop on other WPF controls",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24070
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "In order to prevent selection you can register to the Event OnSelecting of TreeViewEx. It has a CancelEventArg.\r\n\r\nGetting the path is nothing the TreeViewEx can be responsible for. But I think the logic can easyly implemented by yourself.\r\n\r\nThis path you can return by the overridable drag method of your NodeViewModel. Take a look at the DragNDrop sample for more details. This data is given to the WPF DragNDropSystem (wrapped in a DataObject).\r\n\r\nHope this helps.",
+      "PostedDate": "2013-03-14T09:22:55.56-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T01:35:42.177-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T01:35:42.757-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:09-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

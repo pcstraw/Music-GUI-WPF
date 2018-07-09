@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1072443",
+    "ThreadId": "451115",
+    "Html": "Hi, this is great component, but i found several small issues:<br />\n<ol>\n<li>BorderSelectionAdorner line 32 - if there is no adorner layer (it was my fault with new window template), it throw object reference not set...</li>\n<li>Why you use System.Windows.Control namespace? I see no reason for this, but I see, that changing it now is so late.</li>\n<li>\nMethodBinding for D&amp;D operations is strage (as you write in comment)\r<br />\nI see why you dont want to use some interface (dependency of VM to component). \r<br />\nBut why not to use Commands and binding?<br />\n</li>\n</ol>\n<strong>bool CanDrag(), void Drag():</strong><br />\n<blockquote>\nICommand DragCommand;<br />\nobject DragSource //bindable<br />\ncall DragCommand.CanExecute() <br />\nand then DragCommand.Execute(), which will fill DragSource property via Binding<br />\n</blockquote>\n<strong>bool CanInsertFormat(index, format), bool CanInsert(index, data), void Insert(index, data):</strong><br />\n<blockquote>\nICommand InsertCommand <br />\nint InsertIndex //bindable<br />\nset InsertIndex to index<br />\ncall InsertCommand.CanExecute(IDataSource)<br />\nand then InsertCommand.Execute(IDataSource)<br />\n</blockquote>\n<strong>bool CanDropFormat(format), bool CanDrop(data), void Drop(data):</strong><br />\n<blockquote>\nICommand DropCommand<br />\ncall DropCommand.CanExecute(IDataSource)<br />\nand then DropCommand.Execute(IDataSource)<br />\n</blockquote>\nwhat do you mean?\r<br />\nI will try to implement this, if you wish, i can share the result with you.\r<br />\n<br />\nCheers, Jan<br />\n",
+    "PostedDate": "2013-07-24T12:01:03.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073400",
+    "ThreadId": "451115",
+    "Html": "Hi<br />\n<ol>\n<li>I dont understand your first point is there a problem or was it just a mistake?</li>\n<li>Using this namespace has no specific reason. It is as good as any other namespace. At least I dont know any.</li>\n<li>\nActually I had implemented a version using commands. But writing the sample I saw it resulted in writing far more code, than the current solution (RealayCommand If you dont have one, the properties for the command, the init of the properties). So the user has to write less code now and probaly wont realize a loss of performance, because the can-methods are only called on mouse move. I think the solution is ok, dont you?<br />\n</li>\n</ol>\nRegards, Torsten<br />\n",
+    "PostedDate": "2013-07-26T03:32:57.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073950",
+    "ThreadId": "451115",
+    "Html": "Hi, thank you for answers.<br />\n<ol>\n<li>\nI think that as many places in code as it is possible has to check errors.  I have referenced only dll and I didnt know what is wrong (when it sometimes throws &quot;Object reference not set&quot;). So my recommendation is to check result value of GetAdorner to null and throw better error (&quot;No adorner layer found&quot; for example).<br />\n</li>\n<li>\nOk, my opinion about namespaces is to avoid conflicts. So namespace has to be unique to author, &quot;Slompf.Components&quot; for example. And some components are also using &quot;Systém.Windows&quot; and I didnt know, why are authors using it. If there is no specific reason, i got my answer. Thanks.<br />\n</li>\n<li>\nOk, again, my opinion is that in MVVM I am using some common concepts, including notification changes and commands for all the things. If you are trying to create new concept - methodbinding, any reader of source code will at least be uncomfort with it. I was trying to help you, for example if you dont know command concept. But you probably do and you made a desicion - it is up to you.<br />\n</li>\n</ol>\nAgain, thank you for TreeEx and answers.\r<br />\nCheers, Jan<br />\n",
+    "PostedDate": "2013-07-27T12:58:19.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

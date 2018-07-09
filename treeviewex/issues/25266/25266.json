@@ -1,0 +1,80 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-05-19T03:41:16.657-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "There's a problem when using multi select in Virtualization mode since the ItemContainerGenerator will in that case return a null value and the control crashes.\n\nI've also remarked that there's too much overhead in the current multiselect implementation. I tried using it for selecting geometry data of complex 3D models and it takes ages to select more than 10 000 items.\n\nThe DataGrid in .NET 4.0 has a really nice multiselect function and it works like a charm even with 100 000 objects. We should have a look into it!\n\nReally like your work,\n\n/Mikael",
+    "LastUpdatedDate": "2017-11-30T15:06:47.91-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-03-13T12:07:22.767-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "Multi Select in Virtualization Mode",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25266
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Ok, seems there are two problems:\n1. the nullrefException: Can you please tell me, how to reproduce this? Ive tried the following:\na) Start Virtualization sample\nb) Select Virtualization CheckBox and load Items\nc) Select element1 and element 11\nd) Scroll down and select element 2000\nWorks fine so far.\r\n\r\n2. The performance: I m not sure if I can do sth about that. A Datagrid is much more simple, because it does not have a hierarchy. I will have a look.\r\n\r\nRegards",
+      "PostedDate": "2014-03-19T07:51:26.017-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Ok, I found the problem. The selection with shift does not work, because elements are selected which are not visible. Doing that will result in a quite long time for selection. I see...",
+      "PostedDate": "2014-03-19T07:58:23.6-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "This is a major bug. And, at the moment I dont have an idea how to fix it. \r\n\r\nThe problem is, that in WPF the children of a treenode are calculated by the UI (HierarchicalDatatemplate/HeaderedItemsControl). So if the node is not visible and the virtualization is on, the UI is not initialized and there is not way to find/select the children. \r\n\r\nAs a workaround, I will prevent selection with shift if virtualization is enabled. Then at least no exception is thrown anymore.\r\n\r\nIf anyone has a better idea, please let me know.",
+      "PostedDate": "2014-03-19T08:17:40.897-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-03-19T08:22:13.44-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Associated with changeset 74062: Workaround for 25266",
+      "PostedDate": "2014-03-19T08:23:59.66-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-05-19T03:41:16.657-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-05-19T03:41:17.153-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:47.91-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-01-23T06:35:50.973-08:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I have still one Issue in virtualization-Mode, it can be reproduced in the VirtualizationSample\n\nAfter loading the virtualized Items, Ctrl+Click the first Three Items, scroll Down and also Ctrl+Click the last three Items.\nAfter scrolling back the selection ist lost. \n\nAlso I cannot always select the TreeViewitem, if they are virtualized. (see Picture)\n\nIs this an Issue or do I miss something? What is neccessary to achieve this?",
+    "LastUpdatedDate": "2017-11-30T15:06:47.54-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-01-22T07:21:56.903-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SelectionLost in Virtualizing Mode after scrolling around",
+    "Type": {
+      "Name": "Task",
+      "Id": 2
+    },
+    "VoteCount": 1,
+    "Id": 25102
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6685,
+      "FileName": "treeViewEx_Virtualized_SelectionNotAlwaySucceeded.PNG",
+      "DownloadUrl": ".\\6685"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73692: Fix for 25102",
+      "PostedDate": "2014-01-23T06:35:50.973-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:47.54-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

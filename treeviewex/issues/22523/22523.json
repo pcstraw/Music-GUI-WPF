@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-04-20T09:55:05.807-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "There's a visual artifact where a parent node takes on the width of the largest visible child node. That doesn't seem correct to me.\n \nPlease see the attached screenshot that demonstrates the problem. It's the same no matter the theming. I believe it's due to the use of a grid in the template. The selected node should only be the size of the header.",
+    "LastUpdatedDate": "2017-11-30T15:06:38.283-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-04-19T22:34:27.56-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Incorrect Node Size",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 22523
+  },
+  "FileAttachments": [
+    {
+      "FileId": 5763,
+      "FileName": "issue.png",
+      "DownloadUrl": ".\\5763"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 66649.",
+      "PostedDate": "2012-04-20T09:55:05.807-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:36.86-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:13.493-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:38.283-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

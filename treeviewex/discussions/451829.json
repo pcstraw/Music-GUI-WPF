@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1074591",
+    "ThreadId": "451829",
+    "Html": "Hello,\r<br />\nI'm looking for a way to multi select elements and then dragging them into a node which allow insertion.\r<br />\n<br />\nIs this possible ? If not, will it be possible in the future ?\r<br />\n<br />\nThanks for your great job,\r<br />\n<br />\nTarboeuf<br />\n",
+    "PostedDate": "2013-07-30T01:25:14.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074599",
+    "ThreadId": "451829",
+    "Html": "Actually I can have the required behavior by commenting  the <em>break;</em> instruction into the <em>GetTreeViewItemsFor</em> method of <em>TreeViewEx</em>. Maybe you can clarify me why you restrain this functionnality ?<br />\n<pre><code>        internal IEnumerable&lt;TreeViewExItem&gt; GetTreeViewItemsFor(IEnumerable objects)\n        {\n            if (objects == null)\n            {\n                yield break;\n            }\n            var items = objects.Cast&lt;object&gt;().ToList();\n            foreach (var treeViewExItem in TreeViewElementFinder.FindAll(this, false))\n            {\n                if (items.Contains(treeViewExItem.DataContext))\n                {\n                    yield return treeViewExItem;\n\n                    //break;\n                }\n            }\n        }</code></pre>\n\n",
+    "PostedDate": "2013-07-30T01:51:52.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,116 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-06-05T05:44:02.53-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When this event is called, e.OldItems is null. So, code for NotifyCollectionChangedAction.Remove doesn't work here.\n\nAnd this event is called not only when collection is cleared. It can be called with non empty collection also. For example, ReactiveCollection from ReactiveUI calls this event from its Sort method.",
+    "LastUpdatedDate": "2017-11-30T15:06:41.637-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-04-08T07:58:01.317-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "TreeViewEx crashes on NotifyCollectionChangedAction.Reset",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24147
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6328,
+      "FileName": "CollectionSortSample.zip",
+      "DownloadUrl": ".\\6328"
+    },
+    {
+      "FileId": 6343,
+      "FileName": "CollectionSortSample.zip",
+      "DownloadUrl": ".\\6343"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 71840: Fix for 24147\nReformated SelectionMultiple",
+      "PostedDate": "2013-04-11T01:35:26.697-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T04:21:47.503-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I reopen issue, because this fix only works if NotifyCollectionChangedAction.Reset called for empty collection.\r\n\r\nSmall sample, that describes problem is attached. (it uses ReactiveUI from nuget. Please add it to project references before trying to compile. Archive becomes too large, if I include package into it)\r\n\r\nEvent handler for button sorts children nodes for firstNode in descending order.\r\n\r\nIndended behavior: see ordered collection.\nResult: no items in tree view.\r\n\r\nThere is implementation, that uses WPF TreeView, in App.xaml change StartupUri=\"MainWindow.xaml\" to StartupUri=\"MainWindow_WPFTreeView.xaml\"\r\n\r\nWPF TreeView correctly displays sorted nodes.\r\n\r\nReactiveCollection.Sort reorders collection items, that calls NotifyCollectionChangedAction.Reset.",
+      "PostedDate": "2013-04-11T04:21:48.183-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "** Closed by slompf 11.04.2013 1:35",
+      "PostedDate": "2013-04-11T04:22:00.79-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T04:22:00.917-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T04:22:18.54-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I failed in reproducing the error, because I could not compile the sample. It fails saying:\r\n\r\nModel\\Node.cs(19,4,19,12): error CS0012: The type 'System.Reactive.Concurrency.IScheduler' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Reactive.Interfaces, Version=2.1.30214.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.\r\n\r\nAny idea where to get this assembly?\r\n\r\nOr can you tell me, what fails? Probably the items are deleted without replacing them. So, are there Items in the NewItems property of the EventArgs?",
+      "PostedDate": "2013-04-19T07:20:37.543-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-22T02:09:11.873-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I was trying to explain, how to get this assembly\r\n\r\n> (it uses ReactiveUI from nuget. Please add it to project references before trying to compile. Archive becomes too large, if I include package into it\r\n\r\nBut maybe this was not clear enougth. Anyway, I made a better sample, that does not require this library to show an issue. It implements ICollection<Node> and INotifyCollectionChanged methods, that are needed to run the sample in class MyObservableCollection.\r\n\r\nIts method Sort reorders items and throws NotifyCollectionChanged event with Reset action and OldItems = NewItems = null. It was quite difficult to find clear documentation about suitable values for OldItems and NewItems for different NotifyCollectionChangedActions. Most clear documentation for OldItems is [here](http://msdn.microsoft.com/en-us/library/system.collections.specialized.notifycollectionchangedeventargs.olditems(v=vs.95).aspx) and for NewItems is [here](http://msdn.microsoft.com/en-us/library/system.collections.specialized.notifycollectionchangedeventargs.newitems(v=vs.95).aspx). Yes, it is for silverlight, but in wpf behavior is the same. So, event listener should not expect any values in NewItems and OldItems, when action is Reset. It should resyncronize with collection - clear it internal items and add new items to tree, if binded collection is not empty.",
+      "PostedDate": "2013-04-22T02:09:13.207-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-17T05:12:53.2-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-06-05T05:44:02.53-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-06-05T05:44:04.52-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:41.637-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

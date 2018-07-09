@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1221932",
+    "ThreadId": "538773",
+    "Html": "Is it possible to set the active node in the tree programatically ?\r<br />\nI would like to be able to focus (activate) a node from my view model. \r<br />\n<br />\nThe LastSelectedItem property does not have a setter. When I try to use SelectedItems property (tree.SelectedItems.Add(&lt;some node&gt;), the selected item do not get focus.\r<br />\n<br />\nRegards,\r<br />\nOla<br />\n",
+    "PostedDate": "2014-03-12T08:44:19.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224438",
+    "ThreadId": "538773",
+    "Html": "Hi, \r<br />\n<br />\nif you know the UIElement, you could try the WPF-Tools (call focus on it). You might want to use the System.Windows.Controls.FocusHelper from the TreeViewEx assembly.\r<br />\n<br />\nIf you want to set the selected item by using its data representation, there is no other way but setting it at last into the selecteditems collection.\r<br />\n<br />\nRegards<br />\n",
+    "PostedDate": "2014-03-19T07:42:02.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

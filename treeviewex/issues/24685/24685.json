@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-09-13T06:36:48.037-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "In the virtualization sample app, the keyboard selection using the Up/Down/PageUp/PageDown keys doesn't work correctly or fails completely. Visible items are selected normally, but when the selection moves out of the viewport, the view is not scrolled accordingly. Instead, the selection only moves as long as items are currently realised and no further (not even off-view). The page arrow keys do even more quirks and move the focus somewhere where it can't simply be reverted.\n\nAlthough, as I'm writing this and trying other samples, I see that keyboard selection does not scroll in any sample. So there's two issues: Keyboard selection scrolling; and keyboard selection with virtualization. Both are currently broken.\n\nObserved in revision 72869.",
+    "LastUpdatedDate": "2017-11-30T15:06:44.687-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-09-08T13:43:09.203-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Keyboard selection doesn't scroll with virtualization",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24685
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I could not find issues related to the page up/down keys. But I fixed the arrow keys issue.",
+      "PostedDate": "2013-09-13T06:35:25.413-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 72980: Fix for 24685",
+      "PostedDate": "2013-09-13T06:36:48.037-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "The arrow keys are working now. But the Page up/down keys are still badly broken everywhere. Although they scroll the view, they won't select the item one page further up or down. The item selection stays where it is. But the normal behaviour on Windows is not only scrolling the view (as when using the scrollbar or mouse wheel), but moving the item selection.\r\n\r\nAlso, in the virtualized view, the page up/down keys stop working after one or two presses because no more items are loaded.",
+      "PostedDate": "2013-09-23T12:44:23.067-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.687-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

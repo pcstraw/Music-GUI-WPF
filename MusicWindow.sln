@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicWindow", "MusicWindow\MusicWindow.csproj", "{B6E56C86-3D94-4EB3-87CA-35203A433D33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicTestApp", "MusicWindowTest\MusicTestApp.csproj", "{D9C5381E-BF43-45C1-BFBE-6D19AA075117}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiSelectionTreeView", "P:\Repo\MusicWindowProject 23-jun-2018\MultiSelectionTreeView2_0\MultiSelectionTreeView\MultiSelectionTreeView.csproj", "{20D00BCA-1981-4A2F-815B-79F05EDF6277}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{B6E56C86-3D94-4EB3-87CA-35203A433D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6E56C86-3D94-4EB3-87CA-35203A433D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6E56C86-3D94-4EB3-87CA-35203A433D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C5381E-BF43-45C1-BFBE-6D19AA075117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C5381E-BF43-45C1-BFBE-6D19AA075117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C5381E-BF43-45C1-BFBE-6D19AA075117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C5381E-BF43-45C1-BFBE-6D19AA075117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D00BCA-1981-4A2F-815B-79F05EDF6277}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D00BCA-1981-4A2F-815B-79F05EDF6277}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D00BCA-1981-4A2F-815B-79F05EDF6277}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D00BCA-1981-4A2F-815B-79F05EDF6277}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-08-21T01:21:17.477-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When selecting items with the SHIFT key down, the selection updates from the _previous_ clicked item to the _last_ clicked item, instead of extending from the _first_ clicked item to the _last_ clicked item.\n\nRepro:\n\n- Launch the SimpleSample application\n- Press and hold the SHIFT key\n- Left click on the element11 item\n- Left click on the element13 item.\n- Selection extends from 11 to 13, including 12 as expected\n- While still holding the SHIFT key, left click on element15\n- Selection extends from 13 to 15, but element11 and element12 are unselected, which is unexpected",
+    "LastUpdatedDate": "2017-11-30T15:06:43.827-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-08-18T22:28:20.92-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Selection extension with SHIFT doesn't work properly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24635
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72864: Fix for 24635",
+      "PostedDate": "2013-08-21T01:21:17.477-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:43.827-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-09-23T04:47:30.507-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Start an application with treeviewex, with some nodes there, then select any single one of them. This item will now be stored in SelectedItems collection. Now click on selected item again. SelectedItems collection now will hold two items - an original one and a null.",
+    "LastUpdatedDate": "2017-11-30T15:06:44.797-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-09-21T12:02:27.3-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Clicking on selected item adds null to SelectedItems collection",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24720
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73038: Fix for 24720",
+      "PostedDate": "2013-09-23T04:47:30.507-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.797-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

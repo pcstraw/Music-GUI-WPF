@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-11T00:20:06.58-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When you click on an area which does not contains any nodes (I mean, below the nodes) it throwes exception.\nDragNDropController.cs line 417\nitemUnderMouse is null\n\nI got that bug with drag and drop turned off. Turning it on made application to throw an exception in the beginning:\nTreeViewEx.cs line 516\ndragNDropController is null",
+    "LastUpdatedDate": "2017-11-30T15:06:44.96-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-09-24T10:43:56.813-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Clicking on empty space thows exception (and also drag and drop mode bug)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24725
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73144: Fix for 24725",
+      "PostedDate": "2013-10-11T00:20:06.58-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.96-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-08-15T03:47:38.71-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "The InsertAdorner is not customizable at all, not even its color. For instance it is barely visible on dark theme such as ExpressionDark based ones.",
+    "LastUpdatedDate": "2017-11-30T15:06:43.487-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-07-30T02:45:08.727-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "The InsertAdorner is not customizable",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 24565
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72842: Now Insertion adorner is customizable",
+      "PostedDate": "2013-08-15T03:47:38.71-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:43.487-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-08-21T01:33:44.55-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When pressing __Up Arrow__ while the first item of the treeview is selected, or pressing __Down Arrow__ while the last item of the treeview is selected, a NullReferenceException is thrown.\n\nRepro:\n- Start the SimpleSample\n- Select the first item, _element1_, and press __Up Arrow__\n*OR*\n- Select the last item, _element2_, and press __Down Arrow__",
+    "LastUpdatedDate": "2017-11-30T15:06:44.097-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-08-20T23:06:57.28-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NullReferenceException thrown when using keyboard navigation",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24643
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72866: Fix for 24643",
+      "PostedDate": "2013-08-21T01:33:44.55-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.097-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

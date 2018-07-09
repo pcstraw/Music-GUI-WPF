@@ -1,0 +1,23 @@
+﻿Index: TreeViewEx/Controls/TreeViewExItem.cs
+===================================================================
+--- TreeViewEx/Controls/TreeViewExItem.cs	(revision 704)
++++ TreeViewEx/Controls/TreeViewExItem.cs	(working copy)
+@@ -435,11 +435,15 @@
+             //    }
+             //}
+ 
+-            if (ParentTreeView != null && ParentTreeView.Selection != null && e.Property.Name == "IsSelected")
++            if (ParentTreeView != null && e.Property.Name == "IsSelected" && ParentTreeView.SelectedItems.Contains(DataContext) != IsSelected)
+             {
+-                if (ParentTreeView.SelectedItems.Contains(DataContext) != IsSelected)
+-                {
++                // If the TreeView is still loaded, use the SelectionStrategy to achieve the selection. Otherwise, just add/remove from the selection list
++                if (ParentTreeView.Selection != null) {
+                     ParentTreeView.Selection.SelectFromProperty(this, IsSelected);
++                } else if (IsSelected) {
++                    ParentTreeView.SelectedItems.Add(DataContext);
++                } else {
++                    ParentTreeView.SelectedItems.Remove(DataContext);
+                 }
+             }
+ 

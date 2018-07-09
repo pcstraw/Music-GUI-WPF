@@ -1,0 +1,91 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If I take the drag-and-drop sample and try to turn on the insert functionality at the root node, it fails because the root node isn't bound to a TreeViewExItem; it's bound to the TreeViewEx.  TreeViewExItem.ParentTreeViewItem is null for nodes immediately below the root, so DragNDropController.CanInsert and OnDrop do nothing.\n\nI \"resolved\" this issue in my copy by having TreeViewExItem and TreeViewEx implement the attached interface, and then replacing references in CanInsert and OnDrop to ParentTreeViewItem with this new TreeViewExItem property:\n\ninternal IDragNDrop ParentDragNDrop { get { return ItemsControl.ItemsControlFromItemContainer(this) as IDragNDrop; } }\n\nThis way I can bind drag/drop properties on the root node at the TreeViewEx element.  It works, but it's kinda ugly.",
+    "LastUpdatedDate": "2017-11-30T15:06:49.303-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-07-14T08:47:22.227-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Insert/Drop events not bound at root of tree.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 25609
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6923,
+      "FileName": "IDragNDrop.cs",
+      "DownloadUrl": ".\\6923"
+    },
+    {
+      "FileId": 6924,
+      "FileName": "TreeViewEx.DragNDropProperties.cs",
+      "DownloadUrl": ".\\6924"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Modifications to TreeViewEx also attached.",
+      "PostedDate": "2014-07-14T08:49:43.03-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "You are right, thats an principal problem. The only solution I see, is to rebuild the dragNdrop. That wouldnt bother me to much, because Im not that happy with it anyway. \r\n\r\nThe idea is to add functions to the treeviewex itself, which are called if something needs to be dragged, dropped or inserted. That could be done over Events (which are hard to bind to view models) or some ICommand-like interfaces (what I would prefer).",
+      "PostedDate": "2014-08-03T07:02:05.58-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-08-03T07:02:31.29-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-08-05T01:14:24.417-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Hi slompf,\r\n\r\nWhat is the status of moving DragNDrop events to TreeViewEx?  \nThe changes by onelogintoomany seems like a good refactoring starting point.\r\n\r\n",
+      "PostedDate": "2014-10-23T07:31:20.22-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "@onelogintoomany  ,@slompf \nI forked the project to gitHub and rewrote the Drag&Drop events as Commands.\nhttps://github.com/tainicom/TreeViewEx/tree/DragAndDropCommands\r\n\r\nStill, Drop to the root don't work yet. I am working on it.",
+      "PostedDate": "2014-11-27T07:31:58.977-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "ok, just fixed insert/drop to root as well.",
+      "PostedDate": "2014-11-27T08:27:14.76-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:49.303-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

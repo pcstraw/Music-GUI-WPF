@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-09-23T04:01:13.11-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When clicking on an unselected item and moving the mouse cursor while the LMB is still down, the TreeViewEx will start a drag'n'drop operation (assuming the item is draggable). The expected behavior (observed in Windows Explorer for instance) is that an element should start a drag'n'drop operation only if it is already selected when the LMB is pressed.",
+    "LastUpdatedDate": "2017-11-30T15:06:44.54-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-09-04T02:06:45.983-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "The control can start dragging an item when it should draw a selection rectangle",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24676
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "If I click in windows explorer on a unselected file, it selects an then starts the dragndrop operation. I think the behaviour is correct?",
+      "PostedDate": "2013-09-09T23:12:37.763-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Yes actually the behavior is a bit more complicated:\n - if the file is not selected:\n    - if the user clicks on a non-empty area of the item (file name, icon, date... ie anywhere there is a control under), it selects and start a D&D operation. (1)\n    - if the user clicks on a empty area (the empty space to the right of the file name for instance), then it draws a selection rectangle (2)\n - if the file is selected, the background is not transparent anymore, so I guess the hit detection passes and it always start a D&D operation. (3)\r\n\r\nHowever, in the sample, I think the case (2) does not work. But it is probably just a matter of setting a transparent background somewhere in the template.",
+      "PostedDate": "2013-09-10T02:12:41.54-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 73037: Fix for 24676",
+      "PostedDate": "2013-09-23T04:01:13.11-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.54-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

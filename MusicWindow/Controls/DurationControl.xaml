@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="MusicWindow.DurationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicWindow"
+             mc:Ignorable="d" Height="19.333" Width="160" Background="#FF22688B" Loaded="Loaded_Event">
+    <Grid>
+        <Slider x:Name="slider" Value="{Binding Path = TrackPosition, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding Path = TrackDuration, UpdateSourceTrigger=PropertyChanged}" Height="19" PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="slider_PreviewMouseLeftButtonUp" MouseWheel="slider_MouseWheel" Margin="5,0,5,0.333"/>
+    </Grid>
+</UserControl>

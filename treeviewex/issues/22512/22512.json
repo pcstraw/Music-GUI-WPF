@@ -1,0 +1,90 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-04-25T09:50:20.133-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "For whatever reason, FocusHelper.FocusCore() is stuck in this loop in my UI:\n \nwhile (!element.IsFocused)\n{\n    //System.Diagnostics.Debug.WriteLine(\"Waiting for element getting Focus\");\n    Thread.Sleep(50);\n}",
+    "LastUpdatedDate": "2017-11-30T15:06:38.157-08:00",
+    "PlannedForRelease": "TreeViewEx 0.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-04-15T16:33:10.827-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "FocusHelper.FocusCore() Infinite Loop",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 22512
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Could you please provide me with a sample, so I can reproduce this issue? I did not found any user interaction where that behavior happens.",
+      "PostedDate": "2012-04-20T09:31:17.9-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2012-04-21T01:20:07.397-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "No, I couldn't easily reproduce it. But it happened several times.",
+      "PostedDate": "2012-04-21T20:56:26.41-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Associated with changeset 66722.",
+      "PostedDate": "2012-04-25T09:35:40.33-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Uncommented the loop. But not sure why this happend. So I'm not sure what happens in the case where the application blocked until now.",
+      "PostedDate": "2012-04-25T09:37:54.22-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Associated with changeset 66723.",
+      "PostedDate": "2012-04-25T09:43:47.04-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 66724.",
+      "PostedDate": "2012-04-25T09:50:20.133-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:37.25-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:13.83-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:38.157-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

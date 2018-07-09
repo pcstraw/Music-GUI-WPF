@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-03-19T08:30:25.11-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hello,\nI have the following scenario: two TreeViewEx controls hosted in tabs, I want to synchronize them so that an update to one of them causes updates in the other. \nThe problem is that when I switch the tabs, the tree control that is hosted in the hidden tab will be unloaded. In TreeViewEx, in OnUnLoaded event handler we have:\n\n Selection = null;\n\nThe control will try to call ParentTreeView.Selection.ClearObsoleteItems in OnItemsChanged handler of TreeViewExItem. This of course results in NullReference crash.\nThe same happens in OnPropertyChanged (calls ParentTreeView.Selection.SelectFromProperty)\n\nWould be great if this could be fixed in the official version of the control :-)\n\nBest Regards,\nOla",
+    "LastUpdatedDate": "2017-11-30T15:06:48.08-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-03-19T03:10:45.7-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Tree Crash when hosting in tab panes",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 25286
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 74063: Fix for 25286",
+      "PostedDate": "2014-03-19T08:30:25.11-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:48.08-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

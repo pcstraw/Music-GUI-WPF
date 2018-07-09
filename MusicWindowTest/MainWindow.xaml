@@ -1,0 +1,12 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicWindowTest"
+        xmlns:MusicWindow="clr-namespace:MusicWindow;assembly=MusicWindow" xmlns:Custom="http://schemas.devzest.com/presentation/docking" x:Class="MusicWindowTest.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Width="768" Height="535" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}">
+    <MusicWindow:MainControl Margin="0"/>
+
+</Window>

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1249881",
+    "ThreadId": "546662",
+    "Html": "Great control!<br />\nBut there is an issue in multi selection behavior. I think the following would be correct:<br />\n<pre><code>when LeftMouseDown event we need to check item under mouse. If it not selected then select it. If it already selected then do nothing and unselect it when LeftMouseUp event.</code></pre>\n\nThis behevior implemented in MSVS treview (Solution Explorer) and Listview in Windows Explorer.<br />\nThis will normally perform drag and drop with multiple selection. In current implementation when I select multiple items and try to drag them by left pressed mouse on one of them selection change.<br />\nThanks!<br />\n",
+    "PostedDate": "2014-05-27T00:54:35.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251490",
+    "ThreadId": "546662",
+    "Html": "You are right. But this is not a quick fix. It is difficult with the current architecture. I will enter a bug for this, so I dont forget to check that. Might take some time.\r<br />\n<br />\nTo follow see issue 25518.\r<br />\n<br />\nRegards,\r<br />\nTorsten<br />\n",
+    "PostedDate": "2014-05-30T17:25:18.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1238021",
+    "ThreadId": "543333",
+    "Html": "Hi, I was looking for some event (like SelectionChanged), but I didn't find any. Maybe there is another way to be notified in such case?\r<br />\nThank you<br />\n",
+    "PostedDate": "2014-04-25T06:36:48.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1239717",
+    "ThreadId": "543333",
+    "Html": "The SelectedItems-Collection is an observable collection. You can subscribe to NotifyCollectionChanged.\r<br />\n<br />\nRegards!<br />\n",
+    "PostedDate": "2014-04-30T02:29:43.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1239822",
+    "ThreadId": "543333",
+    "Html": "Thank you! \r<br />\nStill, the NotifyCollectionChanged.CollectionChanged is being fired &quot;too frequently&quot; ;) \r<br />\nOn single selection change it could be fired several times... with NotifyCollectionChangedAction.Add and with NotifyCollectionChangedAction.Remove \r<br />\nI made some changes in TreeViewEx code to fit my needs with new event &quot;SelectionChanged&quot;, but since I am not a TreeViewEx developer I cannot check-in my changes...\r<br />\nBest regards,\r<br />\nA.<br />\n",
+    "PostedDate": "2014-04-30T07:11:33.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1241486",
+    "ThreadId": "543333",
+    "Html": "Then we should solve the problem of the collection firing to often instead of introducing a new event. In which cases does that happen?<br />\n",
+    "PostedDate": "2014-05-05T04:45:28.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244239",
+    "ThreadId": "543333",
+    "Html": "OK, let me explain...\r<br />\n<br />\nI did this:<br />\n<pre><code>System.Collections.Specialized.INotifyCollectionChanged incol = this.tree.SelectedItems as System.Collections.Specialized.INotifyCollectionChanged;\nif (incol != null)\n{\n  incol.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(incol_CollectionChanged);\n}\n\nvoid incol_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)\n{\n  System.Console.WriteLine(&quot;CollectionChanged: {0}&quot;, e.Action);\n}</code></pre>\n\nImagine you have several items selected and then you suddenly click on single item so there will be only one item selected there...\r<br />\nThis is the output:<br />\n<pre><code>CollectionChanged: Remove\nCollectionChanged: Remove\nCollectionChanged: Remove\nCollectionChanged: Add</code></pre>\n\nSo I'd rather have a single callback function call informing that the selection was changed than 4 (multiple)...\r<br />\n...and even the MS TreeView control is having such event...<br />\n<pre><code>public event RoutedPropertyChangedEventHandler&lt;object&gt; SelectedItemChanged;</code></pre>\n\n",
+    "PostedDate": "2014-05-12T01:05:45.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

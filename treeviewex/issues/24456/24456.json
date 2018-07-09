@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Not activity on that.",
+    "ClosedDate": "2013-07-17T04:16:29.31-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I'm trying to get a UI Control enabled when a treeview item is selected using MVVM. I've been unsuccessful. \n\nFor example:\n  I have a radio button control property IsEnabled=\"{Binding=IsSelected}\". The IsSelected is set when the treeview item is selected(in the xaml Style). When I go through Debug the property is actually set but the UI doesn't reflect the change. The radio button control is still disabled. Any suggestions?",
+    "LastUpdatedDate": "2013-07-17T04:16:29.31-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-06-30T13:13:42.607-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "IsEnabled property",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 24456
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "So I'm not sure what IsSelected Property you see. The IsSelected of the TreeViewExItem is a DependencyProperty. If you see this one is set, then it is probably no problem of the TreeViewEx. Check your Binding by looking in the output window and check the binding mode.\r\n\r\nRegards,\nTorsten",
+      "PostedDate": "2013-07-03T11:50:40.893-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-07-17T04:16:29.31-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

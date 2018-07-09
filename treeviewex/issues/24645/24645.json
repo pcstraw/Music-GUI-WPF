@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-09-09T23:04:55.21-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When an item that can be dragged is selected and a, if the user clicks on the scrollbar, he can drag it. Then it behave just as if he dragged the selected item (it can be dropped/inserted)\n\nRepro:\n- start the DragNDropSample\n- resize it down so scrollbars are visible\n- select the _element11_ item (which has drag allowed)\n- the click and drag on of the scrollbar: the drag adorner appear and a drop can be made.",
+    "LastUpdatedDate": "2017-11-30T15:06:44.367-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-08-20T23:34:36.797-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "The scrollbar can be dragged when a draggable item is selected",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24645
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 72869: 24645",
+      "PostedDate": "2013-08-21T03:41:43.44-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks for the fixes !",
+      "PostedDate": "2013-08-21T05:41:33.743-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "** Closed by slompf 8/21/2013 3:41 AM",
+      "PostedDate": "2013-08-25T20:21:25.907-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-08-25T20:21:26.5-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Not fixed unfortunately... I can still reproduce this issue if I click on the slider of the scrollbar",
+      "PostedDate": "2013-08-25T20:23:03.96-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 72976: Fix for 24645",
+      "PostedDate": "2013-09-09T23:04:55.21-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:44.367-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

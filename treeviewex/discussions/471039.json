@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1128667",
+    "ThreadId": "471039",
+    "Html": "Hi,\r<br />\n<br />\nin your Complex Sample and ScrollTest Sample you refer to a\r<br />\nControls:HierarchicalDataTemplateEx\r<br />\n<br />\nDid you miss a file or is it some old meanwhile abandoned item ?<br />\n",
+    "PostedDate": "2013-11-25T05:25:25.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1129203",
+    "ThreadId": "471039",
+    "Html": "Actually the projects itself are abondoned. I only care for the projects in the solution. I will delete the two projects from source control. \r<br />\n<br />\nAre there any features demostrated, you cant find in the other samples?<br />\n",
+    "PostedDate": "2013-11-26T07:26:23.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

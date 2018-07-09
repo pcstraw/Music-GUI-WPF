@@ -1,0 +1,80 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-06-17T08:02:24.093-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "The scenario I want to implement is a MVVM with a Command Pattern that provides a Do/Undo stack.\nThe TreeViewEx.SelectedItems is bound to an ObservableCollection, but I don't want the control to change this collection directly. \n\nSo far, I am handling the TreeViewEx.OnSelecting event and cancel it.  \nI believe the ItemsToSelect & ItemsToUnselect is all I want in order to manipulate the selection through my CommandManager.  \nBut, I notice that by selecting through click-drag on the control, it clears my selection without firing the OnSelecting event. I believe the problem is on TreeViewEx.ClearSelectionByRectangle() which just clears the selection without any check. \n\nFor now, I will  try to work around this one by trying different types of binding or using a ReadOnlyObservableCollection.",
+    "LastUpdatedDate": "2017-11-30T15:06:42.2-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-06-04T20:54:15.517-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ClearSelectionByRectangle clears the selection without checking CheckSelectionAllowed()",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 24366
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Two more things.\r\n\r\nSelectionChangedCancelEventArgs should be \r\n\r\n```\npublic SelectionChangedCancelEventArgs(IEnumerable<object> itemsToSelect, IEnumerable<object> itemsToUnSelect)\n\t\t{\n\t\t\tItemsToSelect = itemsToSelect;\n            ItemsToUnSelect = itemsToUnSelect; //= itemsToSelect;\n\t\t}\n```",
+      "PostedDate": "2013-06-04T21:41:29.18-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "...and ClearSelectionByRectangle() should check the SelectedItems.IsReadOnly before calling Clear(),  It throws an exception when SelectedItems is bind to a ReadOnlyObservableCollection.\n",
+      "PostedDate": "2013-06-04T21:45:26.117-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Which version are you using? In the current changeset SelectByRectangle and UnSelectByRectangle call treeViewEx.CheckSelectionAllowed. See line 86 and 74 SelectionMultiple.cs. \r\n\r\nCan you provide some easy Sample, so I can reproduce the error?",
+      "PostedDate": "2013-06-05T07:24:56.007-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-06-05T07:26:10.143-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I was using 71907, Let me test the latest changes.\nI will come up with a simple sample soon.\n",
+      "PostedDate": "2013-06-06T22:05:07.767-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Here is a sample \n[TEXT](http://sdrv.ms/18SZG9M)\r\n\r\nI hope it's clear what I am trying to achieve.\nSo far I have found\n1) the bug  at  SelectionChangedCancelEventArgs constractor\n2) Clear() is called without checking for IsReadOnly at two or more places.\n3) CheckSelectionAllowed is called several times through the algorithm. For example on Select(item) calls CheckSelectionAllowed/OnSelecting too early without even knowing whether the item should be selected or deselected, the rest checks get cancel.\n4) OnSelecting generating too much noise at other places (drag-selection).\r\n\r\nI thing the best approach is to proceed at several phases, first compile a list of items that must be selected and deselected. Then call CheckSelectionAllowed just once. Finally if OnSelecting is not canceled and the selectionItems is not readonly proceed with the two lists.\r\n\r\n\n",
+      "PostedDate": "2013-06-07T03:01:27.057-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 72346: fix for 24366",
+      "PostedDate": "2013-06-17T08:02:24.093-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:42.2-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

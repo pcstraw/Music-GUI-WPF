@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-03-14T08:01:40.867-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "In my application I use avalon dock along with treeviewex, and treeviewex does not seem to work well with it. I made a quick example project (attached here, no avalondock or treeviewex libraries included). Start the project, you'll notice the treeviewex on the right and the pane switcher below it. Switch to a different pane (which is empty) and then switch back. That completely breaks selection - you can't select or deselect anything. Also, trying to expand the node throws exception.",
+    "LastUpdatedDate": "2017-11-30T15:06:41.21-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-03-13T11:17:32.32-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug with Avalon Dock",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24068
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6285,
+      "FileName": "AvalonDockTest.zip",
+      "DownloadUrl": ".\\6285"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 71507: Fix for 24068",
+      "PostedDate": "2013-03-14T08:01:40.867-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:09.197-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:41.21-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

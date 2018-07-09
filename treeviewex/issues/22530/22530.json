@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-06-13T05:35:33.517-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Classes like BorderSelectionRectangle aren't properly following the Dispose pattern: http://www.codeproject.com/Articles/15360/Implementing-IDisposable-and-the-Dispose-Pattern-P\n \nHere's a class I use to do it properly (I hope this pastes correctly):\n \n\t///<summary>\n\t///\tInherit from this class to properly implement the IDisposable pattern.\n\t///</summary>\n\t///<remarks>Courtesy <c>http://dave-black.blogspot.com/2011/03/how-do-you-properly-implement.html</c></remarks>\n\tpublic class SafeDisposableObject : IDisposable {\n\t\tprivate object dispose_lock = new object();\n\t\tprotected object DisposeLock { get { return dispose_lock; } }\n \n\t\t///<summary>\n\t\t///\tGets or sets a value indicating whether this instance is disposed.\n\t\t///</summary>\n\t\t///<value>\n\t\t///\t<c>true</c> if this instance is disposed; otherwise, <c>false</c>.\n\t\t///</value>\n\t\t///<remarks>Default initialization for a bool is 'false'</remarks>\n\t\tprotected bool Disposed { get; private set; }\n \n\t\t///<summary>\n\t\t///\tImplementation of Dispose according to .NET Framework Design Guidelines.\n\t\t///</summary>\n\t\t///<remarks>\n\t\t///\tDo not make this method virtual.\n\t\t///\tA derived class should not be able to override this method.\n\t\t///</remarks>\n\t\tpublic void Dispose() {\n\t\t\tDispose(true);\n \n\t\t\t//This object will be cleaned up by the Dispose method.\n\t\t\t//Therefore, you should call GC.SupressFinalize to\n\t\t\t//take this object off the finalization queue \n\t\t\t//and prevent finalization code for this object\n\t\t\t//from executing a second time.\n \n\t\t\t//Always use SuppressFinalize() in case a subclass\n\t\t\t//of this type implements a finalizer.\n\t\t\tGC.SuppressFinalize(this);\n\t\t}\n \n\t\t///<summary>\n\t\t///\tOverloaded Implementation of Dispose.\n\t\t///</summary>\n\t\t///<param name=\"isDisposing\">\n\t\t///\t<c>true</c> to release both managed and unmanaged resources; \n\t\t///\t<c>false</c> to release only unmanaged resources.\n\t\t///</param>\n\t\t///<remarks>\n\t\t///\t<list type=\"bulleted\">\n\t\t///\t  Dispose(bool isDisposing) executes in two distinct scenarios.\n\t\t///\t  <item>\n\t\t///\t    If <paramref name=\"isDisposing\"/> equals true, the method has been called directly\n\t\t///\t    or indirectly by a user's code. Managed and unmanaged resources\n\t\t///\t    can be disposed.\n\t\t///\t  </item>\n\t\t///\t  <item>\n\t\t///\t    If <paramref name=\"isDisposing\"/> equals <c>false</c>, the method has been called by the\n\t\t///\t    runtime from inside the finalizer and you should not reference\n\t\t///\t    other objects. Only unmanaged resources can be disposed.\n\t\t///\t  </item>\n\t\t///\t</list>\n\t\t///</remarks>\n\t\tprotected void Dispose(bool isDisposing) {\n\t\t\t//If you need thread safety, use a lock around these \n\t\t\t//operations, as well as in your methods that use the resource.\n\t\t\tlock(DisposeLock) {\n\t\t\t\ttry {\n\t\t\t\t\tif (!Disposed) {\n\t\t\t\t\t\t//Explicitly set root references to null to expressly tell the GarbageCollector\n\t\t\t\t\t\t//that the resources have been disposed of and its ok to release the memory allocated for them.\n\t\t\t\t\t\tif (isDisposing) {\n\t\t\t\t\t\t\t//Release all managed resources here\n\t\t\t\t\t\t\tDisposeManagedResources();\n \n \n\t\t\t\t\t\t\t//If this is a WinForm/UI contrlol, uncomment this code\n\t\t\t\t\t\t\t//if (components != null){\n\t\t\t\t\t\t\t//\tcomponents.Dispose();\n\t\t\t\t\t\t\t//}\n\t\t\t\t\t\t}\n \n\t\t\t\t\t\t//Release all unmanaged resources here\n\t\t\t\t\t\tDisposedUnmanagedResources();\n \n\t\t\t\t\t\t\n\t\t\t\t\t\t////(example)\n\t\t\t\t\t\t//if (someComObject != null && Marshal.IsComObject(someComObject)) {\n\t\t\t\t\t\t//\tMarshal.FinalReleaseComObject(someComObject);\n\t\t\t\t\t\t//\tsomeComObject= null;\n\t\t\t\t\t\t//}\n\t\t\t\t\t\tDisposeComObjects();\n\t\t\t\t\t}\n\t\t\t\t} finally {\n\t\t\t\t\tDisposed = true;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n \n\t\t///<summary>\n\t\t///\tFinalizer for object.\n\t\t///</summary>\n\t\t///<remarks>\n\t\t///\tThis finalizer will run only if the Dispose method does not get called.\n\t\t///\tIt gives your base class the opportunity to finalize.\n\t\t///\tDO NOT provide finalizers in types derived from this class.\n\t\t///\tAll code executed within a Finalizer MUST be thread-safe!\n\t\t///</remarks>\n\t\t~SafeDisposableObject() {\n\t\t\tDispose(false);\n\t\t}\n \n\t\tprotected virtual void DisposeManagedResources() {\n\t\t}\n \n\t\tprotected virtual void DisposedUnmanagedResources() {\n\t\t}\n \n\t\tprotected virtual void DisposeComObjects() {\n\t\t}\n\t}",
+    "LastUpdatedDate": "2017-11-30T15:06:38.43-08:00",
+    "PlannedForRelease": "TreeViewEx 0.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-04-21T21:09:33.41-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Dispose Pattern",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 22530
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Added a GC.SuppressFinalize to the class. A base class was not needed, because this was the only use of IDispoable. Fixed with commit 66901.",
+      "PostedDate": "2012-05-04T06:29:26.653-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Resolved with changeset 67634.",
+      "PostedDate": "2012-06-13T05:35:33.517-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:36.683-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:13.35-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:38.43-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

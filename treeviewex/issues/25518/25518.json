@@ -1,0 +1,81 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "This is  the bug resulting from discussion 546662:\n\n\n But there is an issue in multi selection behavior. I think the following would be correct:\n\nwhen LeftMouseDown event we need to check item under mouse. If it not selected then select it. If it already selected then do nothing and unselect it when LeftMouseUp event.\n\nThis behevior implemented in MSVS treview (Solution Explorer) and Listview in Windows Explorer.\n This will normally perform drag and drop with multiple selection. In current implementation when I select multiple items and try to drag them by left pressed mouse on one of them selection change.",
+    "LastUpdatedDate": "2017-11-30T15:06:48.827-08:00",
+    "PlannedForRelease": "TreeViewEx_3.0",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2014-05-30T17:24:04.493-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Multiselection behavior",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 25518
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6922,
+      "FileName": "SelectionMultiple.cs",
+      "DownloadUrl": ".\\6922"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "At the Moment there is only one order for mouseDown, Move and Up. In order to fix that bug different orders for the Events are needed.\r\n\r\nMouseDown: selection, dragNDrop, borderSelection\nMouseMove: dragNDrop, borderSelection\nMouseUp: dragNDrop, selection\r\n\r\nor sth like that.",
+      "PostedDate": "2014-05-30T17:30:42.72-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-07-14T08:25:52.337-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Here's a proposed solution.  Perhaps I missed something, but I don't think it's necessary to re-work InputEventRouter.",
+      "PostedDate": "2014-07-14T08:25:53.787-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "And by \"here\", I mean the attached SelectionMultiple.cs file.",
+      "PostedDate": "2014-07-14T08:29:19.197-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-08-18T06:16:48.307-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2016-03-02T02:15:33.623-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:48.827-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

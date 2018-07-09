@@ -1,0 +1,86 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-06-05T05:44:48.507-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I have a treeview with items and a panel with data for selected item (I think, it is pretty common scenario). I type some new value in textbox, and then change selected item in TreeViewEx.  Changes in textbox are lost (property setter is not called).\n\nThis is because property should be updated on lostfocus event, and this event was not fired. If focus change is added to SelectionMultiple.SelectCore, this seems to fix the problem:\n\n```\nprivate void SelectCore(TreeViewExItem item)\n{\ntreeViewEx.Focus();\n          \n/* other code */\n}\n```",
+    "LastUpdatedDate": "2017-11-30T15:06:41.803-08:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-04-08T08:10:00.137-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Fixed"
+    },
+    "Summary": "Master-details: changes to item details not saved, when selected item changes",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24148
+  },
+  "FileAttachments": [
+    {
+      "FileId": 6327,
+      "FileName": "MasterDetailsSample.zip",
+      "DownloadUrl": ".\\6327"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I've made some improvements to the edit feature with changeset 71839. There is now an SimpleEditSample, to demonstate how i thought it should work. \r\n\r\nDoes this solve your problem? If not, can you provide a little sample?",
+      "PostedDate": "2013-04-11T01:25:37.663-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-04-11T03:47:01.41-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks for the answer!\r\n\r\nNo, it doesn't.\r\n\r\nI wrote small sample, that demonstrates the problem.\r\n\r\n1. Select some node in treeview and change its name in text box \"Selected item name:\". Then select other node. Changes will be discarded.\n2. There is implementation of same scenario using WPF TreeView control. In App.xaml change StartupUri=\"MainWindow.xaml\" to StartupUri=\"MainWindow_WPFTreeView.xaml\". Changes to node name will be saved before selected node is changed.\n3. If you change node's name and select text box \"Some textbox to lose focus from first one:\", then binding will be updated, and node name will be changed (because first text box lose focus). And it is discarded when node changed in TreeViewEx, because textbox still has focus, and its data context is changed.",
+      "PostedDate": "2013-04-11T03:47:02.3-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I see. It seems like the selected object is changed before wpf has a chance to write the changes... \r\n\r\nShould be fixed with 71907.",
+      "PostedDate": "2013-04-19T07:46:27.263-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-17T05:14:47.483-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-06-05T05:44:48.507-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-06-05T05:44:49.127-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:41.803-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

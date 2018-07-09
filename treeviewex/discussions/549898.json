@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1260555",
+    "ThreadId": "549898",
+    "Html": "For example, changing the following in the DragNDropSample's MainWindow.xaml:<br />\n&lt;!--&lt;Setter Property=&quot;CanDrag&quot; Value=&quot;{Controls:MethodBinding CanDrag}&quot; /&gt;--&gt;\n&lt;Setter Property=&quot;CanDrag&quot; Value=&quot;true&quot; /&gt;<br />\n<br />\nYou'll get a null reference exception.<br />\n",
+    "PostedDate": "2014-06-27T11:38:37.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1260584",
+    "ThreadId": "549898",
+    "Html": "Ah, it's not a boolean dependency property.  Well, that makes sense now.  Never mind.<br />\n",
+    "PostedDate": "2014-06-27T13:02:10.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-06-27T13:20:13.703-07:00"
+  }
+]

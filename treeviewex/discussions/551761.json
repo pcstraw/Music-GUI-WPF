@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1268565",
+    "ThreadId": "551761",
+    "Html": "Hi, first of all thanks lots for creating this software. It works great and I truly appreciate it. :)\r<br />\n<br />\nI had an error in my code where OnInsert would use the wrong target index. In fact the &quot;index&quot; parameter was completely fine; my problem was that I didn't use it.\r<br />\nOnInsert also receives a DragContent object (in the form of object obj).\r<br />\nThis DragContent object has an InsertIndex property which is easily accessed.\r<br />\n<br />\nThe problem is, that InsertIndex property has an intermittently wrong value.\r<br />\n<br />\nMost of the time (75%+) it's the same as &quot;index&quot;; sometimes, it's different. Only one time it was -1; more often it was a usable but incorrect value, \r<br />\n(For the curious: The more often I did it, the less matches there were. 25 checks, 100% match, 50 checks, 85% match, 75-100 checks, 75% match between index and the DragContent's InsertIndex.)\r<br />\n<br />\nIt would be a little more solid if either those values would match all the time, or you would not have access to the DragContent's InsertIndex in this context.\r<br />\n<br />\nThanks again,\r<br />\n Simon<br />\n",
+    "PostedDate": "2014-07-16T14:40:43.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1279753",
+    "ThreadId": "551761",
+    "Html": "If you're dragging from one treeview to another, you get the drag index from the treeview you dragged from rather than the one you dragged to.  I wound up having to add an insert index (based on the position of the target tree's insert decorator) for that reason.  It's probably best to just remove the one in DragContext.<br />\n",
+    "PostedDate": "2014-07-31T15:40:56.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2013-10-25T01:51:25.757-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When the Move method is called on an ObservableCollection that is bound into a HierarchicalDataTemplate, an exception is thrown.\n\nRepro:\n\nIn SimpleEditSample, add the following in MainWindow.xaml, inside the DockPanel:\n\n```\n<Button DockPanel.Dock=\"Bottom\" Content=\"Move Item\" Click=\"ButtonClick\"/>\n```\n\nAnd the following in MainWindow.xaml.cs:\n\n```\nprivate void ButtonClick(object sender, RoutedEventArgs e)\n{\n    var rootNode = (Node)DataContext;\n    rootNode.Children[0].Children.Move(2, 0);\n}\n```\n\nWhen executing, an ArgumentOutOfRangeException is thrown: \"Index was out of range. Must be non-negative and less than the size of the collection.\\r\\nParameter name: index\" in VirtualizingTreePanel.cs:273\n\nUsing OldPosition when case is NotifyCollectionChangedAction.Move worked, so you can use this fix:\n\n```\nprotected override void OnItemsChanged(object sender, ItemsChangedEventArgs args)\n{\n    switch (args.Action)\n    {\n        case NotifyCollectionChangedAction.Remove:\n        case NotifyCollectionChangedAction.Replace:\n            RemoveInternalChildRange(args.Position.Index, args.ItemUICount);\n            break;\n        case NotifyCollectionChangedAction.Move:\n            RemoveInternalChildRange(args.OldPosition.Index, args.ItemUICount);\n            break;\n    }\n}\n```",
+    "LastUpdatedDate": "2017-11-30T15:06:46.623-08:00",
+    "PlannedForRelease": "TreeViewEx 1.9.",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-10-16T02:39:17.197-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ObservableCollection.Move throws an exception",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 24806
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 73222: Fix for 24806",
+      "PostedDate": "2013-10-25T01:51:25.757-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:46.623-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

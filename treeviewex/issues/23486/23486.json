@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-10-20T09:53:13.92-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Double click does not work as expected in some cases.\nIf the parent item is opened and selected (keyboard focused) and the user double clicks on a child's expander icon the parent will close. (The child item must have at least one child item to repro this.)\nThe TreeViewExItem.OnMouseDoubleClick event handler method must check if the e.OriginalSource is the visual child of the current item receives the event.",
+    "LastUpdatedDate": "2017-11-30T15:06:40.053-08:00",
+    "PlannedForRelease": "TreeViewEx 0.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2012-10-11T00:03:14.14-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Double click problem",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 23486
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Resolved with changeset 69956: Fix for 23486",
+      "PostedDate": "2012-10-20T09:53:13.92-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-14T12:22:33.587-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:10.653-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2017-11-30T15:06:40.053-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

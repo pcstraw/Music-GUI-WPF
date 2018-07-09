@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1013793",
+    "ThreadId": "436277",
+    "Html": "Hi,\r<br />\n<br />\nI have a tree-view with a lot of data and branches and I want to restrict the selection of nodes to certain level lets say level 3 and when user select multiple nodes or one, user will drag the nodes and drop it on the text-box and full path of the nodes will appear in the text-box or list-box. \r<br />\n<br />\nLet me know can I achieve this with this Tree-view. \r<br />\n<br />\nThanks,\r<br />\nAttiqe<br />\n",
+    "PostedDate": "2013-03-12T03:32:21.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

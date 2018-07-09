@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "TreeViewEx",
+      "DisplayName": "TreeViewEx"
+    },
+    "ClosedComment": "Fixed with 71244",
+    "ClosedDate": "2013-03-15T01:02:09.527-07:00",
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Thanks for selection fixing! But there are still minor issues.\nNormally selection rectangle should not cross control/window area, so you can't select items that are not shown. But here I can start selecting items, move mouse up/down crossing control area, then release mouse button, items that are not visible will also be selected.\nAnd also the scrolling speed while selecting is quite slow.",
+    "LastUpdatedDate": "2013-05-16T01:29:09.333-07:00",
+    "PlannedForRelease": "TreeViewEx 1.1",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "treeviewex",
+    "ReportedDate": "2013-02-08T10:11:03.513-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Much less important selection weirdness",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 23893
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Also another minor issue - usually mouse click on empty control area leads to selection clearance. Here you can also clear selection, by drawing selection rectangle in empty area, but click does nothing.",
+      "PostedDate": "2013-02-21T21:49:32.247-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-02-22T07:25:12.547-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I've fixed the three issues. \r\n\r\nBut I'm not sure about the scroll speed. I've increased it slightly by Setting up the scroll delta. You can experiment with the ScrollDelta/ScrollDelay fields of the AutoScroller.cs in order to suggest more appropriate values.\r\n\r\nDelay is the time between scrollrequests, Delta the offset to scroll.",
+      "PostedDate": "2013-02-22T08:03:05.33-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-03-15T01:02:09.527-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2013-05-16T01:29:09.333-07:00",
+      "Id": -2147483648
+    }
+  ]
+}
