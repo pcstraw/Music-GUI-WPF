@@ -33,7 +33,7 @@ namespace Glaxion.Music
             tool.debugWarning("Warning:  TODO: Lock fileLoader.MusicFiles before using it for searching");
             foreach (KeyValuePair<string, Song> kv in songs)
             {
-                if (kv.Value.name == searchText)
+                if (kv.Value.Name == searchText)
                     ls.Add(kv.Value);
             }
             return ls;
@@ -85,13 +85,13 @@ namespace Glaxion.Music
         {
             if (info == null)
                 return;
-            if (songs.ContainsKey(info.path))
+            if (songs.ContainsKey(info.Filepath))
                 return;
-            songs.Add(info.path, info);
+            songs.Add(info.Filepath, info);
             AddAlbum(info.Album);
             AddArtist(info.Artist);
             AddYear(info.Year);
-            AddGenre(info.Genre);
+            AddGenre(info.Genres[0]);
         }
 
         public string AddAlbum(string albumName)

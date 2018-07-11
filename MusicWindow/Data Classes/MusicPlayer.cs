@@ -402,7 +402,7 @@ namespace Glaxion.Music
         
         public bool IsPlayingTrack(string path)
         {
-            if (path == CurrentSong.path)
+            if (path == CurrentSong.Filepath)
                 return true;
             return false;
         }
@@ -439,7 +439,7 @@ namespace Glaxion.Music
             if (nextindex >= playlist.songs.Count)
                 nextindex = 0;
             
-            if (File.Exists(playlist.songs[nextindex].path))
+            if (File.Exists(playlist.songs[nextindex].Filepath))
             {
                 if (IsPlaying)
                 {
@@ -490,8 +490,8 @@ namespace Glaxion.Music
                 tool.show(2,"Playback Failed", "Song is null");
                 return false;
             }
-            string file = song.path;
-            if (!File.Exists(song.path))
+            string file = song.Filepath;
+            if (!File.Exists(song.Filepath))
             {
                 PlaybackFailedEvent(file, EventArgs.Empty);
                 //Stop();

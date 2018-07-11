@@ -1,54 +1,42 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Glaxion.Music;
 using Glaxion.Tools;
+using Glaxion.ViewModel;
 
 namespace MusicWindow
 {
     /// <summary>
     /// Interaction logic for VolumeControl.xaml
     /// </summary>
-    public partial class VolumeControl : INotifyPropertyChanged
+    public partial class VolumeControl
     {
         public VolumeControl()
         {
             InitializeComponent();
-            DataContext = this;
+            vmVolume = new VMVolume();
+            DataContext = vmVolume;
         }
 
-        MusicPlayer player;
-        public int Volume { get { return player.Volume; } set { player.SetVolume(value); VolumeAsText = value.ToString(); OnPropertyChanged(); } }
-        public string _volumeAsText;
-        public string VolumeAsText { get { return _volumeAsText; } set { _volumeAsText = value; OnPropertyChanged(); } }
+        VMVolume vmVolume;
 
         private void Loaded_Event(object sender, System.Windows.RoutedEventArgs e)
         {
-            player = MusicPlayer.Player;
-            Volume = 5;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            vmVolume.Load();
         }
 
         private void Slider_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
-            double change = e.Delta;
-            if (change < 0)
-                change = -1;
-            else
-                change = 1;
+            vmVolume.MouseWheelChange(e.Delta);
+        }
 
-            double newVal = slider.Value + change;
-            if (newVal > slider.Maximum)
-                newVal = slider.Maximum;
-            if (newVal < 0)
-                newVal = 0;
-
-            slider.Value = newVal;
+        private void slider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point pointToWindow = Mouse.GetPosition(this);
+            vmVolume.JumpToPosition(pointToWindow.X, slider.ActualWidth);
         }
     }
 }

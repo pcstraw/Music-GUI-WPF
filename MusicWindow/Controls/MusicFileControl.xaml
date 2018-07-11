@@ -17,7 +17,7 @@
         <MultiSelection:MSTreeView 
                 Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
-                Background="#FF131627" 
+                Background="#FF15161E" 
                 Grid.Row="1"
                 SelectionMode="KeyboardModifiersMode" 
                 FontSize="16" Foreground="#FFFEF8A5">
@@ -30,7 +30,7 @@
             </MultiSelection:MSTreeView.ItemContainerStyle>
             <MultiSelection:MSTreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
-                    <TextBlock Text="{Binding Name}" Margin="0,-4" Foreground="#FFF3F694"/>
+                    <TextBlock Text="{Binding Name}" Margin="0,-4" Foreground="#FFEFF1BD"/>
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>

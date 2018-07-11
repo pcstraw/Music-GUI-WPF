@@ -6,7 +6,20 @@
              xmlns:local="clr-namespace:MusicWindow"
              mc:Ignorable="d" Height="20" Width="320" Background="#FF363535" Loaded="Loaded_Event">
     <Grid>
-        <Label Content="{Binding Path = VolumeAsText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" FontSize="8" Margin="290,0,0,0" Width="30" Foreground="#FFD6D6D6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Slider x:Name="slider" Value="{Binding Path= Volume, BindsDirectlyToSource=True}" Margin="0,0,30,0" IsSnapToTickEnabled="True" Maximum="100" MouseWheel="Slider_MouseWheel"/>
+        <Label Content="{Binding Path = VolumeAsText, UpdateSourceTrigger=PropertyChanged}" 
+               HorizontalAlignment="Right" 
+               FontSize="8" 
+               Margin="290,0,0,0" 
+               Width="30" 
+               Foreground="#FFD6D6D6" 
+               HorizontalContentAlignment="Center" 
+               VerticalContentAlignment="Center"/>
+        <Slider x:Name="slider" 
+                Value="{Binding Path= SliderValue, BindsDirectlyToSource=True}" 
+                Maximum="{Binding Path=SliderMaximum, Mode=OneWay}"
+                Margin="0,0,30,0" 
+                IsSnapToTickEnabled="True" 
+                MouseWheel="Slider_MouseWheel" 
+                PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown"/>
     </Grid>
 </UserControl>

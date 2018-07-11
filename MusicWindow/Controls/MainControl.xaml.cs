@@ -28,10 +28,13 @@ namespace MusicWindow
         
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            tool.debug("Starting MusicGUI");
             SaveSettings.RestoreMainControl(this);
             Window window = Window.GetWindow(this);
             window.Closing += Window_Closing;
             playlistControl.LinkControls(fileControl);
+            tool.debug("Music GUI Loaded");
+            tool.HideConsole();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

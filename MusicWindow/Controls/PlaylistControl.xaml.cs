@@ -32,15 +32,15 @@ namespace MusicWindow
         public void LinkControls(FileControl fileControl)
         {
             //_fileControl = fileControl;
-            _playlistFilemanager = fileControl.playlistFileControl;
-            _musicFileManager = fileControl.musicFileControl;
-            _playlistFilemanager.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
-            _musicFileManager.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
+            _playlistFileControl = fileControl.playlistFileControl;
+            _musicFileControl = fileControl.musicFileControl;
+            _playlistFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
+            _musicFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
         }
 
         ObservableCollection<Playlist> Playlists;
-        PlaylistFileControl _playlistFilemanager;
-        MusicFileControl _musicFileManager;
+        PlaylistFileControl _playlistFileControl;
+        MusicFileControl _musicFileControl;
         //FileControl _fileControl;
 
         public List<string> GetPlaylistsAsFiles()
@@ -74,6 +74,7 @@ namespace MusicWindow
             return playlist;
         }
 
+        //move to view model
         private void BrowsePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
             List<string> l = tool.SelectFiles(false, true,"Select Playlist");
@@ -85,7 +86,7 @@ namespace MusicWindow
                 AddPlaylistFromFile(s);
             }
         }
-
+        //move to viewmodel
         public void AddPlaylistFromFile(string file)
         {
             Playlist p = new Playlist(file, true);
@@ -197,7 +198,7 @@ namespace MusicWindow
             TrackControl tc = new TrackControl(playlist);
             DockTrackControl(tc);
         }
-
+        //move to viewmodel
         private void RemovePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
             List<Playlist> plist = new List<Playlist>();

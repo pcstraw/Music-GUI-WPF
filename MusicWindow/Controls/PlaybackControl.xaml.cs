@@ -71,7 +71,7 @@ namespace MusicWindow
                 if (_song != value)
                 {
                     _song = value;
-                    Track = value.name;
+                    Track = value.Name;
                 }
             }
         }
@@ -124,14 +124,14 @@ namespace MusicWindow
 
         private void DoubleClick_Trackname_Label(object sender, MouseButtonEventArgs e)
         {
-            if (Song == null || !File.Exists(Song.path))
+            if (Song == null || !File.Exists(Song.Filepath))
             {
                 List<string> file = tool.SelectFiles(false, false,"Select Audio File");
                 if (file.Count == 1)
                     AddFile(file[0]);
             }
             else
-                tool.OpenFileDirectory(Song.path);
+                tool.OpenFileDirectory(Song.Filepath);
         }
 
         public void AddFile(string path)

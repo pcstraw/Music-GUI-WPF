@@ -6,6 +6,14 @@
              xmlns:local="clr-namespace:MusicWindow"
              mc:Ignorable="d" Height="19.333" Width="160" Background="#FF22688B" Loaded="Loaded_Event">
     <Grid>
-        <Slider x:Name="slider" Value="{Binding Path = TrackPosition, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding Path = TrackDuration, UpdateSourceTrigger=PropertyChanged}" Height="19" PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="slider_PreviewMouseLeftButtonUp" MouseWheel="slider_MouseWheel" Margin="5,0,5,0.333"/>
+        <Slider x:Name="slider" 
+                Value="{Binding Path = TrackPosition, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                Maximum="{Binding Path = TrackDuration, Mode =OneWay,UpdateSourceTrigger=PropertyChanged}" 
+                Height="19" 
+                IsSnapToTickEnabled="False"
+                PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown" 
+                PreviewMouseLeftButtonUp="slider_PreviewMouseLeftButtonUp" 
+                MouseWheel="slider_MouseWheel" 
+                Margin="5,0,5,0.333"/>
     </Grid>
 </UserControl>

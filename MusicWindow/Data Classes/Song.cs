@@ -34,24 +34,24 @@ namespace Glaxion.Music
 {
     public class Song
     {
-        public string path;
+        string path;
         public string Filepath { get { return path; } set { path = value; } }
-        public string genres;
-        public string Genre;
-        public string Album;
-        public string Artist;
-        public string Year;
-        public string Title;
+        public string[] Genres { get; set; }
+        //public string Genre { get { return Genres[0]; } set { Genres[0] = value; } }
+        public string Album { get; set; }
+        public string Artist { get; set; }
+        public string Year { get; set; }
+        public string Title { get; set; }
         public int trackNo;
-        public uint track;
+        public uint Track { get; set; }
         public string folderImage;
         public Image image;
-        public string name;
+        string name;
         public string Name { get { return name; } set { name = value; } }
         public string comment;
-        public IPicture[] pictures;
-        public string lyrics;
-        public string length;
+        public IPicture[] Pictures { get; set; }
+        public string Lyrics { get; set; }
+        public string Length { get; set; }
         public TagLib.File file; //Dispose
         public bool loaded;
         public bool invalid;
@@ -62,7 +62,8 @@ namespace Glaxion.Music
             Album = "Untitled";
             Artist = "Someone";
             Year = "Unknown";
-            genres = "A genre";
+            //Genre = "A genre";
+            Genres = new string[]{ "Music Genre" };
             loaded = false;
             invalid = false;
             path = filePath;
@@ -148,13 +149,13 @@ namespace Glaxion.Music
 
                     Album = file.Tag.Album;
                     Artist = file.Tag.FirstAlbumArtist;
-                    track = file.Tag.Track;
-                    lyrics = file.Tag.Lyrics;
-                    pictures = file.Tag.Pictures;
+                    Track = file.Tag.Track;
+                    Lyrics = file.Tag.Lyrics;
+                    Pictures = file.Tag.Pictures;
                     Year = file.Tag.Year.ToString();
-                    length = file.Length.ToString();
-                    if (!string.IsNullOrEmpty(file.Tag.FirstGenre))
-                        genres = file.Tag.FirstGenre; //genre loading appers tp be broken
+                    Length = file.Length.ToString();
+                    if (file.Tag.Genres.Length>0)
+                        Genres = file.Tag.Genres; //genre loading appers tp be broken
                     if (!string.IsNullOrEmpty(file.Tag.Title) && !string.IsNullOrWhiteSpace(file.Tag.Title))
                         Title = file.Tag.Title;
                     LoadAlbumArt();
@@ -196,9 +197,9 @@ namespace Glaxion.Music
                 return;
 
             image = null;
-            if (pictures.Length > 0)
+            if (Pictures.Length > 0)
             {
-                byte[] bytes = pictures[0].Data.Data;
+                byte[] bytes = Pictures[0].Data.Data;
                 ImageConverter ic = new ImageConverter();
                 image = (Image)ic.ConvertFrom(bytes);
             }
@@ -245,8 +246,8 @@ namespace Glaxion.Music
         public void SetGenre(string text)
         {
             List<string> gen = file.Tag.Genres.ToList();
-            gen.Clear(); //force the array to reset
-            gen.Add(text);
+            //gen.Clear(); //force the array to reset
+            gen.Insert(0,text);
             file.Tag.Genres = gen.ToArray();
             //genres = text;
         }

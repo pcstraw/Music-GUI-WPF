@@ -26,9 +26,7 @@ namespace MusicWindow
             PreviewMouseLeftButtonDown += ListViewEx_PreviewMouseLeftButtonDown;
             PreviewMouseMove += ListViewEx_PreviewMouseMove;
         }
-
-
-
+        
         Point _startPoint;
         public DragAdorner _adorner;
         private AdornerLayer _layer;
@@ -76,9 +74,7 @@ namespace MusicWindow
 
             foreach( var t in items)
                 temp.Add((T)t);
-
             
-
             int updatedIndex = list.IndexOf((T)insertion);
             if(updatedIndex <0)
             {

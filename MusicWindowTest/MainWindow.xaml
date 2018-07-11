@@ -7,6 +7,4 @@
         xmlns:MusicWindow="clr-namespace:MusicWindow;assembly=MusicWindow" xmlns:Custom="http://schemas.devzest.com/presentation/docking" x:Class="MusicWindowTest.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Width="768" Height="535" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}">
-    <MusicWindow:MainControl Margin="0"/>
-
 </Window>

@@ -235,7 +235,7 @@ namespace Glaxion.Music
             List<string> l = new List<string>(songs.Count);
             foreach(Song s in songs)
             {
-                l.Add(s.path);
+                l.Add(s.Filepath);
             }
             return l;
         }
@@ -311,9 +311,9 @@ namespace Glaxion.Music
                 //need to remove illegal characters
                 if (songs[i] == null)
                     continue;
-                if (File.Exists(songs[i].path))
+                if (File.Exists(songs[i].Filepath))
                     continue;
-                string t = songs[i].name;
+                string t = songs[i].Name;
                 Song s = SongInfo.Instance.SearchForFile(t);
                 if (s == null)
                     continue;

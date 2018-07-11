@@ -9,7 +9,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <local:ListViewEx x:Name="listView" Grid.Column="0" Background="#FFA5E0F6" Margin="0">
+        <local:ListViewEx x:Name="listView" Grid.Column="0" Background="#FFC4E5F1" Margin="0" BorderBrush="{x:Null}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" 

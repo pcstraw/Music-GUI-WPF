@@ -22,7 +22,18 @@
             <Button Template="{StaticResource RoundButton}" Content="R" VerticalAlignment="Top" Height="25" Background="#FFF3AC7B" Grid.Column="2" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Remember Current Playlist And Close"/>
             <Button Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="3" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close Playlist Without Saving" Click="Button_Click"/>
         </Grid>
-        <Label x:Name="playlistNameLabel" Content="Double Click to Select Playlist" Height="31" VerticalAlignment="Top" DockPanel.Dock="Top" MouseDoubleClick="PlaylistnameLabel_DoubleClick" Background="#FFF1F3DC" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="Black" FontWeight="Bold" FontFamily="Verdana"/>
+        <Label x:Name="playlistNameLabel" 
+               Content="Double Click to Select Playlist" 
+               Height="31" 
+               VerticalAlignment="Top" 
+               DockPanel.Dock="Top" 
+               MouseDoubleClick="PlaylistnameLabel_DoubleClick" 
+               Background="#FFF1F3DC" 
+               HorizontalContentAlignment="Center" 
+               VerticalContentAlignment="Center" 
+               Foreground="Black" 
+               FontWeight="Bold" 
+               FontFamily="Verdana"/>
         <TextBox TextWrapping="Wrap" 
                  Text="Search &lt;Not Implemented&gt;" 
                  Height="24" 
@@ -42,17 +53,24 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Width="200">
-                        <GridViewColumnHeader HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Content="Name"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" 
+                                    Width="200">
+                        <GridViewColumnHeader HorizontalContentAlignment="Left" 
+                                              HorizontalAlignment="Stretch" 
+                                              Content="Name"/>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Filepath}">
-                        <GridViewColumnHeader HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="FilePath" Width="500"/>
+                        <GridViewColumnHeader HorizontalAlignment="Left" 
+                                              HorizontalContentAlignment="Left" 
+                                              Content="FilePath" 
+                                              Width="500"/>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="Item_MouseDoubleClick" />
+                    <EventSetter Event="MouseDoubleClick" 
+                                 Handler="Item_MouseDoubleClick" />
                 </Style>
             </ListView.ItemContainerStyle>
         </local:ListViewEx>

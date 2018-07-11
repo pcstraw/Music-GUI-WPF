@@ -42,7 +42,7 @@ namespace MusicWindow
             propertyControl2.SetEntryValue(s.Artist);
             propertyControl3.SetEntryValue(s.Album);
             propertyControl4.SetEntryValue(s.Year);
-            propertyControl5.SetEntryValue(s.Genre);
+            propertyControl5.SetEntryValue(s.Genres[0]);
         }
         
         private void Player_TrackChangeEvent(object sender, EventArgs args)
