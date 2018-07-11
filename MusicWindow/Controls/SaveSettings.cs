@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Glaxion.ViewModel;
 
 namespace MusicWindow
 {
@@ -57,7 +58,7 @@ namespace MusicWindow
         public static void StorePlaylistControl(PlaylistControl playlistControl)
         {
             Properties.Settings.Default.ManagedPlaylists.Clear();
-            List<string> plist = playlistControl.GetPlaylistsAsFiles();
+            List<string> plist = playlistControl.viewModel.GetPlaylistsAsFiles();
             foreach (string s in plist)
                 Properties.Settings.Default.ManagedPlaylists.Add(s);
         }
@@ -95,7 +96,7 @@ namespace MusicWindow
         public static void RestorePlaylistControl(PlaylistControl playlistControl)
         {
             foreach (string s in Properties.Settings.Default.ManagedPlaylists)
-                playlistControl.AddPlaylistFromFile(s);
+                playlistControl.viewModel.AddPlaylistFromFile(s);
         }
 
         public static void RestoreCurrentSong(MusicPlayer player,SongInfo fileLoader)

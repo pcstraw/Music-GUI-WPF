@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Glaxion.Music;
 using Glaxion.Tools;
+using Glaxion.ViewModel;
 
 namespace MusicWindow
 {
@@ -18,31 +19,32 @@ namespace MusicWindow
         public PlaylistControl()
         {
             InitializeComponent();
-            Playlists = new ObservableCollection<Playlist>();
-            DataContext = this;
-            listView.ItemsSource = Playlists;
+            // playlistManager = new VMPlaylistManager();
+            // Playlists = new ObservableCollection<Playlist>();
+            viewModel = new VMPlaylistManager();
+            DataContext = viewModel;
+            listView.ItemsSource = viewModel.Playlists;
         }
 
-        private void Manager_OpenPlaylist(object sender, EventArgs args)
-        {
-            if(sender is string)
-                AddPlaylistFromFile(sender as string);
-        }
+        internal VMPlaylistManager viewModel;
+        internal List<TrackControl> trackControls = new List<TrackControl>();
+
 
         public void LinkControls(FileControl fileControl)
         {
+            viewModel.LinkFileManagers(fileControl.playlistFileControl.ViewModel,fileControl.musicFileControl.ViewModel);
             //_fileControl = fileControl;
-            _playlistFileControl = fileControl.playlistFileControl;
-            _musicFileControl = fileControl.musicFileControl;
-            _playlistFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
-            _musicFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
+           // _playlistFileControl = fileControl.playlistFileControl;
+            //_musicFileControl = fileControl.musicFileControl;
+            //_playlistFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
+           // _musicFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
         }
 
-        ObservableCollection<Playlist> Playlists;
-        PlaylistFileControl _playlistFileControl;
-        MusicFileControl _musicFileControl;
+       // ObservableCollection<Playlist> Playlists;
+       // PlaylistFileControl _playlistFileControl;
+        //MusicFileControl _musicFileControl;
         //FileControl _fileControl;
-
+        /*
         public List<string> GetPlaylistsAsFiles()
         {
             List<string> plist = new List<string>();
@@ -50,7 +52,7 @@ namespace MusicWindow
                 plist.Add(p.Filepath);
             return plist;
         }
-
+        */
         public Playlist DockPlaylist(Playlist playlist)
         {
             ColumnDefinition c = new ColumnDefinition();
@@ -77,21 +79,7 @@ namespace MusicWindow
         //move to view model
         private void BrowsePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            List<string> l = tool.SelectFiles(false, true,"Select Playlist");
-
-            if (l.Count == 0)
-                return;
-            foreach(string s in l)
-            {
-                AddPlaylistFromFile(s);
-            }
-        }
-        //move to viewmodel
-        public void AddPlaylistFromFile(string file)
-        {
-            Playlist p = new Playlist(file, true);
-            if(!p.failed)
-                Playlists.Add(p);
+            viewModel.BrowsePlaylistDialog();
         }
 
         private void Item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -108,8 +96,7 @@ namespace MusicWindow
                 AddDockColumn(p);
             }
         }
-        internal List<TrackControl> trackControls = new List<TrackControl>();
-
+        
         internal void DockTrackControl(TrackControl tc)
         {
             //if one of the docked controls has been resized then we need to reset the default
@@ -201,12 +188,7 @@ namespace MusicWindow
         //move to viewmodel
         private void RemovePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            List<Playlist> plist = new List<Playlist>();
-            foreach(Playlist item in listView.SelectedItems)
-                plist.Add(item);
-
-            foreach(Playlist p in plist)
-                Playlists.Remove(p);
+            viewModel.RemoveSelectedPlaylists(listView.SelectedItems);
         }
     }
 }
