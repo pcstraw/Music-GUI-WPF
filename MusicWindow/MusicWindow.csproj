@@ -92,8 +92,10 @@
       <DependentUpon>MainControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SaveSettings.cs" />
-    <Compile Include="Data Classes\VMPlaylistManager.cs" />
+    <Compile Include="ViewModel\VMPlaylistManager.cs" />
     <Compile Include="ViewModel\VMDuration.cs" />
+    <Compile Include="ViewModel\VMSongInfo.cs" />
+    <Compile Include="ViewModel\VMTrackManager.cs" />
     <Compile Include="ViewModel\VMVolume.cs" />
     <Compile Include="TestControl1.xaml.cs">
       <DependentUpon>TestControl1.xaml</DependentUpon>

@@ -102,7 +102,7 @@ namespace Glaxion.Music
         public int trackbarValue;
         private int prevVolume;
         public int Volume;
-        public Playlist playlist;
+        public Playlist currentList;
        // private FileLoader fileLoader;
         public System.Windows.Forms.Timer timer; //dispose
         public static Color PlayColor = Color.Aquamarine;
@@ -269,7 +269,7 @@ namespace Glaxion.Music
             if (index > p.songs.Count)
                 index = p.songs.Count - 1;
 
-            playlist = p;
+            currentList = p;
             currentTrack = index;
             p.trackIndex = currentTrack;
             MusicUpdatedEvent(p, EventArgs.Empty);
@@ -319,25 +319,17 @@ namespace Glaxion.Music
             }
         }
 
-        public bool PlayPlaylist(Playlist p,int index)
+        public bool PlayPlaylist(Playlist playlist,Song song)
         {
-            if (p == null)
+            if (playlist == null)
                 return false;
-            
-            p.trackIndex = index;
-            
-            if (index < 0)
-                index = 0;
-            if (index >= p.songs.Count)
-                index = p.songs.Count - 1;
-            
-            if (p != playlist)
+
+            if (currentList != playlist)
             {
-                playlist = p;
-                MusicUpdatedEvent(p, EventArgs.Empty);
+                currentList = playlist;
+                MusicUpdatedEvent(playlist, EventArgs.Empty);
             }
-            Song next = playlist.songs[index];
-            return Play(next);
+            return Play(song);
         }
         
         public bool Mute()
@@ -432,18 +424,18 @@ namespace Glaxion.Music
         
         public void NextTrack()
         {
-            if (playlist == null)
+            if (currentList == null)
                 return;
 
             int nextindex = currentTrack + 1;
-            if (nextindex >= playlist.songs.Count)
+            if (nextindex >= currentList.songs.Count)
                 nextindex = 0;
             
-            if (File.Exists(playlist.songs[nextindex].Filepath))
+            if (File.Exists(currentList.songs[nextindex].Filepath))
             {
                 if (IsPlaying)
                 {
-                    Song next = playlist.songs[nextindex];
+                    Song next = currentList.songs[nextindex];
                     Play(next);
                     return;
                 }
@@ -458,15 +450,15 @@ namespace Glaxion.Music
 
         public void PrevTrack()
         {
-            if (playlist == null)
+            if (currentList == null)
                 return;
 
             int nextindex = currentTrack-1;
             if (nextindex < 0)
-                nextindex = playlist.songs.Count-1;
+                nextindex = currentList.songs.Count-1;
             if (IsPlaying)
             {
-                 Song next = playlist.songs[nextindex];
+                 Song next = currentList.songs[nextindex];
                  Play(next);
             }
             else
@@ -519,7 +511,7 @@ namespace Glaxion.Music
                 TrackChangeEvent(index, EventArgs.Empty);
             }
             */
-
+            currentTrack = currentList.songs.IndexOf(song);
             CurrentSong = song;
             PlayEvent(song, EventArgs.Empty);
             return true;

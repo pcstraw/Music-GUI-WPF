@@ -3,9 +3,6 @@ using Glaxion.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Glaxion.ViewModel
 {
@@ -63,7 +60,7 @@ namespace Glaxion.ViewModel
 
         public void RemoveSelectedPlaylists(System.Collections.IList range)
         {
-            List<Playlist> plist = new List<Playlist>();
+            List<Playlist> plist = new List<Playlist>(range.Count);
             foreach (Playlist item in range)
                 plist.Add(item);
 

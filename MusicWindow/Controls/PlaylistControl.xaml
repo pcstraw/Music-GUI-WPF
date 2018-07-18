@@ -39,8 +39,6 @@
                     <EventSetter Event="MouseDoubleClick" Handler="Item_MouseDoubleClick" />
                 </Style>
             </ListView.ItemContainerStyle>
-
         </local:ListViewEx>
     </Grid>
-
 </UserControl>

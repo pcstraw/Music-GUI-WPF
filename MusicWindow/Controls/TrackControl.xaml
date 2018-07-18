@@ -23,7 +23,7 @@
             <Button Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="3" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close Playlist Without Saving" Click="Button_Click"/>
         </Grid>
         <Label x:Name="playlistNameLabel" 
-               Content="Double Click to Select Playlist" 
+               Content= "{Binding PlaylistNameLabel}"
                Height="31" 
                VerticalAlignment="Top" 
                DockPanel.Dock="Top" 
@@ -49,6 +49,7 @@
             Background="#FFF1F3DC" 
             Foreground="Black" 
             GridViewColumnHeader.Click="DelesctAll_Click"
+            ItemsSource="{Binding  viewModel.Songs}"
             SelectionMode="Multiple">
 
             <ListView.View>

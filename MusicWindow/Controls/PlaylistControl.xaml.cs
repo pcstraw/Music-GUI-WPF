@@ -53,6 +53,7 @@ namespace MusicWindow
             return plist;
         }
         */
+        //dep
         public Playlist DockPlaylist(Playlist playlist)
         {
             ColumnDefinition c = new ColumnDefinition();
@@ -102,11 +103,7 @@ namespace MusicWindow
             //if one of the docked controls has been resized then we need to reset the default
             //column back to star, otherwise newly docked controls will be super narrow
             maingrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-            //set trackcontrol size behaviour
-            tc.VerticalAlignment = VerticalAlignment.Stretch;
-            tc.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tc.Width = Double.NaN;
-            tc.Height = Double.NaN;
+            
             //create grid splitter
             GridSplitter gs = new GridSplitter();
             gs.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
@@ -125,6 +122,11 @@ namespace MusicWindow
             //the splitter's column comes first
             tc.SplitterIndex = maingrid.ColumnDefinitions.Count;
             maingrid.ColumnDefinitions.Add(splitterColumn);
+            //set trackcontrol size behaviour
+            tc.VerticalAlignment = VerticalAlignment.Stretch;
+            tc.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tc.Width = Double.NaN;
+            tc.Height = Double.NaN;
             //column for the track control itself
             ColumnDefinition subcolumn = new ColumnDefinition();
             //As above, use the column.def count as the index
@@ -158,6 +160,7 @@ namespace MusicWindow
         internal void RemoveFromPlaylistControl(TrackControl trackControl)
         {
             //reorder the controls if the removed control is not last in order
+            List<TrackControl> reorderedControls = new List<TrackControl>();
             for (int i = 0; i < trackControls.Count; i++)
             {
                 TrackControl tc = trackControls[i];
@@ -167,16 +170,15 @@ namespace MusicWindow
                     {
                         tc.ColumnIndex -= 2;
                         tc.SplitterIndex -= 2;
+                        reorderedControls.Add(tc);
                     }
                 }
             }
-            trackControl.ClearDockingControls();
+            trackControl.UndockControlFromParent();
             trackControls.Remove(trackControl);
-            trackControl.playlistControlParent = null;
-            foreach (TrackControl tc in trackControls)
+            foreach (TrackControl tc in reorderedControls)
             {
-                if (tc != trackControl)
-                    SetColumnsPosition(tc);
+                SetColumnsPosition(tc);
             }
         }
 

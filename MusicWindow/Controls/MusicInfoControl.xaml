@@ -11,7 +11,7 @@
             <local:PropertyControl x:Name="propertyControl2" HorizontalAlignment="Left"  Width="Auto" Height="80"/>
             <local:PropertyControl x:Name="propertyControl3" HorizontalAlignment="Left"  Width="Auto" Height="80"/>
             <local:PropertyControl x:Name="propertyControl4" HorizontalAlignment="Left"  Width="Auto" Height="80"/>
-            <local:PropertyControl x:Name="propertyControl5" HorizontalAlignment="Left"  Width="Auto" Height="80"/>
+            <local:PropertyControl x:Name="propertyControl5"  Width="Auto" Height="80" HorizontalAlignment="Left"/>
         </StackPanel>
     </Viewbox>
 </UserControl>
