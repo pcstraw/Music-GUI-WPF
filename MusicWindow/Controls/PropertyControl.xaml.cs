@@ -24,31 +24,16 @@ namespace MusicWindow
         {
             InitializeComponent();
         }
-        
-        public void SetEntry(string entryName,string entryValue)
-        {
-            propertyLabel.Content = entryName;
-            textBox.Text = entryValue;
-        }
 
-        public void SetLabel(string LabelName)
+        public TextBox textBox
         {
-            propertyLabel.Content = LabelName;
+            get { return _textBox; }
+            set { _textBox = value; }
         }
-
-        public void SetEntryValue(string entryValue)
+        public Label propertyLabel
         {
-            textBox.Text = entryValue;
-        }
-
-        public string GetLabel()
-        {
-            return propertyLabel.Content.ToString();
-        }
-
-        public string GetValue()
-        {
-            return textBox.Text;
+            get { return _propertyLabel; }
+            set { _propertyLabel = value; }
         }
     }
 }

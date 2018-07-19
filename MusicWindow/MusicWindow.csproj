@@ -177,6 +177,9 @@
     <Page Include="Controls\MainControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TestControl1.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -209,11 +212,6 @@
       <Project>{20d00bca-1981-4a2f-815b-79f05edf6277}</Project>
       <Name>MultiSelectionTreeView</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Controls\music_gui_logo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

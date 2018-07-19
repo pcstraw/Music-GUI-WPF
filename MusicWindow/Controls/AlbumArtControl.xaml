@@ -7,14 +7,50 @@
              mc:Ignorable="d" Loaded="UserControl_Loaded" Background="Black" Height="320" Width="400">
 
     <Grid x:Name="mainGrid">
+        <Grid.Resources>
+            <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="7*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="ImageBox" Margin="0" OpacityMask="Black" Source="music_gui_logo.png" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp"/>
-        <Viewbox>
-            <Label PreviewMouseLeftButtonUp="Viewbox_PreviewMouseLeftButtonUp" Name="titleLabel" Content="Track Name" Foreground="White" FontSize="22" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Top" Width="Auto" Height="39"/>
-        </Viewbox>
+        <Image x:Name="ImageBox" Margin="0" Source="music_gui_logo.png" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp" OpacityMask="Black"/>
+        <DockPanel HorizontalAlignment="Center">
+            <Viewbox HorizontalAlignment="Center" OpacityMask="#FFFFCE17">
+                <Label PreviewMouseLeftButtonUp="Viewbox_PreviewMouseLeftButtonUp" 
+                       x:Name="titleLabel" 
+                       Content="Track Name" 
+                       Foreground="White" 
+                       FontSize="22" 
+                       VerticalContentAlignment="Center" 
+                       HorizontalContentAlignment="Center"
+                       Margin="0" 
+                       VerticalAlignment="Top" 
+                       HorizontalAlignment="Center"
+                       Width="Auto" 
+                       Height="39"/>
+            </Viewbox>
+        </DockPanel>
+        <Button x:Name="discardTagButton"
+            Template="{StaticResource RoundButton}"  
+                HorizontalAlignment="Right" 
+                Content="D" 
+                ToolTip="Discard tags and revert"
+                Background="#FFF3AC7B"
+                PreviewMouseLeftButtonUp="discardTagButton_PreviewMouseLeftButtonUp"
+                Width="25" 
+                Height="25" VerticalAlignment="Top">
+        </Button>
+        <Button x:Name="updateTagButton"
+            Template="{StaticResource RoundButton}"  
+                HorizontalAlignment="Right" 
+                Content="S" 
+                ToolTip="Save Tags to adio file"
+                Background="#FFBCE495"
+                Width="25" 
+                PreviewMouseLeftButtonUp="updateTagButton_PreviewMouseLeftButtonUp"
+                Height="25" VerticalAlignment="Top" Margin="0,0,25,0">
+        </Button>
         <local:MusicInfoControl x:Name="infoControl" Width="Auto" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden"/>
     </Grid>
 </UserControl>

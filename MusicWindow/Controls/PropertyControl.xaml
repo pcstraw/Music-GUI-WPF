@@ -10,14 +10,14 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Label x:Name="propertyLabel" 
+        <Label x:Name="_propertyLabel" 
                Content="Property Name" 
                Margin="0" 
                Background="{x:Null}" 
                HorizontalContentAlignment="Center" 
                VerticalContentAlignment="Center" 
                FontSize="36" Foreground="White" Width="320" HorizontalAlignment="Right"/>
-        <TextBox x:Name="textBox" 
+        <TextBox x:Name="_textBox" 
                 Grid.Column="1" 
                 Margin="0" 
                 Text="TextBox" 

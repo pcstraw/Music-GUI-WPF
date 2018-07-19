@@ -1024,7 +1024,8 @@ namespace Glaxion.Tools
             string dir = Path.GetDirectoryName(path);
             if (!Path.HasExtension(path))
                 dir = path;
-
+            if (!Directory.Exists(dir))
+                return null;
             IEnumerable<string> list = Directory.EnumerateFiles(dir, "*.jpg", SearchOption.TopDirectoryOnly);
             foreach (string s in list)
             {

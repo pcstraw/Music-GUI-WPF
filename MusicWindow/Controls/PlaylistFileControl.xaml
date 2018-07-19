@@ -11,13 +11,20 @@
         <Grid.Resources>
             <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
         </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <MultiSelection:MSTreeView 
                 Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
-                Margin="0,23,0,0" 
                 Background="#FFFFE6D2" 
-                SelectionMode="KeyboardModifiersMode" 
-                FontSize="16">
+                SelectionMode="KeyboardModifiersMode"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Height="Auto"
+                Width="Auto"
+                Grid.Row="1">
             <MultiSelection:MSTreeView.ItemContainerStyle>
                 <Style TargetType="MultiSelection:MSTreeViewItem" 
                        BasedOn="{StaticResource FileTreeStyle}">
@@ -27,7 +34,7 @@
             </MultiSelection:MSTreeView.ItemContainerStyle>
             <MultiSelection:MSTreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
-                    <TextBlock Text="{Binding Name}" Margin="0,-4"/>
+                    <TextBlock Text="{Binding Name}"/>
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>
@@ -40,6 +47,6 @@
                 </ContextMenu>
             </MultiSelection:MSTreeView.ContextMenu>
         </MultiSelection:MSTreeView>
-        <TextBox Height="23" TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;" VerticalAlignment="Top"/>
+        <TextBox Height="20" TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>

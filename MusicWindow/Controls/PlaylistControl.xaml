@@ -5,11 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
              mc:Ignorable="d" MinWidth="2" Height="160" Width="300">
-    <Grid x:Name="maingrid" Background="#FFFE6161">
+    <Grid x:Name="maingrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <local:ListViewEx x:Name="listView" Grid.Column="0" Background="#FFC4E5F1" Margin="0" BorderBrush="{x:Null}">
+        <local:ListViewEx x:Name="listView" 
+                          Grid.Column="0" 
+                          Background="#FFC4E5F1" 
+                          Margin="0" 
+                          Padding="0"
+                          BorderBrush="{x:Null}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" 

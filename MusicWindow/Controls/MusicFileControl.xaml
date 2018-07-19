@@ -20,7 +20,7 @@
                 Background="#FFF9F8D0" 
                 Grid.Row="1"
                 SelectionMode="KeyboardModifiersMode" 
-                FontSize="16" Foreground="#FFFFA51B">
+                Foreground="#FFFFA51B">
             <MultiSelection:MSTreeView.ItemContainerStyle>
                 <Style TargetType="MultiSelection:MSTreeViewItem" 
                        BasedOn="{StaticResource FileTreeStyle}">
@@ -30,7 +30,11 @@
             </MultiSelection:MSTreeView.ItemContainerStyle>
             <MultiSelection:MSTreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
-                    <TextBlock Text="{Binding Name}" Margin="0,-4" Foreground="Black"/>
+                    <TextBlock 
+                        Text="{Binding Name}"
+                        VerticalAlignment="Center" 
+                        Margin="0,-4,0,0"
+                        Foreground="#FF000400"/>
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>
