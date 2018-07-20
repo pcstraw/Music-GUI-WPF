@@ -124,8 +124,22 @@ namespace Glaxion.Music
         public event PlaybackFailedEventHandler PlaybackFailedEvent;
         protected void On_PlaybackFailed(object sender, EventArgs e)
         {
-            tool.debugError("Playback Failed event is being called twice");
-            return;
+            tool.debugError("Playback Failed");
+            if (!(sender is Song))
+                return;
+            Song s = sender as Song;
+            tool.debugError("Unable to plya file: ",s.Filepath);
+            if (IsPlaying)
+            {
+                int nextIndex = currentList.songs.IndexOf(s);
+                if (nextIndex > -1 && nextIndex < currentList.songs.Count)
+                {
+                    Song next_song = currentList.songs[nextIndex + 1];
+                    Play(next_song);
+                }
+                else
+                    NextTrack();
+            }
         }
 
         public delegate void PlayEventHandler(object sender, EventArgs args);

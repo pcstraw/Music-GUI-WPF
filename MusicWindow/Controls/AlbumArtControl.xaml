@@ -14,7 +14,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="7*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="ImageBox" Margin="0" Source="music_gui_logo.png" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp" OpacityMask="Black"/>
+        <Image x:Name="ImageBox" Margin="0" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp" OpacityMask="Black"/>
         <DockPanel HorizontalAlignment="Center">
             <Viewbox HorizontalAlignment="Center" OpacityMask="#FFFFCE17">
                 <Label PreviewMouseLeftButtonUp="Viewbox_PreviewMouseLeftButtonUp" 

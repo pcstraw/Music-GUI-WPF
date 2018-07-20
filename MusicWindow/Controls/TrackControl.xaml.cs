@@ -134,6 +134,18 @@ namespace MusicWindow
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Close();
+            viewModel.CurrentList.ReadFile();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            viewModel.CurrentList.Save();
+          //  Close();
         }
     }
 }

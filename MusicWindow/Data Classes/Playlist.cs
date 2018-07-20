@@ -138,12 +138,14 @@ namespace Glaxion.Music
 
         private void GetSongs(List<string> tracks)
         {
-            songs.Clear();
+            songs = null;
+            ObservableCollection<Song> sl = new ObservableCollection<Song>();
             foreach(string s in tracks)
             {
                 Song song = SongInfo.Instance.GetInfo(s);
-                songs.Add(song);
+                sl.Add(song);
             }
+            songs = sl;
         }
 
         public void ReadFile()

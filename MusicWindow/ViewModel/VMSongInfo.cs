@@ -86,11 +86,11 @@ namespace Glaxion.ViewModel
 
         public void ReloadTags()
         {
-            _song.Reload();
+             _song.Reload();
             SetSong(_song);
         }
 
-        public bool SaveTags()
+        public void SaveTags()
         {
             //we can move these checks to the set methods(for strings at least)
             if (_song.Title != Title)
@@ -105,9 +105,26 @@ namespace Glaxion.ViewModel
                 _song.SetGenre(Genre);
             if (_song.image != Picture)
                 _song.SetPictureFromImage(Picture);
-            if(_song.SaveInfo())
-                SetSong(_song);
-            return true;
+
+            if (_song.SaveInfo())
+                ReloadAsync();
+        }
+
+        //call reload on song asynchronusly and wait
+        //for the thread pool to finish loading
+        public void ReloadAsync()
+        {
+            Task.Run(() => WaitForReload()).ConfigureAwait(false);
+        }
+        void WaitForReload()
+        {
+            _song.Reload();
+            //wait until the song has loaded
+            while (!_song.loaded)
+            { }
+            //is this check relevant? Better to stay safe
+            if(!_song.invalid)
+            SetSong(_song);
         }
     }
 }

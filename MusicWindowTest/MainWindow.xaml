@@ -8,4 +8,5 @@
         mc:Ignorable="d"
         Title="MainWindow" Width="768" Height="535" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}">
     <MusicWindow:MainControl/>
+
 </Window>

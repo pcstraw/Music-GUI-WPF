@@ -85,8 +85,6 @@ namespace MusicWindow
         {
             InitializeComponent();
             hideArt = false;
-            Song s = new Song("Track Name");
-            s.LoadAlbumArt();
             var binding = new Binding();
             binding.Mode = BindingMode.TwoWay;
             binding.Source = infoControl.viewModel;
@@ -102,8 +100,7 @@ namespace MusicWindow
             //labelbinding.Path = new PropertyPath("Title");
             titleLabel.DataContext = infoControl.viewModel;
             titleLabel.SetBinding(Label.ContentProperty, "Title");
-            infoControl.viewModel.SetSong(s);
-
+           
             var visibilityBind = new Binding();
             visibilityBind.Mode = BindingMode.OneWay;
             visibilityBind.Source = infoControl;
@@ -125,7 +122,13 @@ namespace MusicWindow
         
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            MusicPlayer.Player.TrackChangeEvent += Player_TrackChangeEvent;
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                MusicPlayer.Player.TrackChangeEvent += Player_TrackChangeEvent;
+                Song s = new Song("Track Name");
+                s.LoadAlbumArt();
+                infoControl.viewModel.SetSong(s);
+            }
             //ImageBox.Source = new BitmapImage(new Uri("music_gui_logo.png", UriKind.Relative));
         }
 

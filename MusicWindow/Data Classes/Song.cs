@@ -6,6 +6,7 @@ using System.IO;
 using Glaxion.Tools;
 using System.Drawing;
 using TagLib;
+using System.Threading;
 
 //id3 info class example
 //https://www.codeproject.com/Articles/17890/Do-Anything-With-ID
@@ -34,6 +35,12 @@ namespace Glaxion.Music
 {
     public class Song
     {
+        class ThreadInfo
+        {
+            public string Filepath { get; set; }
+            public TagLib.File File { get; set; }
+            public Song song { get; set; }
+        }
         string path;
         public string Filepath { get { return path; } set { path = value; } }
         public string[] Genres { get; set; }
@@ -141,46 +148,70 @@ namespace Glaxion.Music
             file.GetTag(TagTypes.AllTags);
         }
 
-        public bool ReadID3Info()
+        /*
+        public void ReadID3Async()
+        {
+            Task.Run(() => ReadID3Info()).ConfigureAwait(false);
+        }
+        */
+        
+        void CreateFileAsync()
+        {
+            //send the process file task to a threadpool
+            ThreadPool.QueueUserWorkItem( new WaitCallback(ProcessFile),null);
+        }
+
+        private void ProcessFile(object a)
+        {
+            //ThreadInfo ti = a as ThreadInfo;
+            //ti.File = TagLib.File.Create(ti.Filepath);
+            Title = Path.GetFileNameWithoutExtension(path);
+            try
+            {
+                file = TagLib.File.Create(path);
+                file.GetTag(TagTypes.AllTags);
+
+                Album = file.Tag.Album;
+                Artist = file.Tag.FirstAlbumArtist;
+                Track = file.Tag.Track;
+                Lyrics = file.Tag.Lyrics;
+                Pictures = file.Tag.Pictures;
+                Year = file.Tag.Year.ToString();
+                Length = file.Length.ToString();
+                if (file.Tag.Genres.Length > 0)
+                    Genres = file.Tag.Genres; //genre loading appers tp be broken
+                if (!string.IsNullOrEmpty(file.Tag.Title) && !string.IsNullOrWhiteSpace(file.Tag.Title))
+                    Title = file.Tag.Title;
+
+                LoadAlbumArt();
+                dirty = false;
+                invalid = false;
+            }
+            catch (Exception e)
+            {
+                TagLoadingLog.Add(string.Concat("--> Failed to Get All Tags: \n", e.Message, "\n", path));
+                invalid = true;
+            }
+            finally
+            {
+                //investigate:  we dispose of the taglib file here 
+                //but in the save function we don't reopen it
+                if (file != null) file.Dispose();
+            }
+            loaded = true;
+        }
+
+        public void ReadID3Info()
         {
             if (loaded)
-                return true;
+                return;
             if (tool.IsAudioFile(path))
             {
-               Title = Path.GetFileNameWithoutExtension(path);
-               try
-               {
-                    file = TagLib.File.Create(path);
-                    file.GetTag(TagTypes.AllTags);
-
-                    Album = file.Tag.Album;
-                    Artist = file.Tag.FirstAlbumArtist;
-                    Track = file.Tag.Track;
-                    Lyrics = file.Tag.Lyrics;
-                    Pictures = file.Tag.Pictures;
-                    Year = file.Tag.Year.ToString();
-                    Length = file.Length.ToString();
-                    if (file.Tag.Genres.Length>0)
-                        Genres = file.Tag.Genres; //genre loading appers tp be broken
-                    if (!string.IsNullOrEmpty(file.Tag.Title) && !string.IsNullOrWhiteSpace(file.Tag.Title))
-                        Title = file.Tag.Title;
-                    LoadAlbumArt();
-                    dirty = false;
-                    return loaded = true;
-                }
-                catch (Exception e)
-                {
-                    TagLoadingLog.Add(string.Concat("--> Failed to Get All Tags: \n", e.Message, "\n", path));
+                if (System.IO.File.Exists(Filepath))
+                    CreateFileAsync();
+                else
                     invalid = true;
-                    return loaded = false;
-                }
-                finally
-                {
-                    if (file != null) file.Dispose();
-                }
             }
-            invalid = true;
-            return false;
         }
 
         public string GetFolderImage()
@@ -195,20 +226,18 @@ namespace Glaxion.Music
                 LoadAlbumArt();
             });
         }
-
+        
         //using streamn method for getting image byte[]
         //https://stackoverflow.com/questions/3801275/how-to-convert-image-to-byte-array/16576471#16576471
         public void LoadAlbumArt()
         {
-            if (loaded)
-                return;
-
             image = null;
-            if (Pictures != null && Pictures.Length > 0)
+            if (loaded && Pictures != null && Pictures.Length > 0)
             {
                 byte[] bytes = Pictures[0].Data.Data;
                 ImageConverter ic = new ImageConverter();
                 image = (Image)ic.ConvertFrom(bytes);
+                return;
             }
 
             string pic = GetFolderImage();
@@ -222,6 +251,9 @@ namespace Glaxion.Music
         {
             try
             {
+                //investigate:  see comment in process file
+                //how come we don't need to create a new file
+                //even though we disposed of it in ProcessFile()
                 file.Save();
             }
             catch(Exception e)
@@ -229,7 +261,6 @@ namespace Glaxion.Music
                 TagLoadingLog.Add(e.Message);
                 return false;
             }
-            Reload();
             return true;
             // tool.show(3, "ID Tag Saved: ",path);
         }
@@ -238,6 +269,7 @@ namespace Glaxion.Music
         {
             Reset();
             ReadID3Info();
+           // ReadID3Async();
         }
 
         public void SetTitle(string text)

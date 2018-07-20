@@ -17,7 +17,7 @@
         <MultiSelection:MSTreeView 
                 Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
-                Background="#FFF9F8D0" 
+                Background="#FFFFE6D2" 
                 Grid.Row="1"
                 SelectionMode="KeyboardModifiersMode" 
                 Foreground="#FFFFA51B">

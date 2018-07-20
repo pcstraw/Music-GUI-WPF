@@ -177,9 +177,6 @@
     <Page Include="Controls\MainControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResourceDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TestControl1.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

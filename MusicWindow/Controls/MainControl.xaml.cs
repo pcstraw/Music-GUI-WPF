@@ -28,6 +28,7 @@ namespace MusicWindow
         
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 tool.debug("Starting MusicGUI");
