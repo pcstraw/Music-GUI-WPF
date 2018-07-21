@@ -18,9 +18,9 @@
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
-            <Button Template="{StaticResource RoundButton}" Content="S" VerticalAlignment="Top" Height="25" Background="#FFBCE495" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" VerticalContentAlignment="Center" Grid.Column="1" ToolTip="Save To File" Click="Button_Click_2"/>
-            <Button Template="{StaticResource RoundButton}" Content="I" VerticalAlignment="Top" Height="25" Background="#FFF3AC7B" Grid.Column="2" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Ignore changes and close" Click="Button_Click_1"/>
-            <Button Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="3" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close control Without Saving" Click="Button_Click"/>
+            <Button Template="{StaticResource RoundButton}" Content="S" VerticalAlignment="Top" Height="25" Background="#FFBCE495" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" VerticalContentAlignment="Center" Grid.Column="1" ToolTip="Save To File" Click="TrackControlSaveButton_Click"/>
+            <Button Template="{StaticResource RoundButton}" Content="R" VerticalAlignment="Top" Height="25" Background="#FFF3AC7B" Grid.Column="2" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Reload file" Click="TrackControlReloadButton_Click"/>
+            <Button Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="3" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close control" Click="TrackControlCloseButton_Click"/>
         </Grid>
         <Label x:Name="playlistNameLabel" 
                Content= "{Binding PlaylistNameLabel}"

@@ -332,19 +332,6 @@ namespace Glaxion.Music
                 return;
             }
         }
-
-        public bool PlayPlaylist(Playlist playlist,Song song)
-        {
-            if (playlist == null)
-                return false;
-
-            if (currentList != playlist)
-            {
-                currentList = playlist;
-                MusicUpdatedEvent(playlist, EventArgs.Empty);
-            }
-            return Play(song);
-        }
         
         public bool Mute()
         {
@@ -399,6 +386,7 @@ namespace Glaxion.Music
                         trackDuration = windowsMediaPlayer.currentMedia.duration;
                     }
                     trackbarValue = (int)windowsMediaPlayer.controls.currentPosition;/// trackBar.Maximum;
+                    positionIndex = trackbarValue;
                 }
                 else
                     mediaLoaded = false;
@@ -441,7 +429,13 @@ namespace Glaxion.Music
             if (currentList == null)
                 return;
 
-            int nextindex = currentTrack + 1;
+            int nextindex = currentList.songs.IndexOf(CurrentSong);
+            if(nextindex == -1)
+            {
+                tool.show(4, "Unable to play next track because the current track wasn't found in the play list");
+                return;
+            }
+            nextindex++;
             if (nextindex >= currentList.songs.Count)
                 nextindex = 0;
             
@@ -480,6 +474,19 @@ namespace Glaxion.Music
                 currentTrack = nextindex;
             }
             PrevEvent(null, EventArgs.Empty);
+        }
+
+        public bool PlayPlaylist(Playlist playlist, Song song)
+        {
+            if (playlist == null)
+                return false;
+
+            if (currentList != playlist)
+            {
+                currentList = playlist;
+                MusicUpdatedEvent(playlist, EventArgs.Empty);
+            }
+            return Play(song);
         }
 
         public bool Play()
@@ -525,7 +532,8 @@ namespace Glaxion.Music
                 TrackChangeEvent(index, EventArgs.Empty);
             }
             */
-            currentTrack = currentList.songs.IndexOf(song);
+            if(currentList != null && currentList.songs.Contains(song))
+                currentTrack = currentList.songs.IndexOf(song);
             CurrentSong = song;
             PlayEvent(song, EventArgs.Empty);
             return true;

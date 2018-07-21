@@ -114,5 +114,29 @@ namespace MusicWindow.Properties {
                 this["TrackPosition"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastPlaylist {
+            get {
+                return ((string)(this["LastPlaylist"]));
+            }
+            set {
+                this["LastPlaylist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int PlayState {
+            get {
+                return ((int)(this["PlayState"]));
+            }
+            set {
+                this["PlayState"] = value;
+            }
+        }
     }
 }

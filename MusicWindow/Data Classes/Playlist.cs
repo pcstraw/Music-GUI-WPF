@@ -19,10 +19,10 @@ namespace Glaxion.Music
         //Any class capable of opening an playlist should use this event handler
         // public event OpenPlaylistEventHandler OpenPlaylistEvent;
 
-        string path;
-        public string Filepath { get { return path;} set { path = value; } }
-        string name;
-        public string Name { get { return name; } set { name = value; } }
+      //  string Filepath;
+        public string Filepath { get; set ; }
+       // string Name;
+        public string Name { get ;  set ; }
         public string ext = ".m3u";
         public int trackIndex;
         public bool dirty;
@@ -74,8 +74,8 @@ namespace Glaxion.Music
         public object Clone()
         {
             Playlist p = new Playlist();
-            p.name = name;
-            p.path = path;
+            p.Name = Name;
+            p.Filepath = Filepath;
             foreach (Song s in songs)
             {
                 p.songs.Add(s);
@@ -86,14 +86,14 @@ namespace Glaxion.Music
 
         public string UpdateFilePath()
         {
-            string dir = Path.GetDirectoryName(path);
-            path = dir + @"\" + name + ext;
-            return path;
+            string dir = Path.GetDirectoryName(Filepath);
+            Filepath = dir + @"\" + Name + ext;
+            return Filepath;
         }
         
         public void UpdateName(string newName)
         {
-            name = newName;
+            Name = newName;
             UpdateFilePath();
             /*
             name = newName;
@@ -105,9 +105,8 @@ namespace Glaxion.Music
         
         public Playlist(string filePath, bool readFile)
         {
-            
             debugSave = true;
-            path = filePath;
+            Filepath = filePath;
             if (tool.IsPlaylistFile(filePath))
             {
                 if(readFile)
@@ -118,14 +117,22 @@ namespace Glaxion.Music
                 {
                     filePath = Path.GetDirectoryName(filePath);
                 }
-                if (readFile && Directory.Exists(filePath))
+                if (Directory.Exists(filePath))
                 {
-                    List<string> tracks = tool.LoadAudioFiles(filePath, SearchOption.TopDirectoryOnly);
-                    GetSongs(tracks);
+                    Filepath = filePath;
+                    if (readFile)
+                    {
+                        List<string> tracks = tool.LoadAudioFiles(filePath, SearchOption.TopDirectoryOnly);
+                        GetSongs(tracks);
+                    }
+                }else
+                {
+                    failed = true;
+                    return;
                 }
                 if (DefaultDirectory != null)
                 {
-                    path = DefaultDirectory + @"\" + filePath + ext;
+                    Filepath = DefaultDirectory + @"\" + filePath + ext;
                 }
             }
             GetName(filePath);
@@ -133,19 +140,17 @@ namespace Glaxion.Music
 
         private void GetName(string file)
         {
-            name = Path.GetFileNameWithoutExtension(file);
+            Name = Path.GetFileNameWithoutExtension(file);
         }
 
         private void GetSongs(List<string> tracks)
         {
-            songs = null;
-            ObservableCollection<Song> sl = new ObservableCollection<Song>();
+            songs.Clear();
             foreach(string s in tracks)
             {
                 Song song = SongInfo.Instance.GetInfo(s);
-                sl.Add(song);
+                songs.Add(song);
             }
-            songs = sl;
         }
 
         public void ReadFile()
@@ -155,7 +160,7 @@ namespace Glaxion.Music
             failed = true;
             try
             {
-                sr = new StreamReader(path);
+                sr = new StreamReader(Filepath);
                 songs.Clear();
                 string line = "";
                 while ((line = sr.ReadLine()) != null)
@@ -168,15 +173,15 @@ namespace Glaxion.Music
             }
             catch (FileNotFoundException)
             {
-                Log.Message(string.Concat("Could not find file: ", path));
+                Log.Message(string.Concat("Could not find file: ", Filepath));
             }
             catch (IOException)
             {
-                Log.Message(string.Concat("File I/O Exception: ", path));
+                Log.Message(string.Concat("File I/O Exception: ", Filepath));
             }
             catch (OutOfMemoryException)
             {
-                Log.Message(string.Concat("Out of Memory while loading playlist file:  ", path));
+                Log.Message(string.Concat("Out of Memory while loading playlist file:  ", Filepath));
             }
             finally
             {
@@ -186,7 +191,7 @@ namespace Glaxion.Music
 
         public void GetFromFile(string fullpath)
         {
-            path = fullpath;
+            Filepath = fullpath;
             GetName(fullpath);
             ReadFile();
         }
@@ -203,33 +208,33 @@ namespace Glaxion.Music
 
         public bool SaveTo(string fullpath)
         {
-            path = fullpath;
+            Filepath = fullpath;
             GetName(fullpath);
             return WriteToFile(false);
         }
 
         public string GetDirectory()
         {
-            return Path.GetDirectoryName(path);
+            return Path.GetDirectoryName(Filepath);
         }
         
         //replaces the current path to the playlist
         //with the globally set default playlist directory
         public string GetDefaultPlaylistPath()
         {
-            if(Path.HasExtension(name))
+            if(Path.HasExtension(Name))
             {
 
-                name = "error name";
-                tool.Show(name);
+                Name = "error name";
+                tool.Show(Name);
             }
-            path = DefaultDirectory + @"\"+name + ext;
-            return path;
+            Filepath = DefaultDirectory + @"\"+Name + ext;
+            return Filepath;
         }
 
         public void SetDefaultPath()
         {
-            path = GetDefaultPlaylistPath();
+            Filepath = GetDefaultPlaylistPath();
         }
 
         public List<string> GetTrackPaths()
@@ -245,7 +250,7 @@ namespace Glaxion.Music
         public bool WriteToFile(bool append)
         {
             List<string> tracks = GetTrackPaths();
-            if (path == null || append)
+            if (Filepath == null || append)
             {
                 SaveFileDialog od = new SaveFileDialog();
                 if (Directory.Exists(DefaultDirectory))
@@ -253,54 +258,54 @@ namespace Glaxion.Music
                     od.InitialDirectory = DefaultDirectory;
                 }
 
-                od.FileName = name + ext;
+                od.FileName = Name + ext;
                 if (od.ShowDialog() == DialogResult.OK)
                 {
-                    path = od.FileName;
-                    name = Path.GetFileNameWithoutExtension(path);
-                    File.WriteAllLines(path, tracks);
-                    tool.debug("Saved File: ", path);
+                    Filepath = od.FileName;
+                    Name = Path.GetFileNameWithoutExtension(Filepath);
+                    File.WriteAllLines(Filepath, tracks);
+                    tool.debug("Saved File: ", Filepath);
                     if(debugSave)
-                        tool.show(1, path, "", "Save Successfull");
+                        tool.show(1, Filepath, "", "Save Successfull");
                     return true;
                 }else
                 {
                     if (debugSave)
-                        tool.show(1, path, "", "Failed to Save");
+                        tool.show(1, Filepath, "", "Failed to Save");
                     return false;
                 }
             }
-            if (File.Exists(path))
+            if (File.Exists(Filepath))
             {
-                File.WriteAllLines(path, tracks);
-                tool.debug("Saved File: ", path);
+                File.WriteAllLines(Filepath, tracks);
+                tool.debug("Saved File: ", Filepath);
                 if (debugSave)
-                    tool.show(1, path, "", "Save Successfull");
+                    tool.show(1, Filepath, "", "Save Successfull");
                 return true;
             }
             else
             {
-                if (path == null)
+                if (Filepath == null)
                 {
                     if (debugSave)
-                        tool.show(1, path, "", "Failed to Save");
+                        tool.show(1, Filepath, "", "Failed to Save");
                     return false;
                 }
 
-                if(!Directory.Exists(path))
+                if(!Directory.Exists(Filepath))
                 {
                     //string dir = FinbdDefaultDirectory();
                     string tmp = @"Output\tmp\";
                     Directory.CreateDirectory(tmp);
-                    path = tmp + @"\" + name + ext;
+                    Filepath = tmp + @"\" + Name + ext;
                 }
 
-                FileStream fs = File.Create(path);
+                FileStream fs = File.Create(Filepath);
                 fs.Close();
-                File.WriteAllLines(path, tracks);
-                tool.debug("Created File: ", path);
+                File.WriteAllLines(Filepath, tracks);
+                tool.debug("Created File: ", Filepath);
                 if (debugSave)
-                    tool.show(1, path, "", "Save Successfull");
+                    tool.show(1, Filepath, "", "Save Successfull");
                 return true;
             }
         }

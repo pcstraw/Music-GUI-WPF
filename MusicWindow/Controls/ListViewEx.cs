@@ -46,6 +46,7 @@ namespace MusicWindow
         {
         }
 
+        //used for single drag drops
         public void DropData<T>(int index, ObservableCollection<T> list,object item)
         {
             if (list.Count == 0)
@@ -62,34 +63,93 @@ namespace MusicWindow
                 list.Add((T)item);
             }
         }
-
+        //used for dropping multiple files
         public void MultiDropData<T>(int index, ObservableCollection<T> list, List<object> items)
         {
-            if (list.Count == 0)
+            if (list.Count == 0||items.Count==0)
                 return;
             
-            List<T> temp = new List<T>(items.Count);
+            Sort(items, list);
+            List<T> insertedItems = new List<T>(items.Count);
+            List<T> removedItems = new List<T>(items.Count);
             object insertion = list[index];
-
-            foreach( var t in items)
-                temp.Add((T)t);
             
-            int updatedIndex = list.IndexOf((T)insertion);
-            if(updatedIndex <0)
+            int last_index = 0;
+
+            if (insertion == null)
             {
-                tool.debugError("Unable to retreive Insertion index");
+                tool.show(5, "Ref item is null");
                 return;
             }
-            foreach (var t in items)
-                list.Remove((T)t);
 
-            foreach (var t in temp)
+            foreach (var t in items)
             {
-                list.Insert(updatedIndex, (T)t);
-                if (!SelectedItems.Contains(t))
-                    SelectedItems.Add(t);
+                T item = (T)t;
+                last_index = list.IndexOf(item);
+                //looks like we're dropping on one of the selected items.
+                //cancel drag drop
+                if(last_index == index)
+                {
+                    return;
+                }
+                insertedItems.Add(item);
+                removedItems.Add(item);
             }
-            _selItems.Clear();
+
+            int removal_index = 0;
+            foreach (var t in removedItems)
+            {
+                removal_index = list.IndexOf(t);
+                list.Remove(t);
+            }
+
+            index = list.IndexOf((T)insertion);
+            if(index < 0)
+            {
+                tool.show(5,"Unable to retreive Insertion index");
+                SelectedItems.Clear();
+                foreach (var t in removedItems)
+                {
+                    list.Insert(removal_index, t);
+                    SelectedItems.Add(t);
+                }
+                return;
+            }
+            bool addDownwards = false;
+            if (index > last_index)
+            {
+                //addDownwards = true;
+               // insertedItems.Reverse();
+                index++;
+            }
+            
+            SelectedItems.Clear();
+            foreach (var t in insertedItems)
+            {
+                list.Insert(index, t);
+                SelectedItems.Add(t);
+                if (addDownwards)
+                    index++;
+            }
+        }
+
+        void Sort<T>(List<object> items,ObservableCollection<T> fullList)
+        {
+            int first_index = fullList.IndexOf((T)items[0]);
+            
+            for(int i=0;i<items.Count;i++)
+            {
+                T item = (T)items[i];
+                int index = fullList.IndexOf(item);
+                //tool.show(5, index);
+                if (index < first_index)
+                {
+                    items.RemoveAt(i);
+                    items.Insert(0, item);
+                    first_index = index;
+                }
+            }
+            items.Reverse();
         }
 
         private List<object> _selItems = new List<object>();
@@ -97,10 +157,23 @@ namespace MusicWindow
         {
             //Store the mouse position
             _startPoint = e.GetPosition(this);
+            _selItems.Clear();
             if(MultiDrag)
             {
                 _selItems.Clear();
                 _selItems.AddRange(SelectedItems.Cast<object>());
+                if(_selItems.Count == 0)
+                {
+                   HitTestResult result = VisualTreeHelper.HitTest(this, _startPoint);
+                   DependencyObject obj = result.VisualHit;
+                    if (obj == null)
+                        return;
+
+                    ListViewItem listViewItem =
+                        FindAnchestor<ListViewItem>(obj);
+                    object data = ItemContainerGenerator.ItemFromContainer(listViewItem);
+                    _selItems.Add(data);
+                }
             }
         }
 
@@ -144,7 +217,11 @@ namespace MusicWindow
             ListViewItem listViewItem =
                  FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
             if (listViewItem == null)
+            {
                 return;
+               // if (listView.Items.Count > 0)
+                //    listViewItem = (ListViewItem)listView.Items[listView.Items.Count - 1];
+            }
            // object contextData = listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
 
             //setup the drag adorner.
@@ -158,8 +235,9 @@ namespace MusicWindow
             DataObject data = new DataObject(typeof(List<object>), _selItems);
             //draggedItems.Clear();
             //draggedItems.Add(contextData);
-            DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
 
+            DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+            _selItems.Clear();
             //cleanup
             listView.PreviewDragOver -= ListViewDragOver;
             listView.DragLeave -= ListViewDragLeave;
@@ -235,8 +313,8 @@ namespace MusicWindow
 
                 List<object> itemToMove = (List<object>)e.Data.GetData(typeof(List<object>));
                 ListViewItem itemToReplace = FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
-                // object name = draggedItems[0]; //hack.  Use iteration instead
                 object nameToReplace;
+
                 if (itemToReplace != null)
                 {
                     nameToReplace = this.ItemContainerGenerator.ItemFromContainer(itemToReplace);

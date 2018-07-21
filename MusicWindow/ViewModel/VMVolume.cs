@@ -61,7 +61,7 @@ namespace Glaxion.ViewModel
         internal void Load()
         {
             player = MusicPlayer.Player;
-            SliderValue = 5.00;
+            SliderValue = player.Volume;
             SliderMaximum = 100;
         }
 

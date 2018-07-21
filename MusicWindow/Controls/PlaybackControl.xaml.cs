@@ -133,7 +133,7 @@ namespace MusicWindow
             else
                 tool.OpenFileDirectory(Song.Filepath);
         }
-
+        //dep
         public void AddFile(string path)
         {
             Song = SongInfo.Instance.GetInfo(path);

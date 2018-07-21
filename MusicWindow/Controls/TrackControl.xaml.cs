@@ -130,22 +130,20 @@ namespace MusicWindow
         {
             playlistControlParent.RemoveFromPlaylistControl(this);
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        
+        private void TrackControlCloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void TrackControlReloadButton_Click(object sender, RoutedEventArgs e)
+        {
             viewModel.CurrentList.ReadFile();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void TrackControlSaveButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.CurrentList.Save();
-          //  Close();
         }
     }
 }

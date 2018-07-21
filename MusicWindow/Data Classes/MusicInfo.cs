@@ -77,9 +77,10 @@ namespace Glaxion.Music
                 return songs[path];
             }
             Song ti = new Song(path);
+            ti.ReadID3Info();
             AddInfo(ti);
             //Task.Run(() => ti.ReadID3Info());
-            ti.ReadID3Info();
+            
             //ti.ReadID3Async();
             return ti;
         }

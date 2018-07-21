@@ -20,6 +20,7 @@ namespace MusicWindow
             StoreCurrentSong(MusicPlayer.Player);
             StoreVolumeLevel(MusicPlayer.Player);
             StoreCurrentTrackPosition(MusicPlayer.Player);
+            StoreLastPlaylist(MusicPlayer.Player);
             Save();
         }
         
@@ -32,9 +33,10 @@ namespace MusicWindow
             mainControl.fileControl.playlistFileControl.ViewModel.LoadFilesToTree();
 
             RestorePlaylistControl(mainControl.playlistControl);
+            RestoreLastPlaylist(MusicPlayer.Player); //dep
             RestoreCurrentSong(MusicPlayer.Player, SongInfo.Instance);
             RestoreVolumeLevel(MusicPlayer.Player);
-            RestoreCurrentTrackPosition(MusicPlayer.Player);
+            RestoreCurrentTrackPosition(MusicPlayer.Player); //dep
         }
 
         public static void StoreMusicFileDirectories(MusicFileControl musicFileControl)
@@ -75,6 +77,14 @@ namespace MusicWindow
                 Properties.Settings.Default.Volume = player.Volume;
         }
 
+        public static void StoreLastPlaylist(MusicPlayer player)
+        {
+            if (player != null && player.currentList != null)
+            {
+                Properties.Settings.Default.LastPlaylist = player.currentList.Filepath;
+            }
+        }
+
         public static void StoreCurrentTrackPosition(MusicPlayer player)
         {
             if (player != null && player.CurrentSong != null)
@@ -99,6 +109,19 @@ namespace MusicWindow
                 playlistControl.viewModel.AddPlaylistFromFile(s);
         }
 
+        public static void RestoreLastPlaylist(MusicPlayer player)
+        {
+            if (player != null)
+            {
+                /*
+                Playlist p = new Playlist(Properties.Settings.Default.LastPlaylist, true);
+                if (p.failed)
+                    return;
+                player.currentList = p;
+                */
+            }
+        }
+
         public static void RestoreCurrentSong(MusicPlayer player,SongInfo fileLoader)
         {
             if (player == null)
@@ -112,21 +135,31 @@ namespace MusicWindow
                 return;
             }
             Song s = SongInfo.Instance.GetInfo(Properties.Settings.Default.CurrentSong);
-            player.CurrentSong = s;
+            Playlist p = new Playlist(Properties.Settings.Default.LastPlaylist, true);
+            if (p.failed)
+            {
+                player.Play(s);
+                player.Resume(Properties.Settings.Default.TrackPosition);
+            }
+            else
+            {
+                player.PlayPlaylist(p,s);
+                player.Resume(Properties.Settings.Default.TrackPosition);
+            }
         }
 
         public static void RestoreVolumeLevel(MusicPlayer player)
         {
-            if (player != null)
+            if (player == null)
                 return;
-            player.Volume =Properties.Settings.Default.Volume;
+            player.SetVolume(Properties.Settings.Default.Volume);
         }
 
         public static void RestoreCurrentTrackPosition(MusicPlayer player)
         {
-            if (player != null)
+            if (player == null)
                 return;
-            player.positionIndex = Properties.Settings.Default.TrackPosition;
+            //player.positionIndex = Properties.Settings.Default.TrackPosition;
         }
 
         public static void Save()
