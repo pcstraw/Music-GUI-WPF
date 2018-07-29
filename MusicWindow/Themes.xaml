@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:MultiSelection="clr-namespace:MultiSelection;assembly=MultiSelectionTreeView"
+                    xmlns:MultiSelection="clr-namespace:MultiSelection"
                     xmlns:local="clr-namespace:MusicWindow">
     <ResourceDictionary.MergedDictionaries>
         <!-- Common base theme -->

@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using Glaxion.Music;
 using Glaxion.Tools;
 using Glaxion.ViewModel;
@@ -144,6 +148,82 @@ namespace MusicWindow
         private void TrackControlSaveButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.CurrentList.Save();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.player.PlayEvent += Player_PlayEvent;
+            ShowCurrentPlaying();
+        }
+
+        void ShowCurrentPlaying()
+        {
+            Song song = viewModel.player.CurrentSong;
+            if (song == null)
+                return;
+
+            if (listView.IsFocused)
+                return;
+
+            foreach (Song s in listView.Items)
+            {
+                if (s == song)
+                {
+                    listView.ScrollIntoView(s);
+                    return;
+                }
+            }
+        }
+
+        private void Player_PlayEvent(object sender, EventArgs args)
+        {
+            ShowCurrentPlaying();
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.player.PlayEvent -= Player_PlayEvent;
+        }
+
+        Brush defaultColor;
+        private void searchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (viewModel == null)
+                return;
+            if (defaultColor != listView.Background)
+                defaultColor = listView.Background;
+
+            
+            if (searchBox.Text.Length ==0)
+            {
+                foreach (object song in listView.Items)
+                {
+                    ListViewItem listViewItem = listView.GetItemFromData(song);
+                    if (listViewItem == null)
+                        continue;
+                    listViewItem.Background = defaultColor;
+                }
+                return;
+            }
+            
+            List<Song> result = viewModel.SearchSongs(searchBox.Text, "Title");
+            
+            foreach (object song in listView.Items)
+            {
+                ListViewItem listViewItem = listView.GetItemFromData(song);
+                if (listViewItem == null)
+                    continue;
+                listViewItem.Background = defaultColor;
+                foreach (Song s in result)
+                {
+                    if (s == song)
+                    {
+                        listViewItem.Background = new SolidColorBrush(Color.FromRgb(255, 200, 200));
+     
+                    }
+                }
+            }
+            listView.UpdateDefaultStyle();
         }
     }
 }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             xmlns:MultiSelection="clr-namespace:MultiSelection;assembly=MultiSelectionTreeView" x:Class="MusicWindow.MusicFileControl"
+             xmlns:MultiSelection="clr-namespace:MultiSelection" x:Class="MusicWindow.MusicFileControl"
              mc:Ignorable="d" Width="320" Height="320">
     <Grid>
         <Grid.Resources>
@@ -14,8 +14,8 @@
             <RowDefinition Height="20"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <MultiSelection:MSTreeView 
-                Name="treeView"
+        <local:VMTreeControl
+                x:Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
                 Background="#FFFFE6D2" 
                 Grid.Row="1"
@@ -46,7 +46,7 @@
                     <MenuItem Header="Remove Directory" Click="RemoveDirectoryContext_Click"/>
                 </ContextMenu>
             </MultiSelection:MSTreeView.ContextMenu>
-        </MultiSelection:MSTreeView>
+        </local:VMTreeControl>
         <TextBox TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;"/>
 
     </Grid>

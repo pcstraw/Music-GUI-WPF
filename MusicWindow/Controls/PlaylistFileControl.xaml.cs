@@ -22,10 +22,10 @@ namespace MusicWindow
             DataContext = this;
             //manager = PlaylistFileManager.Instance;
             treeView.DataContext = this;
-            ViewModel = new VMPlaylistFiles();
+            ViewModel = new VMPlaylistFileTree();
         }
 
-        public VMPlaylistFiles ViewModel { get; set; }
+        public VMPlaylistFileTree ViewModel { get; set; }
 
         object selectSource;
 

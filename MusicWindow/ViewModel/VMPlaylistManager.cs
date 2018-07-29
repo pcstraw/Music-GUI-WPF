@@ -14,10 +14,10 @@ namespace Glaxion.ViewModel
         }
 
         public ObservableCollection<Playlist> Playlists;
-        VMPlaylistFiles _playlistFileManager;
+        VMPlaylistFileTree _playlistFileManager;
         VMMusicFiles _musicFileManager;
 
-        internal void LinkFileManagers(VMPlaylistFiles playlistFilesManager, VMMusicFiles musicFileManager)
+        internal void LinkFileManagers(VMPlaylistFileTree playlistFilesManager, VMMusicFiles musicFileManager)
         {
             _playlistFileManager = playlistFilesManager;
             _musicFileManager = musicFileManager;
@@ -39,6 +39,8 @@ namespace Glaxion.ViewModel
             Playlist p = new Playlist(file, true);
             if (!p.failed)
                 Playlists.Add(p);
+            p.UpdatePaths();
+           
         }
         public void BrowsePlaylistDialog()
         {

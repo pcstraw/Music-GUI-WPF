@@ -78,19 +78,24 @@ namespace Glaxion.ViewModel
         }
 
         //pass the title from for the dialog box from the caller
-        public void SelectAndLoadDirectory(string dialogBrowserTile)
+        public virtual void SelectAndLoadDirectory(string dialogBrowserTile)
         {
             List<string> folders = tool.SelectFiles(true, true, dialogBrowserTile);
             bool directoryAdded = false;
 
             foreach (string folder in folders)
-                directoryAdded = fileLoader.AddDirectory(folder);
+                directoryAdded = AddDirectory(folder);
 
             if (directoryAdded)
             {
                 LoadFilesToTree();
                 Nodes = cachedNodes;
             }
+        }
+
+        public virtual bool AddDirectory(string directoryPath)
+        {
+            return fileLoader.AddDirectory(directoryPath);
         }
 
         public VMNode SearchTreeView(VMNode tree, string text)

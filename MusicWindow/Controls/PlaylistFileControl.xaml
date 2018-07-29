@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
              xmlns:src="clr-namespace:Glaxion.Music"
-             xmlns:MultiSelection="clr-namespace:MultiSelection;assembly=MultiSelectionTreeView" x:Class="MusicWindow.PlaylistFileControl"
+             xmlns:MultiSelection="clr-namespace:MultiSelection" x:Class="MusicWindow.PlaylistFileControl"
              mc:Ignorable="d" Width="320" Height="240">
     <Grid>
         <Grid.Resources>
@@ -15,8 +15,8 @@
             <RowDefinition Height="20"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <MultiSelection:MSTreeView 
-                Name="treeView"
+        <local:VMTreeControl
+                x:Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
                 Background="#FFEBE8FB" 
                 SelectionMode="KeyboardModifiersMode"
@@ -38,7 +38,7 @@
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>
-            
+
             <MultiSelection:MSTreeView.ContextMenu>
                 <ContextMenu Name="PlaylistContext">
                     <MenuItem Header="Open Playlist" Click="OpenPlaylistFileContext_Click"/>
@@ -46,7 +46,7 @@
                     <MenuItem Header="Remove Directory" Click="RemovePlaylistFileContext_Click"/>
                 </ContextMenu>
             </MultiSelection:MSTreeView.ContextMenu>
-        </MultiSelection:MSTreeView>
+        </local:VMTreeControl>
         <TextBox Height="20" TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Glaxion.ViewModel;
+using System.IO;
 
 namespace MusicWindow
 {
@@ -21,6 +22,7 @@ namespace MusicWindow
             StoreVolumeLevel(MusicPlayer.Player);
             StoreCurrentTrackPosition(MusicPlayer.Player);
             StoreLastPlaylist(MusicPlayer.Player);
+            StoreCurrentPlayState(MusicPlayer.Player);
             Save();
         }
         
@@ -31,12 +33,12 @@ namespace MusicWindow
 
             RestorePlaylistFileDirectories(mainControl.fileControl.playlistFileControl);
             mainControl.fileControl.playlistFileControl.ViewModel.LoadFilesToTree();
-
             RestorePlaylistControl(mainControl.playlistControl);
-            RestoreLastPlaylist(MusicPlayer.Player); //dep
+
+           // RestoreCurrentPlayState(MusicPlayer.Player);
             RestoreCurrentSong(MusicPlayer.Player, SongInfo.Instance);
             RestoreVolumeLevel(MusicPlayer.Player);
-            RestoreCurrentTrackPosition(MusicPlayer.Player); //dep
+            
         }
 
         public static void StoreMusicFileDirectories(MusicFileControl musicFileControl)
@@ -88,9 +90,22 @@ namespace MusicWindow
         public static void StoreCurrentTrackPosition(MusicPlayer player)
         {
             if (player != null && player.CurrentSong != null)
-                Properties.Settings.Default.TrackPosition = player.positionIndex;
+                Properties.Settings.Default.TrackPosition = player.trackPosition;
         }
 
+        public static void StoreCurrentPlayState(MusicPlayer player)
+        {
+            if (player != null)
+                Properties.Settings.Default.PlayState = (int)player.PlayState;
+        }
+
+        //dep
+        public static void RestoreCurrentPlayState(MusicPlayer player)
+        {
+            if (player != null)
+                player.PlayState = (PlayState)Properties.Settings.Default.PlayState;
+        }
+        
         public static void RestoreMusicFileDirectories(MusicFileControl musicFileControl)
         {
             foreach (string dir in Properties.Settings.Default.MusicFileDirectories)
@@ -100,7 +115,7 @@ namespace MusicWindow
         public static void RestorePlaylistFileDirectories(PlaylistFileControl playlistFileControl)
         {
             foreach (string dir in Properties.Settings.Default.PlaylistDirectories)
-                playlistFileControl.ViewModel.fileLoader.AddDirectory(dir);
+                playlistFileControl.ViewModel.AddDirectory(dir);
         }
 
         public static void RestorePlaylistControl(PlaylistControl playlistControl)
@@ -108,19 +123,7 @@ namespace MusicWindow
             foreach (string s in Properties.Settings.Default.ManagedPlaylists)
                 playlistControl.viewModel.AddPlaylistFromFile(s);
         }
-
-        public static void RestoreLastPlaylist(MusicPlayer player)
-        {
-            if (player != null)
-            {
-                /*
-                Playlist p = new Playlist(Properties.Settings.Default.LastPlaylist, true);
-                if (p.failed)
-                    return;
-                player.currentList = p;
-                */
-            }
-        }
+        
 
         public static void RestoreCurrentSong(MusicPlayer player,SongInfo fileLoader)
         {
@@ -134,18 +137,27 @@ namespace MusicWindow
                 tool.debugError("Error restoring current song:  fileLoader is null");
                 return;
             }
-            Song s = SongInfo.Instance.GetInfo(Properties.Settings.Default.CurrentSong);
+            
             Playlist p = new Playlist(Properties.Settings.Default.LastPlaylist, true);
+            PlayState ps = (PlayState)Properties.Settings.Default.PlayState;
+
+            Song s = SongInfo.Instance.GetInfo(Properties.Settings.Default.CurrentSong);
+            if(!File.Exists(s.Filepath))
+            {
+                Properties.Settings.Default.CurrentSong = "";
+                return;
+            }
             if (p.failed)
-            {
                 player.Play(s);
-                player.Resume(Properties.Settings.Default.TrackPosition);
-            }
             else
-            {
                 player.PlayPlaylist(p,s);
+            
+            if (ps == PlayState.IsPaused)
+                player.Pause();
+            if (ps == PlayState.Stopped)
+                player.Stop();
+            if(ps == PlayState.IsPlaying)
                 player.Resume(Properties.Settings.Default.TrackPosition);
-            }
         }
 
         public static void RestoreVolumeLevel(MusicPlayer player)
@@ -154,14 +166,7 @@ namespace MusicWindow
                 return;
             player.SetVolume(Properties.Settings.Default.Volume);
         }
-
-        public static void RestoreCurrentTrackPosition(MusicPlayer player)
-        {
-            if (player == null)
-                return;
-            //player.positionIndex = Properties.Settings.Default.TrackPosition;
-        }
-
+        
         public static void Save()
         {
             Properties.Settings.Default.Save();

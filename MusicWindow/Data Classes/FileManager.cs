@@ -34,7 +34,7 @@ namespace Glaxion.Music
             return tool.LoadAudioFiles(directory, SearchOption.AllDirectories);
         }
         
-        public bool AddDirectory(string folder)
+        public virtual bool AddDirectory(string folder)
         {
             if (!Directory.Exists(folder))
             {

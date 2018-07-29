@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using Glaxion.Music;
 using Glaxion.Tools;
 using Glaxion.ViewModel;
@@ -20,6 +23,13 @@ namespace MusicWindow
             DataContext = this;
             treeView.DataContext = this;
             ViewModel = new VMMusicFiles();
+            this.Loaded += MusicFileControl_Loaded;
+        }
+
+        //for testing.  Delete afterwards
+        private void MusicFileControl_Loaded(object sender, RoutedEventArgs e)
+        {
+           // tool.ShowConsole();
         }
 
         public VMMusicFiles ViewModel { get; set; }
@@ -44,16 +54,6 @@ namespace MusicWindow
            ViewModel.SelectAndLoadDirectory("Select Music Directory");
         }
 
-        private void MusicFileTreeViewItem_Selected(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MusicFileNode_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         private void RemoveDirectoryContext_Click(object sender, RoutedEventArgs e)
         {
             foreach(var i in treeView.SelectedItems)
@@ -64,6 +64,16 @@ namespace MusicWindow
                 //move to VMMusicFiles
                 ViewModel.RemoveAncestorDirectory(node);
             }
+        }
+
+        private void MusicFileTreeViewItem_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MusicFileNode_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

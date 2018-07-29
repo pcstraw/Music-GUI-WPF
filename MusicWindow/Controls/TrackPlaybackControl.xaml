@@ -4,15 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             mc:Ignorable="d" Height="140" Width="720">
+             mc:Ignorable="d" Height="110" Width="720" Background="#FF1C3A47">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <local:DurationControl Height="30" VerticalAlignment="Top" Width="Auto" Grid.Row="1"/>
+        <local:DurationControl Width="Auto" Height="Auto" Grid.Row="1" Background="#FF154A5B"/>
         <local:PlaybackControl Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="2"/>
-        <local:VolumeControl Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <local:VolumeControl Width="Auto
+                             "/>
     </Grid>
 </UserControl>

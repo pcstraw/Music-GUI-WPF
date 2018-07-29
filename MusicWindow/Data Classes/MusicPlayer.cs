@@ -1,15 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using WMPLib;
 using Glaxion.Tools;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Glaxion.Music
 {
+    public enum PlayState
+    {
+        Stopped,
+        IsPlaying,
+        IsPaused
+    }
+
     public class MusicPlayer
     {
         private MusicPlayer()
@@ -68,9 +72,9 @@ namespace Glaxion.Music
         public bool loop { get;set; }
 
         public WindowsMediaPlayer windowsMediaPlayer;
-        public double positionIndex;
+        public double trackPosition;
         public double trackDuration;
-        public bool Stopped;
+        public PlayState PlayState;
 
         Song _currentSong;
         public Song CurrentSong
@@ -84,26 +88,21 @@ namespace Glaxion.Music
             }
         }
 
-        public bool IsPlaying;
-        public bool IsPaused;
         public bool mediaLoaded;
         public bool mediaLoading;
         public bool ProgramInitialized;
-        //public bool NodeDrop;
         public bool Loop;
         public bool Muted;
         public bool InitializeDirectories;
         public bool Initialized;
         bool _isRunning;
         public Song prevTrack;
-        //public string currentTrackString;
         public string[] startArguments;
         public int currentTrack;
         public int trackbarValue;
         private int prevVolume;
         public int Volume;
         public Playlist currentList;
-       // private FileLoader fileLoader;
         public System.Windows.Forms.Timer timer; //dispose
         public static Color PlayColor = Color.Aquamarine;
         public static Color PreviousPlayColor = Color.DarkCyan;
@@ -112,6 +111,31 @@ namespace Glaxion.Music
         public static Color RepeatColor = Color.DarkSlateBlue;
         public static Color ConflictColor = Color.MediumVioletRed;
         internal static Color IsPlayingColor = Color.Yellow;
+
+        public bool IsPlaying { get { if (PlayState == PlayState.IsPlaying)
+                    return true;
+                return false;
+            } }
+
+        public bool IsPaused
+        {
+            get
+            {
+                if (PlayState == PlayState.IsPaused)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool HasStopped
+        {
+            get
+            {
+                if (PlayState == PlayState.Stopped)
+                    return true;
+                return false;
+            }
+        }
 
         //event handlers
         public delegate void MusicUpdatedEventHandler(object sender, EventArgs args);
@@ -237,7 +261,7 @@ namespace Glaxion.Music
                 }
                 if (IsPaused)
                 {
-                    Resume(positionIndex);
+                    Resume(trackPosition);
                     return;
                 }
                 if (!IsPlaying && !IsPaused)
@@ -301,7 +325,7 @@ namespace Glaxion.Music
                 }
                 if (IsPaused)
                 {
-                    Resume(positionIndex);
+                    Resume(trackPosition);
                     return;
                 }
                 if (!IsPlaying && !IsPaused)
@@ -386,7 +410,7 @@ namespace Glaxion.Music
                         trackDuration = windowsMediaPlayer.currentMedia.duration;
                     }
                     trackbarValue = (int)windowsMediaPlayer.controls.currentPosition;/// trackBar.Maximum;
-                    positionIndex = trackbarValue;
+                    trackPosition = trackbarValue;
                 }
                 else
                     mediaLoaded = false;
@@ -415,7 +439,7 @@ namespace Glaxion.Music
             return ls;
         }
         */
-
+        /*
         public bool HasStopped()
         {
             if (windowsMediaPlayer.playState == WMPPlayState.wmppsStopped)
@@ -423,36 +447,29 @@ namespace Glaxion.Music
             else
                 return false;
         }
+        */
         
         public void NextTrack()
         {
             if (currentList == null)
                 return;
+            Song next = CurrentSong;
+            int currentIndex = currentList.songs.IndexOf(next);
+            for(int i=currentIndex+1;i<currentList.songs.Count;i++)
+            {
+                if(File.Exists(currentList.songs[i].Filepath))
+                {
+                    next = currentList.songs[i];
+                    break;
+                }
+            }
 
-            int nextindex = currentList.songs.IndexOf(CurrentSong);
-            if(nextindex == -1)
-            {
-                tool.show(4, "Unable to play next track because the current track wasn't found in the play list");
-                return;
-            }
-            nextindex++;
-            if (nextindex >= currentList.songs.Count)
-                nextindex = 0;
-            
-            if (File.Exists(currentList.songs[nextindex].Filepath))
-            {
-                if (IsPlaying)
-                {
-                    Song next = currentList.songs[nextindex];
-                    Play(next);
-                    return;
-                }
-                else
-                {
-                    currentTrack = nextindex;
-                }
-                NextEvent(null, EventArgs.Empty);
-            }
+            if (IsPlaying)
+                Play(next);
+            else
+                CurrentSong = next;
+
+            NextEvent(null, EventArgs.Empty);
             //else call playback failed?
         }
 
@@ -460,19 +477,21 @@ namespace Glaxion.Music
         {
             if (currentList == null)
                 return;
+            Song next = CurrentSong;
+            int currentIndex = currentList.songs.IndexOf(next);
+            for (int i = currentIndex - 1; i > -1; i--)
+            {
+                if (File.Exists(currentList.songs[i].Filepath))
+                {
+                    next = currentList.songs[i];
+                    break;
+                }
+            }
 
-            int nextindex = currentTrack-1;
-            if (nextindex < 0)
-                nextindex = currentList.songs.Count-1;
             if (IsPlaying)
-            {
-                 Song next = currentList.songs[nextindex];
-                 Play(next);
-            }
+                Play(next);
             else
-            {
-                currentTrack = nextindex;
-            }
+                CurrentSong = next;
             PrevEvent(null, EventArgs.Empty);
         }
 
@@ -523,9 +542,7 @@ namespace Glaxion.Music
             if (CreateTempPlaybackFiles)
                 DeleteTMPPlayedFiles();
             mediaLoading = true;
-            IsPaused = false;
-            IsPlaying = true;
-            Stopped = false;
+            PlayState = PlayState.IsPlaying;
             /*
             if (index != currentTrack)
             {
@@ -534,11 +551,27 @@ namespace Glaxion.Music
             */
             if(currentList != null && currentList.songs.Contains(song))
                 currentTrack = currentList.songs.IndexOf(song);
-            CurrentSong = song;
+
+            SetPlayingSong(song);
             PlayEvent(song, EventArgs.Empty);
             return true;
         }
-        
+
+        Song _lastPlayed;
+        void SetPlayingSong(Song song)
+        {
+            if(_lastPlayed != null)
+                _lastPlayed.State = SongState.HasPlayed;
+
+            if (CurrentSong != null)
+            {
+                CurrentSong.State = SongState.WasPlaying;
+                _lastPlayed = CurrentSong;
+            }
+            CurrentSong = song;
+            CurrentSong.State = SongState.IsPlaying;
+        }
+
         async void DeleteTMPPlayedFiles()
         {
             if (_lastPlayedTMP == null)
@@ -580,20 +613,17 @@ namespace Glaxion.Music
 
         public void Stop()
         {
-            positionIndex = windowsMediaPlayer.controls.currentPosition;
+            trackPosition = windowsMediaPlayer.controls.currentPosition;
             windowsMediaPlayer.controls.stop();
-            IsPlaying = false;
-            IsPaused = false;
-            Stopped = true;
+            PlayState = PlayState.Stopped;
             StopEvent(null, EventArgs.Empty);
         }
 
         public void Pause()
         {
             windowsMediaPlayer.controls.pause();
-            IsPlaying = false;
-            IsPaused = true;
-            positionIndex = windowsMediaPlayer.controls.currentPosition;
+            PlayState = PlayState.IsPaused;
+            trackPosition = windowsMediaPlayer.controls.currentPosition;
             PauseEvent(null, EventArgs.Empty);
         }
 
@@ -601,16 +631,14 @@ namespace Glaxion.Music
         {
             windowsMediaPlayer.controls.play();
             windowsMediaPlayer.controls.currentPosition = position;
-            IsPaused = false;
-            IsPlaying = true;
-            Stopped = false;
-            positionIndex = position;
+            PlayState = PlayState.IsPlaying;
+            trackPosition = position;
             ResumeEvent(null, EventArgs.Empty);
         }
 
         public void Resume()
         {
-            Resume(positionIndex);
+            Resume(trackPosition);
         }
 
         public void SetVolume(int value)

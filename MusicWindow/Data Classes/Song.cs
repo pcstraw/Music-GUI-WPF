@@ -7,6 +7,8 @@ using Glaxion.Tools;
 using System.Drawing;
 using TagLib;
 using System.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 //id3 info class example
 //https://www.codeproject.com/Articles/17890/Do-Anything-With-ID
@@ -33,7 +35,18 @@ using System.Threading;
 
 namespace Glaxion.Music
 {
-    public class Song
+    public enum SongState
+    {
+        None,
+        IsPlaying,
+        WasPlaying,
+        HasPlayed,
+        Invalid,
+        MissingTags,
+        InvalidTag
+    }
+
+    public class Song : INotifyPropertyChanged
     {
         class ThreadInfo
         {
@@ -52,16 +65,20 @@ namespace Glaxion.Music
         public uint Track { get; set; }
         public string folderImage;
         public Image image;
-        string name;
-        public string Name { get { return name; } set { name = value; } }
+        public string Name { get; set; }
         public string comment;
         public IPicture[] Pictures { get; set; }
         public string Lyrics { get; set; }
         public string Length { get; set; }
         public TagLib.File file; //Dispose
         public bool loaded;
-        public bool invalid;
         bool dirty;
+        SongState _state;
+        public SongState State
+        {
+            get { return _state; }
+            set { _state = value;OnPropertyChanged(); }
+        }
         public static List<string> TagLoadingLog = new List<string>();
         
         public Song(string filePath)
@@ -72,12 +89,18 @@ namespace Glaxion.Music
             //Genre = "A genre";
             Genres = new string[]{ "Music Genre" };
             loaded = false;
-            invalid = false;
             Filepath = filePath;
-            name = Path.GetFileNameWithoutExtension(filePath);
-            Title = name;
+            Title = Path.GetFileNameWithoutExtension(filePath);
+            if (!System.IO.File.Exists(filePath))
+                State = SongState.Invalid;
         }
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         bool isMP3()
         {
             byte[] buf = System.IO.File.ReadAllBytes(Filepath);
@@ -124,12 +147,11 @@ namespace Glaxion.Music
 
                 LoadAlbumArt();
                 dirty = false;
-                invalid = false;
             }
             catch (Exception e)
             {
                 TagLoadingLog.Add(string.Concat("--> Failed to Get All Tags: \n", e.Message, "\n", Filepath));
-                invalid = true;
+                State = SongState.MissingTags;
             }
             finally
             {
@@ -148,8 +170,6 @@ namespace Glaxion.Music
             {
                 if (System.IO.File.Exists(Filepath))
                     CreateFileAsync();
-                else
-                    invalid = true;
             }
         }
         
@@ -174,7 +194,6 @@ namespace Glaxion.Music
         private void Reset()
         {
             loaded = false;
-            invalid = false;
         }
 
         public void Reload()
@@ -313,7 +332,11 @@ namespace Glaxion.Music
 
             string pic = GetFolderImage();
             if (pic == null)
-                image = Image.FromFile(@"Resources\music_gui_logo.png");  //no extension needed
+            {
+                string defaultimage = @"Resources\music_gui_logo.png";
+                if(System.IO.File.Exists(defaultimage))
+                    image = Image.FromFile(defaultimage);  //no extension needed
+            }
             else
                 image = Image.FromFile(pic);
         }

@@ -36,9 +36,15 @@ namespace Glaxion.Music
         {
             get
             {
+                if (!Directory.Exists(_defaultDir))
+                {
+                    _defaultDir = Path.Combine("Output", "tmp");
+                    if (!Directory.Exists(_defaultDir))
+                        Directory.CreateDirectory(_defaultDir);
+                }
                 return _defaultDir;
             }
-            private set
+            set
             {
                 _defaultDir = value;
             }
@@ -87,7 +93,7 @@ namespace Glaxion.Music
         public string UpdateFilePath()
         {
             string dir = Path.GetDirectoryName(Filepath);
-            Filepath = dir + @"\" + Name + ext;
+            Filepath = Path.Combine(dir, Name + ext);
             return Filepath;
         }
         
@@ -132,7 +138,7 @@ namespace Glaxion.Music
                 }
                 if (DefaultDirectory != null)
                 {
-                    Filepath = DefaultDirectory + @"\" + filePath + ext;
+                    Filepath = Path.Combine(DefaultDirectory,filePath + ext);
                 }
             }
             GetName(filePath);
@@ -220,21 +226,16 @@ namespace Glaxion.Music
         
         //replaces the current path to the playlist
         //with the globally set default playlist directory
-        public string GetDefaultPlaylistPath()
-        {
-            if(Path.HasExtension(Name))
-            {
-
-                Name = "error name";
-                tool.Show(Name);
-            }
-            Filepath = DefaultDirectory + @"\"+Name + ext;
-            return Filepath;
-        }
 
         public void SetDefaultPath()
         {
-            Filepath = GetDefaultPlaylistPath();
+            if (Path.HasExtension(Name))
+            {
+                Name = "error name";
+                tool.Show(Name);
+            }
+
+            Filepath = Path.Combine(DefaultDirectory, Name + ext);
         }
 
         public List<string> GetTrackPaths()
@@ -258,7 +259,7 @@ namespace Glaxion.Music
                     od.InitialDirectory = DefaultDirectory;
                 }
 
-                od.FileName = Name + ext;
+                od.FileName = Path.Combine(Name,ext);
                 if (od.ShowDialog() == DialogResult.OK)
                 {
                     Filepath = od.FileName;
@@ -285,20 +286,15 @@ namespace Glaxion.Music
             }
             else
             {
-                if (Filepath == null)
+                if (string.IsNullOrEmpty(Filepath)|| string.IsNullOrWhiteSpace(Filepath))
                 {
                     if (debugSave)
                         tool.show(1, Filepath, "", "Failed to Save");
                     return false;
                 }
 
-                if(!Directory.Exists(Filepath))
-                {
-                    //string dir = FinbdDefaultDirectory();
-                    string tmp = @"Output\tmp\";
-                    Directory.CreateDirectory(tmp);
-                    Filepath = tmp + @"\" + Name + ext;
-                }
+                if (!File.Exists(Filepath))
+                    SetDefaultPath();
 
                 FileStream fs = File.Create(Filepath);
                 fs.Close();
@@ -318,9 +314,8 @@ namespace Glaxion.Music
                 //need to remove illegal characters
                 if (songs[i] == null)
                     continue;
-                if (File.Exists(songs[i].Filepath))
-                    continue;
-                string t = songs[i].Name;
+
+                string t = Path.GetFileNameWithoutExtension(songs[i].Filepath);
                 Song s = SongInfo.Instance.SearchForFile(t);
                 if (s == null)
                     continue;

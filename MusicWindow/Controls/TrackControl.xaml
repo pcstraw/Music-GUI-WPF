@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             mc:Ignorable="d" Width="400" Height="440" Background="#FFF1F3DC">
+             mc:Ignorable="d" Width="400" Height="440" Background="#FFF1F3DC" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
     <DockPanel LastChildFill="True" Grid.RowSpan="4">
         <DockPanel.Resources>
@@ -34,13 +34,13 @@
                Foreground="Black" 
                FontWeight="Bold" 
                FontFamily="Verdana"/>
-        <TextBox TextWrapping="Wrap" 
+        <TextBox x:Name="searchBox" TextWrapping="Wrap" 
                  Text="Search &lt;Not Implemented&gt;" 
                  Height="24" 
                  VerticalAlignment="Top" 
                  Grid.Row="2" 
                  MinHeight="24" 
-                 DockPanel.Dock="Top"/>
+                 DockPanel.Dock="Top" TextChanged="searchBox_TextChanged"/>
         <local:ListViewEx 
             local:DragDropExtension.ScrollOnDragDrop ="True"
             x:Name="listView" 
@@ -50,16 +50,28 @@
             Foreground="Black" 
             GridViewColumnHeader.Click="DelesctAll_Click"
             ItemsSource="{Binding  viewModel.Songs}" IsSynchronizedWithCurrentItem="False">
-
+            <local:ListViewEx.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="4" Background="Aquamarine" BorderBrush="Black" Padding="4" 
+                        BorderThickness="2" >
+                    </Border>
+                </DataTemplate>
+            </local:ListViewEx.ItemTemplate>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" 
+                    <GridViewColumn DisplayMemberBinding="{Binding Title}" 
                                     Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Background="Aquamarine"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                         <GridViewColumnHeader HorizontalContentAlignment="Left" 
                                               HorizontalAlignment="Stretch" 
                                               Content="Name"/>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Filepath}">
+                        
                         <GridViewColumnHeader HorizontalAlignment="Left" 
                                               HorizontalContentAlignment="Left" 
                                               Content="FilePath" 
@@ -69,6 +81,20 @@
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=State}" Value="4">
+                            <Setter Property="Background" Value="#FFFF824B" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="1">
+                            <Setter Property="Background" Value="#FF6AFFD2" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="2">
+                            <Setter Property="Background" Value="#FF9DE5C8" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="3">
+                            <Setter Property="Background" Value="#FFDCDBC8" />
+                        </DataTrigger>
+                    </Style.Triggers>
                     <EventSetter Event="MouseDoubleClick" 
                                  Handler="Item_MouseDoubleClick" />
                 </Style>

@@ -123,7 +123,7 @@ namespace Glaxion.ViewModel
             while (!_song.loaded)
             { }
             //is this check relevant? Better to stay safe
-            if(!_song.invalid)
+            if(_song.State != SongState.MissingTags)
             SetSong(_song);
         }
     }

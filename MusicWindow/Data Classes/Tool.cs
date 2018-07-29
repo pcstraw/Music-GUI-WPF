@@ -123,7 +123,6 @@ namespace Glaxion.Tools
 
         public static float Min(float num1, float num2)
         {
-           // Tool.Show(num1, num2);
             if (num1 < num2)
                 return num1;
             else
@@ -156,6 +155,20 @@ namespace Glaxion.Tools
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.BackgroundColor = ConsoleColor.Yellow;
         }
+        public static void SetConsoleHighlightState()
+        {
+            ConsoleColor cf = Console.ForegroundColor;
+            ConsoleColor cb = Console.BackgroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.Blue;
+        }
+        public static void SetConsoleSuccessState()
+        {
+            ConsoleColor cf = Console.ForegroundColor;
+            ConsoleColor cb = Console.BackgroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+        }
         public static void ResetConsoleColor()
         {
             Console.ForegroundColor = cf;
@@ -170,6 +183,20 @@ namespace Glaxion.Tools
         public static void debugWarning(params object[] text)
         {
             SetConsoleWarningState();
+            tool.debug(text);
+            ResetConsoleColor();
+        }
+
+        public static void debugHighlight(params object[] text)
+        {
+            SetConsoleHighlightState();
+            tool.debug(text);
+            ResetConsoleColor();
+        }
+
+        public static void debugSuccess(params object[] text)
+        {
+            SetConsoleSuccessState();
             tool.debug(text);
             ResetConsoleColor();
         }

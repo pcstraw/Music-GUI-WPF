@@ -73,5 +73,18 @@ namespace Glaxion.ViewModel
         {
             player.PlayPlaylist(CurrentList, song);
         }
+
+        public List<Song> SearchSongs(string searchtText,string filter)
+        {
+            List<Song> result = new List<Song>();
+
+            foreach(Song s in Songs)
+            {
+                string test = s.GetType().GetProperty(filter).GetValue(s) as string;
+                if (test.ToLower().Contains(searchtText))
+                    result.Add(s);
+            }
+            return result;
+        }
     }
 }

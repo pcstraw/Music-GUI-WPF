@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             mc:Ignorable="d" Height="20" Width="320" Background="#FF363535" Loaded="Loaded_Event">
+             mc:Ignorable="d" Width="320" Background="#FF363535" Loaded="Loaded_Event">
     <Grid>
         <Label Content="{Binding Path = VolumeAsText, UpdateSourceTrigger=PropertyChanged}" 
                HorizontalAlignment="Right" 
@@ -17,9 +17,9 @@
         <Slider x:Name="slider" 
                 Value="{Binding Path= SliderValue, BindsDirectlyToSource=True}" 
                 Maximum="{Binding Path=SliderMaximum, Mode=OneWay}"
-                Margin="0,0,30,0" 
+                Margin="0,1,30,0" 
                 IsSnapToTickEnabled="True" 
                 MouseWheel="Slider_MouseWheel" 
-                PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown"/>
+                PreviewMouseLeftButtonDown="slider_PreviewMouseLeftButtonDown" Height="19"/>
     </Grid>
 </UserControl>

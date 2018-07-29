@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="MusicWindow.MainControl"
+﻿<UserControl 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             xmlns:MusicWindow="clr-namespace:MusicWindow;assembly=MusicWindow"
+             x:Class="MusicWindow.MainControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid Margin="0">
@@ -29,11 +29,11 @@
         </Grid>
         <Grid Grid.Column="2" Margin="0,0,0.333,0.333">
             <Grid.RowDefinitions>
-                <RowDefinition Height="130"/>
+                <RowDefinition Height="105"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <local:PlaylistControl x:Name="playlistControl" Margin="0,0,-0.106,0.334" Width="Auto" Height="Auto" Grid.Row="1"/>
-            <local:TrackPlaybackControl Margin="0" VerticalAlignment="Top" Height="130" Width="Auto"/>
+            <local:PlaylistControl x:Name="playlistControl" Margin="0" Width="Auto" Height="Auto" Grid.Row="1"/>
+            <local:TrackPlaybackControl Margin="0" Height="105" Width="Auto"/>
         </Grid>
     </Grid>
 </UserControl>

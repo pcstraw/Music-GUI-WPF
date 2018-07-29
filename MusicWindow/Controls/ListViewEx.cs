@@ -31,6 +31,7 @@ namespace MusicWindow
         private AdornerLayer _layer;
         private bool _dragIsOutOfScope;
         ArrayList draggedItems;
+        private List<object> _selItems = new List<object>();
 
         public bool MultiDrag { get; set; }
 
@@ -115,21 +116,14 @@ namespace MusicWindow
                 }
                 return;
             }
-            bool addDownwards = false;
-            if (index > last_index)
-            {
-                //addDownwards = true;
-               // insertedItems.Reverse();
+            if (index >= last_index)
                 index++;
-            }
             
             SelectedItems.Clear();
             foreach (var t in insertedItems)
             {
                 list.Insert(index, t);
                 SelectedItems.Add(t);
-                if (addDownwards)
-                    index++;
             }
         }
 
@@ -151,8 +145,7 @@ namespace MusicWindow
             }
             items.Reverse();
         }
-
-        private List<object> _selItems = new List<object>();
+        
         private void ListViewEx_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Store the mouse position
@@ -171,6 +164,8 @@ namespace MusicWindow
 
                     ListViewItem listViewItem =
                         FindAnchestor<ListViewItem>(obj);
+                    if (listViewItem == null)
+                        return;
                     object data = ItemContainerGenerator.ItemFromContainer(listViewItem);
                     _selItems.Add(data);
                 }
@@ -390,13 +385,11 @@ namespace MusicWindow
                 _adorner.OffsetTop = args.GetPosition(this).Y - _startPoint.Y;
             }
         }
-
-        /*
-        protected override DependencyObject GetContainerForItemOverride()
+        
+        public ListViewItem GetItemFromData(object item)
         {
-            return new MyListViewItem();
+            return ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
         }
-        */
 
         private static T FindAnchestor<T>(DependencyObject current)
         where T : DependencyObject

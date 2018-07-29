@@ -1,0 +1,211 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:MultiSelection">
+
+    <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Width" Value="13"/>
+        <Setter Property="Height" Value="13"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="ExpanderButtonBorder">
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Fill="Transparent"
+                            Grid.ColumnSpan="2"/>
+                            <Polygon x:Name="polygonArrow" 
+                                     Grid.Column="0" 
+                                     Stroke="Black" 
+                                     Fill="Gray" 
+                                     StrokeLineJoin="Round"
+                                     StrokeThickness="1"
+                                     Points="5 0,10 5,5 10">
+
+                                <Polygon.RenderTransformOrigin>
+                                    <Point X="0.5" Y="0.5"/>
+                                </Polygon.RenderTransformOrigin>
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                            <ContentPresenter x:Name="HeaderContent"
+                          Grid.Column="1"
+                          Margin="4,0,0,0"
+                          ContentSource="Content"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!--Change the sign to minus when toggled-->
+                        <Trigger Property="IsChecked"
+                                Value="True">
+                            <Setter Property="Polygon.RenderTransform" TargetName="polygonArrow">
+                                <Setter.Value>
+                                    <RotateTransform Angle="90"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:MSTreeViewItem}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+        <Setter Property="VerticalContentAlignment"
+                Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+        <Setter Property="Padding"
+                Value="0" />
+        <Setter Property="Foreground"
+                Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:MSTreeViewItem}">
+
+                    <ControlTemplate.Resources>
+
+                        <local:LeftMarginMultiplierConverter Length="19" x:Key="lengthConverter" />
+
+                        <SolidColorBrush x:Key="SelectedItemBackgroundBrush"
+                                         Color="#FFB3D0E5" />
+                        <SolidColorBrush x:Key="SelectedItemBackgroundOnFocusLostBrush"
+                                         Color="#FFB3D0E5"/>
+                        <SolidColorBrush x:Key="SelectedItemForegroundBrush"
+                                         Color="Black" />
+
+                        <SolidColorBrush x:Key="GlyphBrush"
+                                         Color="#FF9DA3A5" />
+                        <SolidColorBrush x:Key="SelectedGlyphBrush"
+                                         Color="#FFFFFFFF" />
+
+                    </ControlTemplate.Resources>
+                    <StackPanel  x:Name="stacker" Orientation="Vertical" VerticalAlignment="Top">
+                        <Border x:Name="Selection_Border"
+                                Height="Auto"
+                                BorderThickness="0"
+                                Margin="0"
+                                Padding="0"
+                                VerticalAlignment="Top">
+
+                            <Grid Margin="{Binding Converter={StaticResource lengthConverter},  RelativeSource={RelativeSource TemplatedParent}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MinWidth="19" Width="5"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <ToggleButton x:Name="Expander"
+                                        Style="{StaticResource ExpandCollapseToggleStyle}"
+	            					    IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+	            					    ClickMode="Press"
+                                        />
+
+                                <ContentPresenter x:Name="PART_Header"
+                                                  Grid.Column="1"
+                                                  Content="{TemplateBinding HeaderedContentControl.Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
+                                                  ContentStringFormat="{TemplateBinding HeaderedItemsControl.HeaderStringFormat}"
+                                                  ContentTemplateSelector="{TemplateBinding HeaderedItemsControl.HeaderTemplateSelector}"
+                                                  ContentSource="Header"
+                                                  VerticalAlignment="Center"
+                                                  Height="Auto"
+                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </Grid>
+                        </Border>
+                        <ItemsPresenter x:Name="ItemsHost"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded"
+            				Value="false">
+                            <Setter Property="Visibility"
+            					Value="Collapsed"
+            					TargetName="ItemsHost" />
+                        </Trigger>
+                        <Trigger Property="HasItems"
+            				Value="false">
+                            <Setter Property="Visibility"
+            					Value="Hidden"
+            					TargetName="Expander" />
+                        </Trigger>
+                        <Trigger Property="IsSelected"
+            					 Value="true" >
+                            <Setter Property="Foreground"
+            						Value="{DynamicResource SelectedItemForegroundBrush}" />
+                            <Setter Property="Background"
+                                    TargetName="Selection_Border"
+            						Value="{DynamicResource SelectedItemBackgroundBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected"
+                                           Value="true" />
+                                <Condition Property="IsSelectionActive"
+                                           Value="false" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background"
+                                    Value="{DynamicResource SelectedItemBackgroundOnFocusLostBrush}"
+                                    />
+
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource SelectedItemForegroundBrush}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled"
+            				     Value="false">
+                            <Setter Property="Foreground"
+            					    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:MSTreeView}">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:MSTreeView}">
+
+                    <Border SnapsToDevicePixels="true" 
+						        x:Name="Border" 
+						        BorderBrush="{TemplateBinding BorderBrush}" 
+						        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <ScrollViewer Focusable="false" 
+							              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+							              Background="{TemplateBinding Background}" 
+							              Padding="{TemplateBinding Padding}" 
+							              CanContentScroll="false"
+							              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+							              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+
+                            <ItemsPresenter />
+
+                        </ScrollViewer>
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
