@@ -10,6 +10,7 @@ namespace Glaxion.Music
     {
         private PlaylistFileManager() : base()
         {
+          //  PlaylistFiles = new Dictionary<string, Playlist>();
         }
 
         public static PlaylistFileManager Instance { get { return Nested.instance; } }
@@ -25,7 +26,9 @@ namespace Glaxion.Music
             Files.AddRange(list);
             return list;
         }
+        
 
+       // Dictionary<string, Playlist> PlaylistFiles;
         /*
         public void LoadPlaylistDirectories()
         {

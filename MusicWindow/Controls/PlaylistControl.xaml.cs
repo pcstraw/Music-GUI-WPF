@@ -14,80 +14,38 @@ namespace MusicWindow
     /// <summary>
     /// Interaction logic for PlaylistControl.xaml
     /// </summary>
-    public partial class PlaylistControl : UserControl
+    public partial class PlaylistControl : UserControl , IViewModel
     {
         public PlaylistControl()
         {
             InitializeComponent();
-            // playlistManager = new VMPlaylistManager();
-            // Playlists = new ObservableCollection<Playlist>();
             viewModel = new VMPlaylistManager();
             DataContext = viewModel;
-            listView.ItemsSource = viewModel.Playlists;
+            listView.ItemsSource = viewModel.Items;
+            listView.SetViewModelInterface(this);
         }
 
         internal VMPlaylistManager viewModel;
         internal List<TrackControl> trackControls = new List<TrackControl>();
-
-
+        
         public void LinkControls(FileControl fileControl)
         {
             viewModel.LinkFileManagers(fileControl.playlistFileControl.ViewModel,fileControl.musicFileControl.ViewModel);
-            //_fileControl = fileControl;
-           // _playlistFileControl = fileControl.playlistFileControl;
-            //_musicFileControl = fileControl.musicFileControl;
-            //_playlistFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
-           // _musicFileControl.ViewModel.OpenPlaylist += Manager_OpenPlaylist;
-        }
-
-       // ObservableCollection<Playlist> Playlists;
-       // PlaylistFileControl _playlistFileControl;
-        //MusicFileControl _musicFileControl;
-        //FileControl _fileControl;
-        /*
-        public List<string> GetPlaylistsAsFiles()
-        {
-            List<string> plist = new List<string>();
-            foreach(Playlist p in Playlists)
-                plist.Add(p.Filepath);
-            return plist;
-        }
-        */
-        //dep
-        public Playlist DockPlaylist(Playlist playlist)
-        {
-            ColumnDefinition c = new ColumnDefinition();
-            GridLength gl = new GridLength(10.00);
-            c.Width = gl;
-            maingrid.ColumnDefinitions.Add(c);
-
-            GridSplitter splitter = new GridSplitter()
-            {
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                ResizeBehavior = GridResizeBehavior.PreviousAndNext,
-                Background = new SolidColorBrush(Colors.Green),
-                Height = 50,
-                FlowDirection = FlowDirection.RightToLeft
-            };
-
-            maingrid.Children.Add(splitter);
-            Grid.SetRow(splitter, 2);
-
-            return playlist;
         }
 
         //move to view model
         private void BrowsePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.BrowsePlaylistDialog();
+            string startPath = null;
+            if (listView.SelectedItems.Count > 0)
+                startPath = (listView.SelectedItems[0] as Playlist).Filepath;
+            viewModel.BrowsePlaylistDialog(startPath);
         }
 
         private void Item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Playlist p = ((ListViewItem)sender).Content as Playlist;
             AddDockColumn(p);
-           //OpenPlaylistEvent(this, ((ListViewItem)sender).Content as Playlist);
         }
 
         private void OpenPlaylistContext_Click(object sender, RoutedEventArgs e)
@@ -97,7 +55,56 @@ namespace MusicWindow
                 AddDockColumn(p);
             }
         }
-        
+
+
+        private void CreatePlaylistContext_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.CreateNewPlaylist();
+        }
+
+
+        //move to viewmodel
+        private void RemovePlaylistContext_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.RemoveSelectedPlaylists(listView.SelectedItems);
+        }
+
+        private void DeletePlaylistContext_Click(object sender, RoutedEventArgs e)
+        {
+            //e.Handled = true;
+            viewModel.DeleteSelectedPlaylists(listView.SelectedItems);
+        }
+
+        public void AddDataFromFiles(int insertionIndex, List<string> files)
+        {
+            foreach (string file in files)
+            {
+                viewModel.AddPlaylistFromFile(file);
+            }
+        }
+
+        public void MoveData(int insertIndex, List<object> items)
+        {
+            viewModel.MoveItems(insertIndex, items);
+        }
+
+        public void AddData(int insertIndex, List<object> items)
+        {
+            foreach (object o in items)
+            {
+                if (o is Playlist)
+                {
+                    viewModel.AddPlaylistFromFile(0, o as Playlist);
+                }
+                if (o is Song)
+                {
+                    Song s = o as Song;
+                    viewModel.AddPlaylistFromFile(listView.Items.Count, s.Filepath);
+                }
+            }
+        }
+
+        #region Docking
         internal void DockTrackControl(TrackControl tc)
         {
             //if one of the docked controls has been resized then we need to reset the default
@@ -143,7 +150,6 @@ namespace MusicWindow
             trackControls.Add(tc);
             //now we can set the column index for the splitter and track control
             SetColumnsPosition(tc);
-
         }
 
         internal void SetColumnsPosition(TrackControl trackControl)
@@ -187,10 +193,24 @@ namespace MusicWindow
             TrackControl tc = new TrackControl(playlist);
             DockTrackControl(tc);
         }
-        //move to viewmodel
-        private void RemovePlaylistContext_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+        private void SaveAsPlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.RemoveSelectedPlaylists(listView.SelectedItems);
+            foreach(Playlist p in listView.SelectedItems)
+                p.SaveAs();
+        }
+
+        private void QuickSavePlaylistContext_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Playlist p in listView.SelectedItems)
+                p.Save();
+        }
+
+        private void FolderPlaylistContext_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(Playlist p in listView.SelectedItems)
+                tool.OpenFileDirectory(p.Filepath);
         }
     }
 }

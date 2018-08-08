@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Glaxion.Tools;
 
@@ -16,13 +18,85 @@ namespace Glaxion.Music
             debugSave = true;
         }
 
+        public Playlist(string filePath)
+        {
+            //Construction(filePath, false);
+            if (File.Exists(filePath))
+            {
+                GetName(filePath);
+                Filepath = GetDirectory();
+            }
+            else
+            {
+                Name = Path.GetFileNameWithoutExtension(filePath);
+                SetDefaultPath();
+            }
+            debugSave = true;
+        }
+
+        public Playlist(string filePath, bool readFile)
+        {
+            Construction(filePath, readFile);
+        }
+
+        private void Construction(string filePath, bool readFile)
+        {
+            debugSave = true;
+            Filepath = filePath;
+            if (tool.IsPlaylistFile(filePath))
+            {
+                if (readFile)
+                    ReadFile();
+            }
+            else
+            {
+                if (tool.IsAudioFile(filePath))
+                {
+                    filePath = Path.GetDirectoryName(filePath);
+                }
+                if (Directory.Exists(filePath))
+                {
+                    Filepath = filePath;
+                    if (readFile)
+                    {
+                        List<string> tracks = tool.LoadAudioFiles(filePath, SearchOption.TopDirectoryOnly);
+                        //tracks.Reverse();
+                        GetSongs(tracks);
+                       
+                    }
+                }
+                else
+                {
+                    failed = true;
+                    return;
+                }
+                if (DefaultDirectory != null)
+                {
+                    Filepath = Path.Combine(DefaultDirectory, filePath + ext);
+                }
+            }
+            GetName(filePath);
+        }
+
+
         //Any class capable of opening an playlist should use this event handler
         // public event OpenPlaylistEventHandler OpenPlaylistEvent;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        string _Filepath;
+        public string Filepath {
+            get { return _Filepath; }
+            set { _Filepath = value; OnPropertyChanged(); }
+        }
 
-      //  string Filepath;
-        public string Filepath { get; set ; }
-       // string Name;
-        public string Name { get ;  set ; }
+        string _Name;
+        public string Name {
+            get { return _Name; } 
+            set { _Name = value; OnPropertyChanged(); }
+            }
         public string ext = ".m3u";
         public int trackIndex;
         public bool dirty;
@@ -108,42 +182,8 @@ namespace Glaxion.Music
             path = newPath;
             */
         }
-        
-        public Playlist(string filePath, bool readFile)
-        {
-            debugSave = true;
-            Filepath = filePath;
-            if (tool.IsPlaylistFile(filePath))
-            {
-                if(readFile)
-                    ReadFile();
-            }else
-            {
-                if(tool.IsAudioFile(filePath))
-                {
-                    filePath = Path.GetDirectoryName(filePath);
-                }
-                if (Directory.Exists(filePath))
-                {
-                    Filepath = filePath;
-                    if (readFile)
-                    {
-                        List<string> tracks = tool.LoadAudioFiles(filePath, SearchOption.TopDirectoryOnly);
-                        GetSongs(tracks);
-                    }
-                }else
-                {
-                    failed = true;
-                    return;
-                }
-                if (DefaultDirectory != null)
-                {
-                    Filepath = Path.Combine(DefaultDirectory,filePath + ext);
-                }
-            }
-            GetName(filePath);
-        }
 
+        
         private void GetName(string file)
         {
             Name = Path.GetFileNameWithoutExtension(file);
@@ -247,6 +287,50 @@ namespace Glaxion.Music
             }
             return l;
         }
+
+        public static string[] OpenBrowserDialog(string path)
+        {
+            OpenFileDialog od = new OpenFileDialog();
+            if (Directory.Exists(path))
+                od.InitialDirectory = path;
+            else
+                od.InitialDirectory = DefaultDirectory;
+            
+            od.Title = "Select Files";
+            od.Multiselect = true;
+            od.FileName = Path.GetFileNameWithoutExtension(path);
+
+            od.Filter = "m3u files (*.m3u)|*.m3u|All files (*.*)|*.*";
+            od.DefaultExt = "m3u";
+
+            if (od.ShowDialog() == DialogResult.OK)
+                return od.FileNames;
+            else
+                return null;
+        }
+        
+        public bool OpenFile()
+        {
+            SaveFileDialog od = new SaveFileDialog();
+            if (Directory.Exists(Filepath))
+                od.InitialDirectory = Filepath;
+            else
+                od.InitialDirectory = DefaultDirectory;
+            od.Title = "Select Files";
+            od.FileName = Path.GetFileNameWithoutExtension(Filepath);
+
+            od.Filter = "m3u files (*.m3u)|*.m3u|All files (*.*)|*.*";
+            od.DefaultExt = "m3u";
+            
+            if (od.ShowDialog() == DialogResult.OK)
+            {
+                Filepath = od.FileName;
+                Name = Path.GetFileNameWithoutExtension(Filepath);
+                return true;
+            }
+            else
+                return false;
+        }
        
         public bool WriteToFile(bool append)
         {
@@ -259,7 +343,10 @@ namespace Glaxion.Music
                     od.InitialDirectory = DefaultDirectory;
                 }
 
-                od.FileName = Path.Combine(Name,ext);
+                od.FileName = Path.GetFileNameWithoutExtension(Name);
+                od.Filter = "m3u files (*.m3u)|*.m3u|All files (*.*)|*.*";
+                od.DefaultExt = "m3u";
+
                 if (od.ShowDialog() == DialogResult.OK)
                 {
                     Filepath = od.FileName;

@@ -34,7 +34,7 @@ namespace MusicWindow
 
 
         List<PropertyControl> entryControls;
-        internal VMSongInfo viewModel;
+        internal VMSong viewModel;
 
         bool _sto;
         public bool ShowTagOptions
@@ -61,7 +61,7 @@ namespace MusicWindow
             entryControls.Add(propertyControl4);
             entryControls.Add(propertyControl5);
 
-            viewModel = new VMSongInfo();
+            viewModel = new VMSong();
             SetPropertyControlBinding(propertyControl1, nameof(viewModel.Title));
             SetPropertyControlBinding(propertyControl2, nameof(viewModel.Artist));
             SetPropertyControlBinding(propertyControl3, nameof(viewModel.Album));

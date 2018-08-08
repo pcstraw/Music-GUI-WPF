@@ -45,7 +45,7 @@ namespace MusicWindow
             foreach (var i in treeView.SelectedItems)
             {
                 VMNode v = i.DataContext as VMNode;
-               ViewModel.RaiseOpenPlaylistEvent(v.FilePath);
+                ViewModel.RaiseOpenPlaylistEvent(v.FilePath);
             }
         }
 

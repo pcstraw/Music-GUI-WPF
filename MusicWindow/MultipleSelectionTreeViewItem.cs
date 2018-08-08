@@ -89,7 +89,7 @@ namespace MultiSelection
         {
             if (ParentMultipleSelectionTreeView == null)
                 return;
-            
+
             /*
             if (ParentMultipleSelectionTreeView.SelectionMode == SelectionModalities.KeyboardModifiersMode)
             {
@@ -101,9 +101,8 @@ namespace MultiSelection
             if (!this.IsSelected)
                 this.IsSelected = true;
             else
-                this.IsSelected = false;
+               this.IsSelected = false;
             
-
             ParentMultipleSelectionTreeView.OnViewItemMouseDown(this);
 
             //prevent parent node from being selected
@@ -337,11 +336,8 @@ namespace MultiSelection
 
         public void Select()
         {
-            if (!this.IsSelected)
-            {
-                this.IsSelected = true;
-                ParentMultipleSelectionTreeView.OnSelectionChanges(this);
-            }
+            this.IsSelected = true;
+            ParentMultipleSelectionTreeView.OnSelectionChanges(this);
         }
 
         public MSTreeViewItem GetChildItemFromData(object item)

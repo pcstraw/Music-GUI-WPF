@@ -1,22 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Glaxion.Music;
 
 namespace Glaxion.ViewModel
 {
-    public class VMSongInfo : INotifyPropertyChanged
+    public class VMSong : INotifyPropertyChanged
     {
-        public VMSongInfo()
+        public VMSong()
         {
         }
 
+        public VMSong(Song song)
+        {
+            SetSong(song);
+        }
+
         Song _song;
+        public Song CurrentSong {
+            get { return _song; }
+            set { SetSong(value); }
+        }
+
         public void SetSong(Song song)
         {
             Title = song.Title;
@@ -25,7 +31,36 @@ namespace Glaxion.ViewModel
             Year = song.Year;
             Genre = song.Genres[0];
             Picture = song.image;
+            Filepath = song.Filepath;
+            if (_song != null)
+                _song.PropertyChanged -= _song_PropertyChanged;
             _song = song;
+            //need to unsubscribe this when song changes
+            _song.PropertyChanged += _song_PropertyChanged;
+           // CurrentSong = song;
+        }
+
+        private void _song_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!(e is SongEventArgs))
+                return;
+
+            SongEventArgs se = e as SongEventArgs;
+            if (se.PropertyName.ToLower() == "state")
+                State = (SongState)se.PropertyValue;
+
+        }
+
+        string _Filepath;
+        public string Filepath
+        {
+            get { return _Filepath; }
+            set
+            {
+                if (_Filepath == value) return;
+                _Filepath = value;
+                OnPropertyChanged();
+            }
         }
 
         string _title;
@@ -76,6 +111,24 @@ namespace Glaxion.ViewModel
             set {if (_picture == value) return;
                 _picture = value;
                 OnPropertyChanged(); }
+        }
+        string _isSelected;
+        public string IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (_isSelected == value) return;
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        SongState _state;
+        public SongState State
+        {
+            get { return _state; }
+            set { _state = value; OnPropertyChanged(); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -29,17 +29,16 @@ namespace MusicWindow
         
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
-               
                 tool.debug("Starting MusicGUI");
                 SaveSettings.RestoreMainControl(this);
                 Window window = Window.GetWindow(this);
                 window.Closing += Window_Closing;
                 playlistControl.LinkControls(fileControl);
                 tool.debug("Music GUI Loaded");
-                tool.HideConsole();
+                //tool.HideConsole();
+
                 GetAllResources();
                // CopyResource("MusicWindow.Resources.music_gui_logo.png", "music_gui_logo.png");
             }

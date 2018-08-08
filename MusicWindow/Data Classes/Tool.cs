@@ -79,6 +79,22 @@ namespace Glaxion.Tools
             return Task.Run(() => { File.Delete(path); });
         }
 
+        public static bool DeleteFile(string path, bool askConfirmation, bool confirmAction)
+        {
+            if (!File.Exists(path))
+                return false;
+
+            if (MessageBox.Show(string.Concat("Are you sure you want to delete...\n\n ",path),
+                "Confirm Deletion",
+                MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                DeleteAsync(path);
+                tool.show(3,string.Concat("Deletion\n\n", path, "\n\n", "Successfull!"));
+                return true;
+            }
+            return false;
+        }
+
         public static float clamp(float value, float min, float max)
         {
             if (value > max)
@@ -740,7 +756,7 @@ namespace Glaxion.Tools
             else
                 return true;
         }
-
+        
         public static List<string> SelectFiles(bool FolderPicker,bool MultiSelect,string title)
         {
             CommonOpenFileDialog cd = new CommonOpenFileDialog();
@@ -748,6 +764,7 @@ namespace Glaxion.Tools
             cd.Multiselect = MultiSelect;
             cd.RestoreDirectory = true;
             cd.Title = title;
+
             List<string> l = new List<string>();
             if (cd.ShowDialog() == CommonFileDialogResult.Ok)
             {

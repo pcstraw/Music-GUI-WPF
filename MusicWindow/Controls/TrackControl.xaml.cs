@@ -1,45 +1,31 @@
-﻿using System;
+﻿using Glaxion.Music;
+using Glaxion.ViewModel;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Glaxion.Music;
-using Glaxion.Tools;
-using Glaxion.ViewModel;
 
 namespace MusicWindow
 {
     /// <summary>
     /// Interaction logic for TrackControl.xaml
     /// </summary>
-    public partial class TrackControl : UserControl
+    public partial class TrackControl : UserControl , IViewModel
     {
         private void Construction()
         {
             InitializeComponent();
             viewModel = new VMTrackManager();
             DataContext = viewModel;
+            listView.DataContext = viewModel;
             //listView.ItemsSource = viewModel.Songs;
             playlistNameLabel.DataContext = viewModel;
-            listView.DropDataEvent += ListView_DropDataEvent;
-            listView.MultiDropDataEvent += ListView_MultiDropDataEvent;
+            listView.SetViewModelInterface(this);
         }
 
         VMTrackManager viewModel;
-
-        private void ListView_MultiDropDataEvent(int Index, List<object> Item)
-        {
-            listView.MultiDropData<Song>(Index, viewModel.Songs, Item);
-        }
-
-        private void ListView_DropDataEvent(int ReplaceIndex, object Item)
-        {
-            listView.DropData<Song>(ReplaceIndex, viewModel.Songs, Item);
-        }
 
         public TrackControl()
         {
@@ -51,7 +37,7 @@ namespace MusicWindow
             Construction();
             listView.ItemsSource = null;
             viewModel.SetPlaylist(playlist);
-            listView.ItemsSource = viewModel.Songs;
+            listView.ItemsSource = viewModel.Items;
         }
        // public Playlist CurrentList { get; private set; }
        // public ObservableCollection<Song> Songs { get; set; }
@@ -76,7 +62,7 @@ namespace MusicWindow
         {
             listView.ItemsSource = null;
             viewModel.OpenPlaylistSelectDialog();
-            listView.ItemsSource = viewModel.Songs;
+            listView.ItemsSource = viewModel.Items;
             /*
             List<string> l = tool.SelectFiles(false, false,"Select Playlist");
             if (l.Count != 1)
@@ -94,8 +80,8 @@ namespace MusicWindow
         private void Item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListViewItem item = sender as ListViewItem;
-            Song s = item.Content as Song;
-            viewModel.PlaySong(s);
+            VMSong s = item.Content as VMSong;
+            viewModel.PlaySong(s.CurrentSong);
         }
 
         private void DelesctAll_Click(object sender, RoutedEventArgs e)
@@ -132,6 +118,7 @@ namespace MusicWindow
 
         internal void Close()
         {
+            viewModel.UpdateCurrentPlaylist();
             playlistControlParent.RemoveFromPlaylistControl(this);
         }
         
@@ -142,12 +129,14 @@ namespace MusicWindow
 
         private void TrackControlReloadButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.CurrentList.ReadFile();
+            viewModel.ReloadPlaylistFromFile();
+            listView.ItemsSource = null;
+            listView.ItemsSource = viewModel.Items;
         }
 
         private void TrackControlSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.CurrentList.Save();
+            viewModel.SavePlaylist();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -164,10 +153,10 @@ namespace MusicWindow
 
             if (listView.IsFocused)
                 return;
-
-            foreach (Song s in listView.Items)
+            //revise in light of using vmsong
+            foreach (VMSong s in listView.Items)
             {
-                if (s == song)
+                if (s.CurrentSong == song)
                 {
                     listView.ScrollIntoView(s);
                     return;
@@ -205,7 +194,7 @@ namespace MusicWindow
                 }
                 return;
             }
-            
+            /*
             List<Song> result = viewModel.SearchSongs(searchBox.Text, "Title");
             
             foreach (object song in listView.Items)
@@ -219,11 +208,50 @@ namespace MusicWindow
                     if (s == song)
                     {
                         listViewItem.Background = new SolidColorBrush(Color.FromRgb(255, 200, 200));
-     
                     }
                 }
             }
             listView.UpdateDefaultStyle();
+            */
+        }
+
+        #region interface
+
+        #endregion
+
+        public void AddDataFromFiles(int inertionIndex, List<string> files)
+        {
+            List<VMSong> newItems = viewModel.InsertSongsFromFiles(inertionIndex, files);
+            foreach (VMSong vmSong in newItems)
+                listView.SelectedItems.Add(vmSong.CurrentSong);
+            listView._selItems.Clear();
+        }
+
+        public void MoveData(int insertIndex, List<object> items)
+        {
+            viewModel.MoveItems(insertIndex, items);
+           // listView.SelectedItems.Clear();
+            foreach (VMSong s in items)
+            {
+                listView.SelectedItems.Add(s);
+            }
+            listView._selItems.Clear();
+            
+        }
+
+        public void AddData(int insertIndex, List<object> items)
+        {
+            List<VMSong> returnList = viewModel.AddItems(insertIndex, items);
+            foreach(VMSong o in returnList)
+            { 
+                listView.SelectedItems.Add(o);
+            }
+            listView._selItems.Clear();
+        }
+
+        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           // listView._selItems.Clear();
         }
     }
 }

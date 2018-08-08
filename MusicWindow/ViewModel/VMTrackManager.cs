@@ -4,30 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Glaxion.ViewModel
 {
-    public class VMTrackManager : INotifyPropertyChanged
+    public class VMTrackManager : VMListView<VMSong>, INotifyPropertyChanged
     {
         public VMTrackManager()
         {
-            Songs = new ObservableCollection<Song>();
             CurrentList = new Playlist();
             player = MusicPlayer.Player;
+            //Songs = new ObservableCollection<VMSong>();
         }
 
         public MusicPlayer player;
         public Playlist CurrentList { get; private set; }
-        ObservableCollection<Song> _songs;
-        public ObservableCollection<Song> Songs
-        {
-            get { return _songs; }
-            set { _songs = value; OnPropertyChanged(); }
-        }
+       // public ObservableCollection<VMSongInfo> Songs;
+
         public string PlaylistNameLabel
         {
             get { return CurrentList.Name; }
@@ -43,17 +36,22 @@ namespace Glaxion.ViewModel
             }
             playlist.UpdatePaths();
             CurrentList = playlist;
-            Songs = null;
-            Songs = playlist.songs;
+            Items = null;
+            Items = GetSongs(CurrentList.songs);
             PlaylistNameLabel = playlist.Name;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public ObservableCollection<VMSong> GetSongs(IEnumerable<Song> songs)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ObservableCollection<VMSong> return_list = new ObservableCollection<VMSong>();
+            foreach (Song s in songs)
+            {
+               // this.InsertSong(0, new VMSong(s));
+                 return_list.Add(new VMSong(s));
+            }
+            return return_list;
         }
-
+        
         public Playlist OpenPlaylistSelectDialog()
         {
             List<string> l = tool.SelectFiles(false, false, "Select Playlist");
@@ -71,20 +69,138 @@ namespace Glaxion.ViewModel
 
         public void PlaySong(Song song)
         {
+            UpdateCurrentPlaylist();
             player.PlayPlaylist(CurrentList, song);
         }
 
-        public List<Song> SearchSongs(string searchtText,string filter)
+        public List<VMSong> SearchVMSongs(string searchtText,string filter)
         {
-            List<Song> result = new List<Song>();
+            List<VMSong> result = new List<VMSong>();
 
-            foreach(Song s in Songs)
+            foreach(VMSong s in Items)
             {
                 string test = s.GetType().GetProperty(filter).GetValue(s) as string;
                 if (test.ToLower().Contains(searchtText))
                     result.Add(s);
             }
             return result;
+        }
+
+        internal List<string> ConvertToAudioFiles(string filePath)
+        {
+            List<string> result = new List<string>();
+            if (tool.IsAudioFile(filePath))
+            {
+                result.Add(filePath);
+                return result;
+            }
+            
+            Playlist p = new Playlist(filePath, true);
+            if(p.failed)
+            {
+                tool.show(3,"Unable to Make playlist: ", p.Filepath);
+                return result;
+            }
+            foreach(Song s in p.songs)
+            {
+                result.Add(s.Filepath);
+            }
+            return result;
+        }
+
+        internal VMSong InsertSong(int index, VMSong song)
+        {
+            if (index < 0)
+                index = 0;
+            Items.Insert(index, song);
+            return song;
+        }
+
+        internal VMSong InsertSongFromFile(int index, string filePath)
+        {
+            Song s = SongInfo.Instance.GetInfo(filePath);
+            VMSong vmSong = new VMSong(s);
+            Items.Insert(index,vmSong);
+            return vmSong;
+        }
+
+        internal List<VMSong> InsertSongsFromFiles(int insertionIndex, List<string> files)
+        {
+            List<VMSong> newItems = new List<VMSong>();
+            foreach(string file in files)
+            {
+                if (tool.IsAudioFile(file))
+                {
+                    newItems.Add(InsertSongFromFile(insertionIndex,file));
+                }
+                else
+                {
+                    List<string> results = ConvertToAudioFiles(file);
+                    results.Reverse();
+                    foreach(string s in results)
+                    {
+                        newItems.Add(InsertSongFromFile(insertionIndex, s));
+                    }
+                }
+            }
+            return newItems;
+        }
+
+        internal void ReloadPlaylistFromFile()
+        {
+            CurrentList.ReadFile();
+            SetPlaylist(CurrentList);
+        }
+
+        internal void UpdateCurrentPlaylist()
+        {
+            CurrentList.songs.Clear();
+            foreach(VMSong s in Items)
+            {
+                if (s == null)
+                    throw new Exception("Make sure there is always a song in each VMsong");
+                CurrentList.songs.Add(s.CurrentSong);
+            }
+        }
+
+        public void SavePlaylist()
+        {
+            UpdateCurrentPlaylist();
+            CurrentList.Save();
+        }
+
+        internal List<VMSong> AddItems(int insertIndex, List<object> items)
+        {
+            List<VMSong> returnList = new List<VMSong>();
+           // items.Reverse();
+            foreach(object o in items)
+            {
+                if(o is VMSong)
+                {
+                    returnList.Add(this.InsertSong(insertIndex,o as VMSong));
+                }
+                
+                if(o is Playlist)
+                {
+                    Playlist p = o as Playlist;
+
+                    if (p == CurrentList)
+                        continue;
+
+                    foreach (Song s in p.songs)
+                    {
+                        returnList.Add(this.InsertSong(insertIndex, new VMSong(s)));
+                        insertIndex++;
+                    }
+                }
+            }
+            return returnList;
+        }
+
+        //dep
+        internal void AddSelectedItem(object o)
+        {
+            
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Glaxion.Tools;
+﻿using Glaxion.Music;
+using Glaxion.Tools;
+using Glaxion.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,24 +8,32 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace MusicWindow
 {
+    public interface IViewModel
+    {
+        void AddDataFromFiles(int insertIndex,List<string> files);
+        void MoveData(int insertIndex, List<object> items);
+        void AddData(int insertIndex, List<object> items);
+    }
+
     public class ListViewEx : ListView
     {
         public ListViewEx() : base()
         {
             AllowDrop = true;
             draggedItems = new ArrayList();
-            MultiDrag = true;
             //DragEnter += ListViewEx_DragEnter;
             DragEnter += ListViewDragEnter;
             Drop += ListViewDrop;
             PreviewMouseLeftButtonDown += ListViewEx_PreviewMouseLeftButtonDown;
             PreviewMouseMove += ListViewEx_PreviewMouseMove;
+            QueryContinueDrag += ListViewQueryContinueDrag;
         }
         
         Point _startPoint;
@@ -31,102 +41,11 @@ namespace MusicWindow
         private AdornerLayer _layer;
         private bool _dragIsOutOfScope;
         ArrayList draggedItems;
-        private List<object> _selItems = new List<object>();
-
-        public bool MultiDrag { get; set; }
-
-        public delegate void SingleDropDataEventHandler(int Index,object Item);
-        public event SingleDropDataEventHandler DropDataEvent;
-        protected void On_DropDataEvent(int Index, object Item)
-        {
-        }
-
-        public delegate void MultiDropDataEventHandler<T>(int Index, List<T> Item);
-        public event MultiDropDataEventHandler<object> MultiDropDataEvent;
-        protected void On_MultiDropDataEvent<T>(int Index, List<T> Item)
-        {
-        }
-
-        //used for single drag drops
-        public void DropData<T>(int index, ObservableCollection<T> list,object item)
-        {
-            if (list.Count == 0)
-                return;
-
-            if (index >= 0)
-            {
-                list.Remove((T)item);
-                list.Insert(index, (T)item);
-            }
-            else
-            {
-                list.Remove((T)item);
-                list.Add((T)item);
-            }
-        }
-        //used for dropping multiple files
-        public void MultiDropData<T>(int index, ObservableCollection<T> list, List<object> items)
-        {
-            if (list.Count == 0||items.Count==0)
-                return;
-            
-            Sort(items, list);
-            List<T> insertedItems = new List<T>(items.Count);
-            List<T> removedItems = new List<T>(items.Count);
-            object insertion = list[index];
-            
-            int last_index = 0;
-
-            if (insertion == null)
-            {
-                tool.show(5, "Ref item is null");
-                return;
-            }
-
-            foreach (var t in items)
-            {
-                T item = (T)t;
-                last_index = list.IndexOf(item);
-                //looks like we're dropping on one of the selected items.
-                //cancel drag drop
-                if(last_index == index)
-                {
-                    return;
-                }
-                insertedItems.Add(item);
-                removedItems.Add(item);
-            }
-
-            int removal_index = 0;
-            foreach (var t in removedItems)
-            {
-                removal_index = list.IndexOf(t);
-                list.Remove(t);
-            }
-
-            index = list.IndexOf((T)insertion);
-            if(index < 0)
-            {
-                tool.show(5,"Unable to retreive Insertion index");
-                SelectedItems.Clear();
-                foreach (var t in removedItems)
-                {
-                    list.Insert(removal_index, t);
-                    SelectedItems.Add(t);
-                }
-                return;
-            }
-            if (index >= last_index)
-                index++;
-            
-            SelectedItems.Clear();
-            foreach (var t in insertedItems)
-            {
-                list.Insert(index, t);
-                SelectedItems.Add(t);
-            }
-        }
-
+        IViewModel _viewModelInterface;
+        public List<object> _selItems = new List<object>();
+        public int CurrentIndex;
+        
+        //move to VMListView  also see MultiSelect TreeView sort implementation
         void Sort<T>(List<object> items,ObservableCollection<T> fullList)
         {
             int first_index = fullList.IndexOf((T)items[0]);
@@ -135,7 +54,6 @@ namespace MusicWindow
             {
                 T item = (T)items[i];
                 int index = fullList.IndexOf(item);
-                //tool.show(5, index);
                 if (index < first_index)
                 {
                     items.RemoveAt(i);
@@ -145,65 +63,144 @@ namespace MusicWindow
             }
             items.Reverse();
         }
-        
+
+        internal void SetViewModelInterface(IViewModel viewModelInterface)
+        {
+            _viewModelInterface = viewModelInterface;
+        }
+
+        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            CacheSelectedItems();
+            base.OnPreviewMouseLeftButtonDown(e);
+        }
+
+        //called before the event handler
+        protected override void OnDrop(DragEventArgs e)
+        {
+            //List<object> items = dataObj.GetData(typeof(List<object>)) as List<object>;
+            base.OnDrop(e); //calls event handler
+        }
+
+        delegate Point GetPositionDelegate(IInputElement element);
+        private int GetCurrentIndex(GetPositionDelegate getPosition)
+        {
+            int index = -1;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                ListViewItem item = GetListViewItem(i);
+                if (item == null)
+                    continue;
+                if (IsMouseOverTarget(item, getPosition))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index < 0)
+                index = Items.Count;
+            CurrentIndex = index;
+            return index;
+        }
+        private ListViewItem GetListViewItem(int index)
+        {
+            if (ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                return null;
+            return ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
+        }
+        private bool IsMouseOverTarget(Visual target, GetPositionDelegate getPosition)
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+            Point mousePos = getPosition((IInputElement)target);
+            return bounds.Contains(mousePos);
+        }
+
+        //currently using this
+        /*
+        int GetDragInsertionIndex(DragEventArgs e)
+        {
+            ListViewItem itemToReplace = FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
+           // object nameToReplace;
+            int index = Items.Count;
+            if (itemToReplace != null)
+            {
+                // nameToReplace = this.ItemContainerGenerator.ItemFromContainer(itemToReplace);
+                 index =this.ItemContainerGenerator.IndexFromContainer(itemToReplace);
+             //   FrameworkElement element = (FrameworkElement)e.OriginalSource;
+             //   ListViewItem lvi = (ListViewItem)this.ItemContainerGenerator.ContainerFromItem(element.DataContext);
+             //   index = Items.IndexOf(lvi);
+            }
+            if (index > Items.Count)
+                index = Items.Count;
+
+            return index;
+        }
+        */
+
         private void ListViewEx_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Store the mouse position
             _startPoint = e.GetPosition(this);
-            _selItems.Clear();
-            if(MultiDrag)
+            
+            /*
+            if(_selItems.Count == 0)
             {
-                _selItems.Clear();
-                _selItems.AddRange(SelectedItems.Cast<object>());
-                if(_selItems.Count == 0)
-                {
-                   HitTestResult result = VisualTreeHelper.HitTest(this, _startPoint);
-                   DependencyObject obj = result.VisualHit;
-                    if (obj == null)
-                        return;
+                HitTestResult result = VisualTreeHelper.HitTest(this, _startPoint);
+                DependencyObject obj = result.VisualHit;
+                if (obj == null)
+                    return;
 
-                    ListViewItem listViewItem =
-                        FindAnchestor<ListViewItem>(obj);
-                    if (listViewItem == null)
-                        return;
-                    object data = ItemContainerGenerator.ItemFromContainer(listViewItem);
-                    _selItems.Add(data);
-                }
+                ListViewItem listViewItem =
+                    FindAnchestor<ListViewItem>(obj);
+                if (listViewItem == null)
+                    return;
+                //_selItems.AddRange(SelectedItems.Cast<object>());
+                object data = ItemContainerGenerator.ItemFromContainer(listViewItem);
+               // _selItems.Clear();
+                
+              //  _selItems.Add(data);
             }
+            */
         }
 
         private void ListViewDragEnter(object sender, DragEventArgs e)
         {
             Type checktype = typeof(ListViewItem);
-            if (MultiDrag)
-                checktype = typeof(IList);
+            checktype = typeof(IList);
             if (!e.Data.GetDataPresent(checktype) || sender == e.Source)
             {
                 e.Effects = DragDropEffects.None;
             }
         }
         
+        
         private void ListViewEx_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            
+            GetCurrentIndex(e.GetPosition);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                foreach (object selItem in _selItems)
-                {
-                    if (!SelectedItems.Contains(selItem))
-                        SelectedItems.Add(selItem);
-                }
                 Point position = e.GetPosition(null);
 
-                if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                    Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance *2.0||
+                    Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance*2.0)
                 {
-                    if (!MultiDrag)
-                        BeginSingleDrag(e);
-                    else
-                        BeingMultiDrag(e);
+                    BeingMultiDrag(e);
                 }
             }
+        }
+
+        internal void CacheSelectedItems()
+        {
+            _selItems.Clear();
+            foreach(object o in SelectedItems)
+                _selItems.Add(o);
+        }
+
+        internal void RestoreCacheSelectedItems()
+        {
+            SelectedItems.Clear();
+            foreach (object o in _selItems)
+                SelectedItems.Add(o);
         }
 
         private void BeingMultiDrag(MouseEventArgs e)
@@ -211,13 +208,21 @@ namespace MusicWindow
             ListViewEx listView = this;
             ListViewItem listViewItem =
                  FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
+
             if (listViewItem == null)
-            {
                 return;
-               // if (listView.Items.Count > 0)
-                //    listViewItem = (ListViewItem)listView.Items[listView.Items.Count - 1];
+
+            //the listviewitem can be selected on drag before the cache has updated.
+            //In this case, add the item to _selitems
+            //when dragging between listviews, we use _selitems to get the selected items
+            if (!_selItems.Contains(listViewItem.DataContext))
+            {
+                _selItems.Clear(); //make this item the only selected item
+                _selItems.Add(listViewItem.DataContext);
             }
-           // object contextData = listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+
+            RestoreCacheSelectedItems();
+            SortCachedSelectedItems();
 
             //setup the drag adorner.
             InitialiseAdorner(listViewItem);
@@ -226,13 +231,13 @@ namespace MusicWindow
             listView.PreviewDragOver += ListViewDragOver;
             listView.DragLeave += ListViewDragLeave;
             listView.DragEnter += ListViewDragEnter;
+            
+           
 
-            DataObject data = new DataObject(typeof(List<object>), _selItems);
-            //draggedItems.Clear();
-            //draggedItems.Add(contextData);
-
+            DataObject data = new DataObject(typeof(ListViewEx), this);
             DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
             _selItems.Clear();
+
             //cleanup
             listView.PreviewDragOver -= ListViewDragOver;
             listView.DragLeave -= ListViewDragLeave;
@@ -245,103 +250,49 @@ namespace MusicWindow
             }
         }
 
-        private void BeginSingleDrag(MouseEventArgs e)
-        {
-            ListViewEx listView = this;
-            ListViewItem listViewItem =
-                 FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
-
-            if (listViewItem == null)
-                return;
-
-            object contextData = listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
-
-            //setup the drag adorner.
-            InitialiseAdorner(listViewItem);
-
-            //add handles to update the adorner.
-            listView.PreviewDragOver += ListViewDragOver;
-            listView.DragLeave += ListViewDragLeave;
-            listView.DragEnter += ListViewDragEnter;
-
-            DataObject data = new DataObject(typeof(ListViewItem),contextData);
-            //draggedItems.Clear();
-            //draggedItems.Add(contextData);
-            DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
-
-            //cleanup
-            listView.PreviewDragOver -= ListViewDragOver;
-            listView.DragLeave -= ListViewDragLeave;
-            listView.DragEnter -= ListViewDragEnter;
-
-            if (_adorner != null)
-            {
-                AdornerLayer.GetAdornerLayer(listView).Remove(_adorner);
-                _adorner = null;
-            }
-            // get the data for the ListViewItem
-            //  Song song = (Song)listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
-            //  tool.show(3, listView.Items.IndexOf(listViewItem));
-        }
         
         private void ListViewDrop(object sender, DragEventArgs e)
         {
-            //handle external drag drop
-            if (sender != this)
-                return;
-            if (!MultiDrag)
-                InternalSingleDragDrop(e);
+           HandleDragDrop(e);
+        }
+
+        private void HandleDragDrop(DragEventArgs e)
+        {
+            bool isListViewEx = e.Data.GetDataPresent(typeof(ListViewEx));
+            if (isListViewEx)
+            {
+                List<object> itemsToMove = new List<object>();
+                ListViewEx source = e.Data.GetData(typeof(ListViewEx)) as ListViewEx;
+                int index = GetCurrentIndex(e.GetPosition);
+
+                if (source == this)
+                {
+                    foreach (object o in _selItems)
+                        itemsToMove.Add(o);
+
+                    _viewModelInterface?.MoveData(index, itemsToMove);
+                }
+                else if(source is ListViewEx)
+                {
+                    foreach (object o in source._selItems)
+                        itemsToMove.Add(o);
+                    _viewModelInterface?.AddData(index, itemsToMove);
+
+                    this.UpdateLayout();
+                }
+            }
             else
-                InternalMultiDragDrop(e);
-        }
-
-        private void InternalMultiDragDrop(DragEventArgs e)
-        {
-            //initialize to the last index and check if we have 
-            //more then one item
-            int index = Items.Count - 1;
-            if (index <= 0)
-                return;
-
-            if (e.Data.GetDataPresent(typeof(List<object>)))
             {
-
-                List<object> itemToMove = (List<object>)e.Data.GetData(typeof(List<object>));
-                ListViewItem itemToReplace = FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
-                object nameToReplace;
-
-                if (itemToReplace != null)
+                DataObject dataObj = e.Data as DataObject;
+                List<string> StringSource = dataObj.GetData(typeof(List<string>)) as List<string>;
+                if (StringSource != null)
                 {
-                    nameToReplace = this.ItemContainerGenerator.ItemFromContainer(itemToReplace);
-                    index = this.Items.IndexOf(nameToReplace);
+                    int index = GetCurrentIndex(e.GetPosition);
+                    _viewModelInterface?.AddDataFromFiles(index, StringSource);
                 }
-                MultiDropDataEvent?.Invoke(index, itemToMove);
             }
         }
-
-        private void InternalSingleDragDrop(DragEventArgs e)
-        {
-            //initialize to the last index and check if we have 
-            //more then one item
-            int index = Items.Count - 1;
-            if (index <= 0)
-                return;
-
-            if (e.Data.GetDataPresent(typeof(ListViewItem)))
-            {
-                object itemToMove = e.Data.GetData(typeof(ListViewItem));
-                ListViewItem itemToReplace = FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
-                // object name = draggedItems[0]; //hack.  Use iteration instead
-                object nameToReplace;
-                if (itemToReplace != null)
-                {
-                    nameToReplace = this.ItemContainerGenerator.ItemFromContainer(itemToReplace);
-                    index = this.Items.IndexOf(nameToReplace);
-                }
-                DropDataEvent?.Invoke(index, itemToMove);
-            }
-        }
-
+        
         private void InitialiseAdorner(ListViewItem listViewItem)
         {
             VisualBrush brush = new VisualBrush(listViewItem);
@@ -353,6 +304,7 @@ namespace MusicWindow
 
         private void ListViewQueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
+            
             if (this._dragIsOutOfScope)
             {
                 e.Action = DragAction.Cancel;
@@ -364,28 +316,64 @@ namespace MusicWindow
         {
             if (e.OriginalSource == this)
             {
-                Point point = e.GetPosition(this);
-                Rect rect = VisualTreeHelper.GetContentBounds(this);
-
-                //Check if within range of list view.
-                if (!rect.Contains(point))
-                {
-                    e.Effects = DragDropEffects.Copy;
-                    //this._dragIsOutOfScope = true;
-                    //e.Handled = true;
-                }
+               
             }
         }
 
-        void ListViewDragOver(object sender, DragEventArgs args)
+        //need to compensate for scrolling
+        void ListViewDragOver(object sender, DragEventArgs e)
         {
+            GetCurrentIndex(e.GetPosition);
             if (_adorner != null)
             {
-                _adorner.OffsetLeft = args.GetPosition(this).X;
-                _adorner.OffsetTop = args.GetPosition(this).Y - _startPoint.Y;
+                _adorner.OffsetLeft = e.GetPosition(this).X;
+                _adorner.OffsetTop = e.GetPosition(this).Y - _startPoint.Y;
+            }
+            /*
+            Point point = e.GetPosition(this);
+            Rect rect = VisualTreeHelper.GetContentBounds(this);
+
+            //Check if within range of list view.
+            if (!rect.Contains(point))
+            {
+                e.Effects = DragDropEffects.Copy;
+               // this._dragIsOutOfScope = true;
+                //e.Handled = true;
+            }
+            */
+        }
+
+        internal void SortCachedSelectedItems()
+        {
+            for (int i = 0; i < _selItems.Count; i++)
+            {
+                PrevGreaterThan( _selItems[i]);
+            }
+            _selItems.Reverse();
+        }
+
+        void PrevGreaterThan(object item)
+        {
+            int index = Items.IndexOf(item);
+            if (index < 0)
+                return;
+
+            int prev_item = _selItems.IndexOf(item) - 1;
+            if (prev_item < 0)
+                return;
+
+            int prev = Items.IndexOf(_selItems[prev_item]);
+            if (prev < 0)
+                return;
+
+            if (prev > index)
+            {
+                _selItems.Remove(item);
+                _selItems.Insert(prev_item, item);
+                PrevGreaterThan(item);
             }
         }
-        
+
         public ListViewItem GetItemFromData(object item)
         {
             return ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;

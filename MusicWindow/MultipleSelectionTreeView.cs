@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,9 +87,7 @@ namespace MultiSelection
                 case SelectionModalities.KeyboardModifiersMode:
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        // ... TODO ... right now we use the same behavior of Shit Keyword
-                        //ManageCtrlSelection(newItem);
-                        ManageShiftSelection(viewItem);
+                        ManageShiftSelection(newItem);
                     }
                     else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
@@ -245,10 +244,42 @@ namespace MultiSelection
                     item.Select();
                 }
             }
+            SortSelectedItems(parent.Items);
+        }
+
+        internal void SortSelectedItems(ItemCollection collection)
+        {
+            for (int i = 0; i < _selectedItems.Count; i++)
+            {
+                PrevGreaterThan(collection, _selectedItems[i]);
+            }
+            _selectedItems.Reverse();
+        }
+
+        void PrevGreaterThan(ItemCollection collection,MSTreeViewItem item)
+        {
+            int index = collection.IndexOf(item.DataContext);
+            if (index < 0)
+                return;
+
+            int prev_item = _selectedItems.IndexOf(item) - 1;
+            if (prev_item < 0)
+                return;
+
+            int prev = collection.IndexOf(_selectedItems[prev_item].DataContext);
+            if (prev < 0)
+                return;
+
+            if (prev > index)
+            {
+                _selectedItems.Remove(item);
+                _selectedItems.Insert(prev_item, item);
+                PrevGreaterThan(collection, item);
+            }
         }
 
         /// <summary>
-        /// ... TODO ...
+        /// Manage keyboard shift select
         /// </summary>
         /// <param name="viewItem"></param>
         private void ManageShiftSelection(MSTreeViewItem viewItem)

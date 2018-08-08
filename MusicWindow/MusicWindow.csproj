@@ -96,6 +96,7 @@
     <Compile Include="LeftMarginMultiplierConverter.cs" />
     <Compile Include="MultipleSelectionTreeView.cs" />
     <Compile Include="MultipleSelectionTreeViewItem.cs" />
+    <Compile Include="ViewModel\VMListView.cs" />
     <Compile Include="ViewModel\VMPlaylistManager.cs" />
     <Compile Include="ViewModel\VMDuration.cs" />
     <Compile Include="ViewModel\VMSongInfo.cs" />

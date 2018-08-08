@@ -46,6 +46,23 @@ namespace Glaxion.Music
         InvalidTag
     }
 
+    public class SongEventArgs : PropertyChangedEventArgs
+    {
+        public SongEventArgs(string propertyName)
+        : base(propertyName)
+        {
+            //Set enum
+        }
+        public SongEventArgs(string propertyName,object propertyValue)
+        : base(propertyName)
+        {
+            PropertyValue = propertyValue;
+            //Set enum
+        }
+        public object PropertyValue { get; set; }
+
+    }
+
     public class Song : INotifyPropertyChanged
     {
         class ThreadInfo
@@ -54,7 +71,7 @@ namespace Glaxion.Music
             public TagLib.File File { get; set; }
             public Song song { get; set; }
         }
-        public string Filepath { get ; set; }
+        public string Filepath { get; set; }
         public string[] Genres { get; set; }
         //public string Genre { get { return Genres[0]; } set { Genres[0] = value; } }
         public string Album { get; set; }
@@ -77,17 +94,18 @@ namespace Glaxion.Music
         public SongState State
         {
             get { return _state; }
-            set { _state = value;OnPropertyChanged(); }
+            set { _state = value; OnPropertyChanged(value); }
         }
-        public static List<string> TagLoadingLog = new List<string>();
         
+        public static List<string> TagLoadingLog = new List<string>();
+
         public Song(string filePath)
         {
             Album = "Untitled";
             Artist = "Someone";
             Year = "Unknown";
             //Genre = "A genre";
-            Genres = new string[]{ "Music Genre" };
+            Genres = new string[] { "Music Genre" };
             loaded = false;
             Filepath = filePath;
             Title = Path.GetFileNameWithoutExtension(filePath);
@@ -96,10 +114,11 @@ namespace Glaxion.Music
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged(object propertyValue,[CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new SongEventArgs(propertyName,propertyValue));
         }
+        
 
         bool isMP3()
         {

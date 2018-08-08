@@ -94,6 +94,7 @@ namespace MusicWindow
 
             foreach (var node in SelectedItems)
             {
+                
                 VMNode n = node.DataContext as VMNode;
                 DropData.Add(n.FilePath);
             }
@@ -103,7 +104,6 @@ namespace MusicWindow
             return DropData;
         }
         
-
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
@@ -130,7 +130,6 @@ namespace MusicWindow
                 _isDragging = true;
 
                 GetDragDropData();
-
                 DragDrop.DoDragDrop(this, DropData,
                      DragDropEffects.Copy);
 

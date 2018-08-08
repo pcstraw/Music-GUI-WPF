@@ -13,6 +13,7 @@
                           Grid.Column="0" 
                           Background="#FFC4E5F1" 
                           Padding="0"
+                          AllowDrop="True"
                           BorderBrush="{x:Null}">
             <ListView.View>
                 <GridView>
@@ -33,9 +34,15 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu Name="PlaylistContext">
-                    <MenuItem Header="Open Playlist" Click="OpenPlaylistContext_Click"/>
+                    
+                    <MenuItem Header="Dock Playlist" Click="OpenPlaylistContext_Click"/>
+                    <MenuItem Header="Create Playlist" Click="CreatePlaylistContext_Click"/>
                     <MenuItem Header="Browse Playlists" Click="BrowsePlaylistContext_Click"/>
+                    <MenuItem Header="Folder" Click="FolderPlaylistContext_Click"/>
+                    <MenuItem Header="Quick Save" Click="QuickSavePlaylistContext_Click"/>
+                    <MenuItem Header="Save As" Click="SaveAsPlaylistContext_Click"/>
                     <MenuItem Header="Remove" Click="RemovePlaylistContext_Click"/>
+                    <MenuItem Header="Delete" Click="DeletePlaylistContext_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemContainerStyle>

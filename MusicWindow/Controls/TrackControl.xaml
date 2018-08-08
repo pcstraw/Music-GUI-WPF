@@ -49,7 +49,7 @@
             Background="#FFF1F3DC" 
             Foreground="Black" 
             GridViewColumnHeader.Click="DelesctAll_Click"
-            ItemsSource="{Binding  viewModel.Songs}" IsSynchronizedWithCurrentItem="False">
+            ItemsSource="{Binding  viewModel.Items}" IsSynchronizedWithCurrentItem="False" SelectionChanged="listView_SelectionChanged">
             <local:ListViewEx.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="4" Background="Aquamarine" BorderBrush="Black" Padding="4" 
@@ -97,6 +97,7 @@
                     </Style.Triggers>
                     <EventSetter Event="MouseDoubleClick" 
                                  Handler="Item_MouseDoubleClick" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </local:ListViewEx>
