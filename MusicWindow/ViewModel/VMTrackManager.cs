@@ -124,14 +124,14 @@ namespace Glaxion.ViewModel
             return vmSong;
         }
 
-        internal List<VMSong> InsertSongsFromFiles(int insertionIndex, List<string> files)
+        internal void InsertSongsFromFiles(int insertionIndex, List<string> files)
         {
-            List<VMSong> newItems = new List<VMSong>();
             foreach(string file in files)
             {
                 if (tool.IsAudioFile(file))
                 {
-                    newItems.Add(InsertSongFromFile(insertionIndex,file));
+                    VMSong vms = InsertSongFromFile(insertionIndex, file);
+                    vms.IsSelected = true;
                 }
                 else
                 {
@@ -139,11 +139,11 @@ namespace Glaxion.ViewModel
                     results.Reverse();
                     foreach(string s in results)
                     {
-                        newItems.Add(InsertSongFromFile(insertionIndex, s));
+                        VMSong vms = InsertSongFromFile(insertionIndex, s);
+                        vms.IsSelected = true;
                     }
                 }
             }
-            return newItems;
         }
 
         internal void ReloadPlaylistFromFile()
@@ -169,38 +169,40 @@ namespace Glaxion.ViewModel
             CurrentList.Save();
         }
 
-        internal List<VMSong> AddItems(int insertIndex, List<object> items)
+        internal void AddItems(int insertIndex, List<VMSong> items)
         {
-            List<VMSong> returnList = new List<VMSong>();
-           // items.Reverse();
             foreach(object o in items)
             {
                 if(o is VMSong)
                 {
-                    returnList.Add(this.InsertSong(insertIndex,o as VMSong));
+                    VMSong original_vmsong = o as VMSong;
+                    VMSong vms = this.InsertSong(insertIndex,new VMSong(original_vmsong.CurrentSong));
+                    vms.IsSelected = true;
                 }
                 
                 if(o is Playlist)
                 {
                     Playlist p = o as Playlist;
-
                     if (p == CurrentList)
                         continue;
 
                     foreach (Song s in p.songs)
                     {
-                        returnList.Add(this.InsertSong(insertIndex, new VMSong(s)));
+                        VMSong vms = this.InsertSong(insertIndex, new VMSong(s));
+                        vms.IsSelected = true;
                         insertIndex++;
                     }
                 }
             }
-            return returnList;
         }
 
-        //dep
-        internal void AddSelectedItem(object o)
+        internal void OpenSelectedTrackFolders()
         {
-            
+            foreach(VMSong song in Items)
+            {
+                if (song.IsSelected)
+                    tool.OpenFileDirectory(song.Filepath);
+            }
         }
     }
 }

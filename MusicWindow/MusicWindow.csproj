@@ -62,6 +62,8 @@
       <DependentUpon>AlbumArtControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\DragScroller.cs" />
+    <Compile Include="Controls\PlaylistManagerListView.cs" />
+    <Compile Include="Controls\TracklistListView.cs" />
     <Compile Include="Controls\VMTreeControl.cs" />
     <Compile Include="Data Classes\MusicFileManager.cs" />
     <Compile Include="Data Classes\FileManager.cs" />

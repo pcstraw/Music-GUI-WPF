@@ -1,4 +1,5 @@
 ﻿using Glaxion.Music;
+using Glaxion.Tools;
 using Glaxion.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,18 @@ namespace MusicWindow
     /// <summary>
     /// Interaction logic for TrackControl.xaml
     /// </summary>
-    public partial class TrackControl : UserControl , IViewModel
+    public partial class TrackControl : UserControl
     {
         private void Construction()
         {
             InitializeComponent();
-            viewModel = new VMTrackManager();
-            DataContext = viewModel;
-            listView.DataContext = viewModel;
-            //listView.ItemsSource = viewModel.Songs;
-            playlistNameLabel.DataContext = viewModel;
-            listView.SetViewModelInterface(this);
+            vm = listView.viewModel as VMTrackManager;
+            DataContext = vm;
+            playlistNameLabel.DataContext = vm;
+            listView.UpdateItemSource();
         }
 
-        VMTrackManager viewModel;
+        VMTrackManager vm;
 
         public TrackControl()
         {
@@ -36,8 +35,9 @@ namespace MusicWindow
         {
             Construction();
             listView.ItemsSource = null;
-            viewModel.SetPlaylist(playlist);
-            listView.ItemsSource = viewModel.Items;
+            vm.SetPlaylist(playlist);
+            listView.UpdateItemSource();
+            
         }
        // public Playlist CurrentList { get; private set; }
        // public ObservableCollection<Song> Songs { get; set; }
@@ -61,8 +61,8 @@ namespace MusicWindow
         private void PlaylistnameLabel_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             listView.ItemsSource = null;
-            viewModel.OpenPlaylistSelectDialog();
-            listView.ItemsSource = viewModel.Items;
+            vm.OpenPlaylistSelectDialog();
+            listView.UpdateItemSource();
             /*
             List<string> l = tool.SelectFiles(false, false,"Select Playlist");
             if (l.Count != 1)
@@ -81,7 +81,7 @@ namespace MusicWindow
         {
             ListViewItem item = sender as ListViewItem;
             VMSong s = item.Content as VMSong;
-            viewModel.PlaySong(s.CurrentSong);
+            vm.PlaySong(s.CurrentSong);
         }
 
         private void DelesctAll_Click(object sender, RoutedEventArgs e)
@@ -118,7 +118,7 @@ namespace MusicWindow
 
         internal void Close()
         {
-            viewModel.UpdateCurrentPlaylist();
+            vm.UpdateCurrentPlaylist();
             playlistControlParent.RemoveFromPlaylistControl(this);
         }
         
@@ -129,25 +129,25 @@ namespace MusicWindow
 
         private void TrackControlReloadButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.ReloadPlaylistFromFile();
+            vm.ReloadPlaylistFromFile();
             listView.ItemsSource = null;
-            listView.ItemsSource = viewModel.Items;
+            listView.UpdateItemSource();
         }
 
         private void TrackControlSaveButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.SavePlaylist();
+            vm.SavePlaylist();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            viewModel.player.PlayEvent += Player_PlayEvent;
+            vm.player.PlayEvent += Player_PlayEvent;
             ShowCurrentPlaying();
         }
 
         void ShowCurrentPlaying()
         {
-            Song song = viewModel.player.CurrentSong;
+            Song song = vm.player.CurrentSong;
             if (song == null)
                 return;
 
@@ -171,13 +171,13 @@ namespace MusicWindow
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            viewModel.player.PlayEvent -= Player_PlayEvent;
+            vm.player.PlayEvent -= Player_PlayEvent;
         }
 
         Brush defaultColor;
         private void searchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (viewModel == null)
+            if (vm == null)
                 return;
             if (defaultColor != listView.Background)
                 defaultColor = listView.Background;
@@ -215,43 +215,31 @@ namespace MusicWindow
             */
         }
 
-        #region interface
-
-        #endregion
-
-        public void AddDataFromFiles(int inertionIndex, List<string> files)
-        {
-            List<VMSong> newItems = viewModel.InsertSongsFromFiles(inertionIndex, files);
-            foreach (VMSong vmSong in newItems)
-                listView.SelectedItems.Add(vmSong.CurrentSong);
-            listView._selItems.Clear();
-        }
-
-        public void MoveData(int insertIndex, List<object> items)
-        {
-            viewModel.MoveItems(insertIndex, items);
-           // listView.SelectedItems.Clear();
-            foreach (VMSong s in items)
-            {
-                listView.SelectedItems.Add(s);
-            }
-            listView._selItems.Clear();
-            
-        }
-
-        public void AddData(int insertIndex, List<object> items)
-        {
-            List<VMSong> returnList = viewModel.AddItems(insertIndex, items);
-            foreach(VMSong o in returnList)
-            { 
-                listView.SelectedItems.Add(o);
-            }
-            listView._selItems.Clear();
-        }
-
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
            // listView._selItems.Clear();
+        }
+
+        private void RemoveTracklistContext_Click(object sender, RoutedEventArgs e)
+        {
+            listView.RemoveSelectedItems();
+        }
+
+        private void DeleteTracklistContext_Click(object sender, RoutedEventArgs e)
+        {
+            tool.Show(5, "Not implemented");
+        }
+
+        private void FolderTracklistContext_Click(object sender, RoutedEventArgs e)
+        {
+            listView.trackManager.OpenSelectedTrackFolders();
+        }
+
+        private void MoveTracklistContext_Click(object sender, RoutedEventArgs e)
+        {
+            listView.SortCachedSelectedItems();
+            listView.viewModel.MoveItems(listView.CurrentIndex, listView._selItems);
+            listView.highlightItem.RestoreBackground();
         }
     }
 }

@@ -1,11 +1,7 @@
-﻿using Glaxion.Music;
-using Glaxion.Tools;
-using Glaxion.ViewModel;
+﻿using Glaxion.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,14 +11,7 @@ using System.Windows.Media;
 
 namespace MusicWindow
 {
-    public interface IViewModel
-    {
-        void AddDataFromFiles(int insertIndex,List<string> files);
-        void MoveData(int insertIndex, List<object> items);
-        void AddData(int insertIndex, List<object> items);
-    }
-
-    public class ListViewEx : ListView
+    public class ListViewEx<T> : ListView
     {
         public ListViewEx() : base()
         {
@@ -34,6 +23,8 @@ namespace MusicWindow
             PreviewMouseLeftButtonDown += ListViewEx_PreviewMouseLeftButtonDown;
             PreviewMouseMove += ListViewEx_PreviewMouseMove;
             QueryContinueDrag += ListViewQueryContinueDrag;
+            DataContext = viewModel;
+            highlightItem = new HighLightedItem();
         }
         
         Point _startPoint;
@@ -41,32 +32,98 @@ namespace MusicWindow
         private AdornerLayer _layer;
         private bool _dragIsOutOfScope;
         ArrayList draggedItems;
-        IViewModel _viewModelInterface;
-        public List<object> _selItems = new List<object>();
+        internal VMListView<T> viewModel;
+        public List<T> _selItems = new List<T>();
         public int CurrentIndex;
+        internal HighLightedItem highlightItem;
         
-        //move to VMListView  also see MultiSelect TreeView sort implementation
-        void Sort<T>(List<object> items,ObservableCollection<T> fullList)
+        internal class HighLightedItem
         {
-            int first_index = fullList.IndexOf((T)items[0]);
-            
-            for(int i=0;i<items.Count;i++)
+            public HighLightedItem()
             {
-                T item = (T)items[i];
-                int index = fullList.IndexOf(item);
-                if (index < first_index)
-                {
-                    items.RemoveAt(i);
-                    items.Insert(0, item);
-                    first_index = index;
-                }
+                highlightColor = new SolidColorBrush(Color.FromArgb(100, 255, 0, 0));
             }
-            items.Reverse();
+
+            Brush originalColor;
+            Brush highlightColor;
+            ListViewItem _item;
+
+            internal void HighlightBackground(ListViewItem item)
+            {
+                if (item == null)
+                    return;
+                originalColor = item.Background;
+                item.Background = highlightColor;
+                _item = item; 
+            }
+
+            internal void RestoreBackground()
+            {
+                if (originalColor == null||_item == null)
+                    return;
+                _item.Background = originalColor;
+                _item = null;
+            }
+
+            internal void RestoreBackground(Brush brush)
+            {
+                if (originalColor == null || _item == null)
+                    return;
+                _item.Background = brush;
+                _item = null;
+            }
         }
 
-        internal void SetViewModelInterface(IViewModel viewModelInterface)
+        internal void UpdateItemSource()
         {
-            _viewModelInterface = viewModelInterface;
+          //  ItemsSource = null;
+            ItemsSource = viewModel.Items;
+        }
+
+        public void RemoveSelectedItems()
+        {
+
+            for(int i=0;i < SelectedItems.Count;i++)
+            {
+                viewModel.Items.Remove((T)SelectedItems[i]);
+                i--;
+            }
+            
+            SelectedItems.Clear();
+            _selItems.Clear();
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if (e.Key == Key.Delete)
+                RemoveSelectedItems();
+        }
+
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
+            //   CacheSelectedItems();
+            GetCurrentIndex(Mouse.GetPosition);
+            ListViewItem item = GetListViewItem(CurrentIndex);
+            item.IsSelected = false;
+            SelectedItems.Remove(item.DataContext);
+            highlightItem.RestoreBackground();
+            highlightItem.HighlightBackground(item);
+           // CurrentIndex++;
+            base.OnContextMenuOpening(e);
+            RestoreCacheSelectedItems();
+        }
+        protected override void OnContextMenuClosing(ContextMenuEventArgs e)
+        {
+           
+            base.OnContextMenuClosing(e);
+            highlightItem.RestoreBackground(Background);
+        }
+
+        protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            CacheSelectedItems();
+            base.OnPreviewMouseRightButtonDown(e);
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -102,12 +159,14 @@ namespace MusicWindow
             CurrentIndex = index;
             return index;
         }
-        private ListViewItem GetListViewItem(int index)
+
+        public ListViewItem GetListViewItem(int index)
         {
             if (ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 return null;
             return ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
         }
+
         private bool IsMouseOverTarget(Visual target, GetPositionDelegate getPosition)
         {
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
@@ -193,7 +252,7 @@ namespace MusicWindow
         {
             _selItems.Clear();
             foreach(object o in SelectedItems)
-                _selItems.Add(o);
+                _selItems.Add((T)o);
         }
 
         internal void RestoreCacheSelectedItems()
@@ -205,7 +264,7 @@ namespace MusicWindow
 
         private void BeingMultiDrag(MouseEventArgs e)
         {
-            ListViewEx listView = this;
+            ListViewEx<T> listView = this;
             ListViewItem listViewItem =
                  FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
 
@@ -215,10 +274,10 @@ namespace MusicWindow
             //the listviewitem can be selected on drag before the cache has updated.
             //In this case, add the item to _selitems
             //when dragging between listviews, we use _selitems to get the selected items
-            if (!_selItems.Contains(listViewItem.DataContext))
+            if (!_selItems.Contains((T)listViewItem.DataContext))
             {
                 _selItems.Clear(); //make this item the only selected item
-                _selItems.Add(listViewItem.DataContext);
+                _selItems.Add((T)listViewItem.DataContext);
             }
 
             RestoreCacheSelectedItems();
@@ -232,9 +291,7 @@ namespace MusicWindow
             listView.DragLeave += ListViewDragLeave;
             listView.DragEnter += ListViewDragEnter;
             
-           
-
-            DataObject data = new DataObject(typeof(ListViewEx), this);
+            DataObject data = new DataObject(typeof(ListViewEx<T>), this);
             DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
             _selItems.Clear();
 
@@ -249,7 +306,6 @@ namespace MusicWindow
                 _adorner = null;
             }
         }
-
         
         private void ListViewDrop(object sender, DragEventArgs e)
         {
@@ -258,25 +314,26 @@ namespace MusicWindow
 
         private void HandleDragDrop(DragEventArgs e)
         {
-            bool isListViewEx = e.Data.GetDataPresent(typeof(ListViewEx));
+            bool isListViewEx = e.Data.GetDataPresent(typeof(ListViewEx<T>));
             if (isListViewEx)
             {
-                List<object> itemsToMove = new List<object>();
-                ListViewEx source = e.Data.GetData(typeof(ListViewEx)) as ListViewEx;
+                List<T> itemsToMove = new List<T>();
+                ListViewEx<T> source = e.Data.GetData(typeof(ListViewEx<T>)) as ListViewEx<T>;
                 int index = GetCurrentIndex(e.GetPosition);
 
                 if (source == this)
                 {
-                    foreach (object o in _selItems)
+                    foreach (T o in _selItems)
                         itemsToMove.Add(o);
 
-                    _viewModelInterface?.MoveData(index, itemsToMove);
+                    MoveData(index, itemsToMove);
+                    _selItems.Clear();
                 }
-                else if(source is ListViewEx)
+                else if(source is ListViewEx<T>)
                 {
-                    foreach (object o in source._selItems)
+                    foreach (T o in source._selItems)
                         itemsToMove.Add(o);
-                    _viewModelInterface?.AddData(index, itemsToMove);
+                    AddData(index, itemsToMove);
 
                     this.UpdateLayout();
                 }
@@ -288,7 +345,7 @@ namespace MusicWindow
                 if (StringSource != null)
                 {
                     int index = GetCurrentIndex(e.GetPosition);
-                    _viewModelInterface?.AddDataFromFiles(index, StringSource);
+                    AddDataFromFiles(index, StringSource);
                 }
             }
         }
@@ -352,7 +409,7 @@ namespace MusicWindow
             _selItems.Reverse();
         }
 
-        void PrevGreaterThan(object item)
+        void PrevGreaterThan(T item)
         {
             int index = Items.IndexOf(item);
             if (index < 0)
@@ -393,5 +450,22 @@ namespace MusicWindow
             while (current != null);
             return null;
         }
+        #region Must Override
+        protected virtual void AddDataFromFiles(int insertionIndex, List<string> files)
+        {
+            throw new NotImplementedException("Inherit this class and override this method to manipulate the view model's Items");
+        }
+
+        protected virtual void MoveData(int insertIndex, List<T> items)
+        {
+            viewModel.MoveItems(insertIndex, items);
+        }
+
+        protected virtual void AddData(int insertIndex, List<T> items)
+        {
+            throw new NotImplementedException("Inherit this class and override this method to manipulate the view model's Items");
+        }
+        
+        #endregion
     }
 }

@@ -9,7 +9,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <local:ListViewEx x:Name="listView" 
+        <local:PlaylistManagerListView x:Name="listView" 
                           Grid.Column="0" 
                           Background="#FFC4E5F1" 
                           Padding="0"
@@ -34,7 +34,6 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu Name="PlaylistContext">
-                    
                     <MenuItem Header="Dock Playlist" Click="OpenPlaylistContext_Click"/>
                     <MenuItem Header="Create Playlist" Click="CreatePlaylistContext_Click"/>
                     <MenuItem Header="Browse Playlists" Click="BrowsePlaylistContext_Click"/>
@@ -50,6 +49,6 @@
                     <EventSetter Event="MouseDoubleClick" Handler="Item_MouseDoubleClick" />
                 </Style>
             </ListView.ItemContainerStyle>
-        </local:ListViewEx>
+        </local:PlaylistManagerListView>
     </Grid>
 </UserControl>

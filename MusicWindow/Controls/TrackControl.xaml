@@ -41,7 +41,7 @@
                  Grid.Row="2" 
                  MinHeight="24" 
                  DockPanel.Dock="Top" TextChanged="searchBox_TextChanged"/>
-        <local:ListViewEx 
+        <local:TracklistListView
             local:DragDropExtension.ScrollOnDragDrop ="True"
             x:Name="listView" 
             Grid.Row="3" 
@@ -50,13 +50,13 @@
             Foreground="Black" 
             GridViewColumnHeader.Click="DelesctAll_Click"
             ItemsSource="{Binding  viewModel.Items}" IsSynchronizedWithCurrentItem="False" SelectionChanged="listView_SelectionChanged">
-            <local:ListViewEx.ItemTemplate>
+            <local:TracklistListView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="4" Background="Aquamarine" BorderBrush="Black" Padding="4" 
                         BorderThickness="2" >
                     </Border>
                 </DataTemplate>
-            </local:ListViewEx.ItemTemplate>
+            </local:TracklistListView.ItemTemplate>
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Title}" 
@@ -79,6 +79,14 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu Name="TracklistContext">
+                    <MenuItem Header="Move" Click="MoveTracklistContext_Click"/>
+                    <MenuItem Header="Folder" Click="FolderTracklistContext_Click"/>
+                    <MenuItem Header="Remove" Click="RemoveTracklistContext_Click"/>
+                    <MenuItem Header="Delete" Click="DeleteTracklistContext_Click"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
@@ -100,6 +108,6 @@
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                 </Style>
             </ListView.ItemContainerStyle>
-        </local:ListViewEx>
+        </local:TracklistListView>
     </DockPanel>
 </UserControl>

@@ -62,7 +62,7 @@ namespace MusicWindow
         public static void StorePlaylistControl(PlaylistControl playlistControl)
         {
             Properties.Settings.Default.ManagedPlaylists.Clear();
-            List<string> plist = playlistControl.viewModel.GetPlaylistsAsFiles();
+            List<string> plist = playlistControl.listView.playlistManager.GetPlaylistsAsFiles();
             foreach (string s in plist)
                 Properties.Settings.Default.ManagedPlaylists.Add(s);
         }
@@ -121,7 +121,7 @@ namespace MusicWindow
         public static void RestorePlaylistControl(PlaylistControl playlistControl)
         {
             foreach (string s in Properties.Settings.Default.ManagedPlaylists)
-                playlistControl.viewModel.AddPlaylistFromFile(s);
+                playlistControl.listView.playlistManager.AddPlaylistFromFile(s);
         }
         
 

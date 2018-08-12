@@ -112,8 +112,8 @@ namespace Glaxion.ViewModel
                 _picture = value;
                 OnPropertyChanged(); }
         }
-        string _isSelected;
-        public string IsSelected
+        bool _isSelected;
+        public bool IsSelected
         {
             get { return _isSelected; }
             set
