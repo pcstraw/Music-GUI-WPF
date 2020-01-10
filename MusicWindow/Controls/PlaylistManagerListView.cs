@@ -7,18 +7,26 @@ using System.Windows.Controls;
 
 namespace MusicWindow
 {
-    public class PlaylistManagerListView : ListViewEx<Playlist>
+    public class PlaylistManagerListView : ListViewEx<VMPlaylist>
     {
         public PlaylistManagerListView() :base()
         {
             playlistManager = new VMPlaylistManager();
             viewModel = playlistManager;
+            Loaded += PlaylistManagerListView_Loaded;
         }
+
+        private void PlaylistManagerListView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            playlistManager.HookPlayerEvents();
+            playlistManager.UpdatePlaylistColours();
+        }
+
         internal VMPlaylistManager playlistManager;
 
         internal void OpenPlaylistFolders()
         {
-            foreach (Playlist p in SelectedItems)
+            foreach (VMPlaylist p in SelectedItems)
                 tool.OpenFileDirectory(p.Filepath);
         }
 
@@ -26,12 +34,12 @@ namespace MusicWindow
         {
             string startPath = null;
             if (SelectedItems.Count > 0)
-                startPath = (SelectedItems[0] as Playlist).Filepath;
+                startPath = (SelectedItems[0] as VMPlaylist).Filepath;
             playlistManager.BrowsePlaylistDialog(startPath);
         }
 
         #region required override methods
-        protected override void AddDataFromFiles(int insertionIndex, List<string> files)
+        internal override void AddDataFromFiles(int insertionIndex, List<string> files)
         {
             foreach (string file in files)
             {
@@ -39,18 +47,18 @@ namespace MusicWindow
             }
         }
         
-        protected override void AddData(int insertIndex, List<Playlist> items)
+        protected override void AddData(int insertIndex, List<VMPlaylist> items)
         {
             int count = Items.Count;
             foreach (object o in items)
             {
-                if (o is Playlist)
+                if (o is VMPlaylist)
                 {
                     playlistManager.AddPlaylistFromFile(count, o as Playlist);
                 }
-                if (o is Song)
+                if (o is VMSong)
                 {
-                    Song s = o as Song;
+                    VMSong s = o as VMSong;
                     playlistManager.AddPlaylistFromFile(count, s.Filepath);
                 }
             }

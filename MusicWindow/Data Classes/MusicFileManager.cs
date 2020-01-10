@@ -28,13 +28,8 @@ namespace Glaxion.Music
 
         public void AddFiles(IEnumerable<string> files)
         {
+            
             Files.AddRange(files);
-        }
-
-        //save all components
-        public void Save()
-        {
-            throw new NotImplementedException("Save not implemented.  Should probably be in the fileloader anyway");
         }
     }
 }

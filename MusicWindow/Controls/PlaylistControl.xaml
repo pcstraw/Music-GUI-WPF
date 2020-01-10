@@ -5,6 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
              mc:Ignorable="d" MinWidth="2" Height="160" Width="300">
+    <UserControl.Resources>
+        <ContextMenu x:Key="PlaylistContext">
+            <MenuItem Header="Dock Playlist" Click="OpenPlaylistContext_Click"/>
+            <MenuItem Header="Create Playlist" Click="CreatePlaylistContext_Click"/>
+            <MenuItem Header="Browse Playlists" Click="BrowsePlaylistContext_Click"/>
+            <MenuItem Header="Folder" Click="FolderPlaylistContext_Click"/>
+            <MenuItem Header="Quick Save" Click="QuickSavePlaylistContext_Click"/>
+            <MenuItem Header="Save As" Click="SaveAsPlaylistContext_Click"/>
+            <MenuItem Header="Remove" Click="RemovePlaylistContext_Click"/>
+            <MenuItem Header="Delete" Click="DeletePlaylistContext_Click"/>
+        </ContextMenu>
+    </UserControl.Resources>
     <Grid x:Name="maingrid" Background="#FFC4E5F1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -14,7 +26,8 @@
                           Background="#FFC4E5F1" 
                           Padding="0"
                           AllowDrop="True"
-                          BorderBrush="{x:Null}">
+                          ContextMenu="{StaticResource ResourceKey=PlaylistContext}"
+                          BorderBrush="{x:Null}" Drop="listView_Drop">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" 
@@ -32,20 +45,25 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-            <ListView.ContextMenu>
-                <ContextMenu Name="PlaylistContext">
-                    <MenuItem Header="Dock Playlist" Click="OpenPlaylistContext_Click"/>
-                    <MenuItem Header="Create Playlist" Click="CreatePlaylistContext_Click"/>
-                    <MenuItem Header="Browse Playlists" Click="BrowsePlaylistContext_Click"/>
-                    <MenuItem Header="Folder" Click="FolderPlaylistContext_Click"/>
-                    <MenuItem Header="Quick Save" Click="QuickSavePlaylistContext_Click"/>
-                    <MenuItem Header="Save As" Click="SaveAsPlaylistContext_Click"/>
-                    <MenuItem Header="Remove" Click="RemovePlaylistContext_Click"/>
-                    <MenuItem Header="Delete" Click="DeletePlaylistContext_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style TargetType ="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=ColourIndex}" Value="1">
+                            <Setter Property="Background" Value="#FFFFFDBD" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ColourIndex}" Value="2">
+                            <Setter Property="Background" Value="#FFA1DBF0" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ColourIndex}" Value="-2">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="#FFC50000" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="true" >
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Background" Value="Blue" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="ContextMenu" Value="{StaticResource PlaylistContext}" />
                     <EventSetter Event="MouseDoubleClick" Handler="Item_MouseDoubleClick" />
                 </Style>
             </ListView.ItemContainerStyle>

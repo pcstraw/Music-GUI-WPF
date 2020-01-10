@@ -4,26 +4,67 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             mc:Ignorable="d" Width="400" Height="440" Background="#FFF1F3DC" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
-
+             mc:Ignorable="d" Width="400" Height="440" Background="#FFF1F3DC" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded" MouseLeave="UserControl_MouseLeave">
+    <UserControl.Resources>
+        <ContextMenu x:Key="TracklistContext">
+            <MenuItem x:Name="moveContextItem" Header="Move" PreviewMouseDown="moveContextItem_PreviewMouseDown">
+                <MenuItem Header="...To Top" Click="SendToTop_Click"/>
+                <MenuItem Header="...To Bottom" Click="SendToBottom_Click"/>
+            </MenuItem>
+            <MenuItem Header="Find" Click="FindTracklistContext_Click"/>
+            <MenuItem Header="Select...">
+                <MenuItem Header="...by Album" Click="SelectAlbum_Click"/>
+                <MenuItem Header="...by Artist" Click="SelectArtist_Click"/>
+                <MenuItem Header="...by Folder" Click="SelectFolder_Click"/>
+                <MenuItem Header="...All" Click="SelectAll_Click"/>
+                <MenuItem Header="...Clear All" Click="SelectClear_Click"/>
+                <MenuItem Header="...Clear Visible" Click="ClearVisible_Click"/>
+            </MenuItem>
+            <MenuItem Header="Folder" Click="FolderTracklistContext_Click"/>
+            <MenuItem Header="Save As" Click="SaveAsTracklistContext_Click"/>
+            <MenuItem Header="Update Paths" Click="UpdatePathsContext_Click"/>
+            <MenuItem Header="Remove" Click="RemoveTracklistContext_Click"/>
+            <MenuItem Header="Delete" Click="DeleteTracklistContext_Click"/>
+            <MenuItem Header="Edit" Click="EditTracklistContext_Click"/>
+            <MenuItem Header="Edit Tags" Click="EditTagsTracklistContext_Click"/>
+        </ContextMenu>
+    </UserControl.Resources>
     <DockPanel LastChildFill="True" Grid.RowSpan="4">
         <DockPanel.Resources>
             <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
         </DockPanel.Resources>
         <Grid Height="25" VerticalAlignment="Top" DockPanel.Dock="Top">
-
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="264*"/>
+                <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="25"/>
                 <ColumnDefinition Width="25"/>
             </Grid.ColumnDefinitions>
-            <Button Template="{StaticResource RoundButton}" Content="S" VerticalAlignment="Top" Height="25" Background="#FFBCE495" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" VerticalContentAlignment="Center" Grid.Column="1" ToolTip="Save To File" Click="TrackControlSaveButton_Click"/>
-            <Button Template="{StaticResource RoundButton}" Content="R" VerticalAlignment="Top" Height="25" Background="#FFF3AC7B" Grid.Column="2" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Reload file" Click="TrackControlReloadButton_Click"/>
-            <Button Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="3" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close control" Click="TrackControlCloseButton_Click"/>
+            <Label x:Name="TopPanel" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="25"
+                   Width="Auto" Grid.Row="0" Grid.ColumnSpan="6" Background="#FFE3E3C1" MouseEnter="TopPanel_MouseEnter" MouseLeave="TopPanel_MouseLeave"/>
+            <Button x:Name="MultiSelectButton" Template="{StaticResource RoundButton}" 
+                    Content="M" 
+                    VerticalAlignment="Top" 
+                    Height="25" 
+                    Background="#FFE4E6E8"
+                    Width="25" 
+                    HorizontalAlignment="Right" 
+                    MinWidth="20" 
+                    MinHeight="20" 
+                    FontSize="10" 
+                    VerticalContentAlignment="Center"
+                    Grid.Column="0" 
+                    ToolTip="Multi Select" 
+                    Click="MultiSelectButton_Click"/>
+            <Button x:Name="updatePlayerButton" Template="{StaticResource RoundButton}" Content="U" VerticalAlignment="Top" Height="25" Background="#FF95C5E4" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" VerticalContentAlignment="Center" Grid.Column="2" ToolTip="Update Music Player" Click="TrackControlUpdatePlayerButton_Click"/>
+            <Button x:Name="saveButton" Template="{StaticResource RoundButton}" Content="S" VerticalAlignment="Top" Height="25" Background="#FFBCE495" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" VerticalContentAlignment="Center" Grid.Column="3" ToolTip="Save To File" Click="TrackControlSaveButton_Click" Margin="0,0,0.334,0"/>
+            <Button x:Name="reloadButton" Template="{StaticResource RoundButton}" Content="R" VerticalAlignment="Top" Height="25" Background="#FFF3AC7B" Grid.Column="4" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Reload file" Click="TrackControlReloadButton_Click" Grid.ColumnSpan="2" Margin="0,0,25,0"/>
+            <Button x:Name="closeButton" Template="{StaticResource RoundButton}" Content="C" VerticalAlignment="Top" Background="#FFEE6161" Height="25" Grid.Column="5" Width="25" HorizontalAlignment="Right" MinWidth="20" MinHeight="20" FontSize="10" ToolTip="Close control" Click="TrackControlCloseButton_Click"/>
         </Grid>
         <Label x:Name="playlistNameLabel" 
-               Content= "{Binding PlaylistNameLabel}"
+               Content= "{Binding Path=Name}"
                Height="31" 
                VerticalAlignment="Top" 
                DockPanel.Dock="Top" 
@@ -35,13 +76,14 @@
                FontWeight="Bold" 
                FontFamily="Verdana"/>
         <TextBox x:Name="searchBox" TextWrapping="Wrap" 
-                 Text="Search &lt;Not Implemented&gt;" 
+                 Text="Search" 
                  Height="24" 
                  VerticalAlignment="Top" 
                  Grid.Row="2" 
                  MinHeight="24" 
-                 DockPanel.Dock="Top" TextChanged="searchBox_TextChanged"/>
+                 DockPanel.Dock="Top" TextChanged="searchBox_TextChanged" GotFocus="searchBox_GotFocus" LostFocus="searchBox_LostFocus" MouseDoubleClick="searchBox_MouseDoubleClick"/>
         <local:TracklistListView
+            
             local:DragDropExtension.ScrollOnDragDrop ="True"
             x:Name="listView" 
             Grid.Row="3" 
@@ -49,10 +91,20 @@
             Background="#FFF1F3DC" 
             Foreground="Black" 
             GridViewColumnHeader.Click="DelesctAll_Click"
-            ItemsSource="{Binding  viewModel.Items}" IsSynchronizedWithCurrentItem="False" SelectionChanged="listView_SelectionChanged">
+            ItemsSource="{Binding  viewModel.Items}"
+            IsSynchronizedWithCurrentItem="False" 
+            GotFocus="listView_GotFocus" 
+            ContextMenuOpening="listView_ContextMenuOpening"
+            ContextMenu="{StaticResource ResourceKey=TracklistContext}" 
+            PreviewKeyDown="listView_PreviewKeyDown" 
+            PreviewKeyUp="listView_PreviewKeyUp" 
+            PreviewMouseLeftButtonDown="listView_PreviewMouseLeftButtonDown" ScrollViewer.CanContentScroll="False">
             <local:TracklistListView.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="4" Background="Aquamarine" BorderBrush="Black" Padding="4" 
+                    <Border Margin="4" 
+                            Background="Aquamarine" 
+                            BorderBrush="Black" 
+                            Padding="4" 
                         BorderThickness="2" >
                     </Border>
                 </DataTemplate>
@@ -71,7 +123,7 @@
                                               Content="Name"/>
                     </GridViewColumn>
                     <GridViewColumn DisplayMemberBinding="{Binding Filepath}">
-                        
+
                         <GridViewColumnHeader HorizontalAlignment="Left" 
                                               HorizontalContentAlignment="Left" 
                                               Content="FilePath" 
@@ -79,16 +131,10 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-            <ListView.ContextMenu>
-                <ContextMenu Name="TracklistContext">
-                    <MenuItem Header="Move" Click="MoveTracklistContext_Click"/>
-                    <MenuItem Header="Folder" Click="FolderTracklistContext_Click"/>
-                    <MenuItem Header="Remove" Click="RemoveTracklistContext_Click"/>
-                    <MenuItem Header="Delete" Click="DeleteTracklistContext_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
+
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+                <Style TargetType ="ListViewItem">
+
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=State}" Value="4">
                             <Setter Property="Background" Value="#FFFF824B" />
@@ -102,9 +148,23 @@
                         <DataTrigger Binding="{Binding Path=State}" Value="3">
                             <Setter Property="Background" Value="#FFDCDBC8" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="7">
+                            <Setter Property="Background" Value="#FFCE9FFF"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ColourIndex}" Value="-2">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="#FFC50000" />
+                        </DataTrigger>
+                        <Trigger Property="IsSelected" Value="true" >
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Background" Value="Blue" />
+                        </Trigger>
                     </Style.Triggers>
-                    <EventSetter Event="MouseDoubleClick" 
+                    <Setter Property="ContextMenu" Value="{StaticResource TracklistContext}" />
+                    <EventSetter Event="PreviewMouseDoubleClick" 
                                  Handler="Item_MouseDoubleClick" />
+                    <EventSetter Event="PreviewMouseLeftButtonDown" 
+                                 Handler="Item_MouseDown" />
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                 </Style>
             </ListView.ItemContainerStyle>

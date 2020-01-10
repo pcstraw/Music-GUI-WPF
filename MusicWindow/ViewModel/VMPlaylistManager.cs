@@ -8,51 +8,96 @@ using System.IO;
 
 namespace Glaxion.ViewModel
 {
-    public class VMPlaylistManager : VMListView<Playlist>
+    public class VMPlaylistManager : VMListView<VMPlaylist>
     {
         public VMPlaylistManager()
         {
+           
         }
         
-        VMPlaylistFileTree _playlistFileManager;
-        VMMusicFiles _musicFileManager;
+        internal VMPlaylistFileTree playlistFileManager;
+        internal VMMusicFiles musicFileManager;
+        MusicPlayer Player;
 
         internal void LinkFileManagers(VMPlaylistFileTree playlistFilesManager, VMMusicFiles musicFileManager)
         {
-            _playlistFileManager = playlistFilesManager;
-            _musicFileManager = musicFileManager;
-            _playlistFileManager.OpenPlaylist += Manager_OpenPlaylist;
-            _musicFileManager.OpenPlaylist += Manager_OpenPlaylist;
+            playlistFileManager = playlistFilesManager;
+            this.musicFileManager = musicFileManager;
+            playlistFileManager.OpenPlaylist += Manager_OpenPlaylist;
+            this.musicFileManager.OpenPlaylist += Manager_OpenPlaylist;
+            
+        }
+
+        internal void HookPlayerEvents()
+        {
+            Player = MusicPlayer.Player;
+            Player.TrackChangeEvent += Player_TrackChangeEvent;
+            //Player.PlayEvent += Player_PlayEvent;
+            Player.ResumeEvent += Player_ResumeEvent;
+        }
+
+        private void Player_ResumeEvent(object sender, EventArgs args)
+        {
+            UpdatePlaylistColours();
+        }
+
+        private void Player_PlayEvent(object sender, EventArgs args)
+        {
+            UpdatePlaylistColours();
+        }
+
+        internal void UpdatePlaylistColours()
+        {
+            foreach (VMPlaylist p in Items)
+            {
+                p.UpdatePlaylistState(Player);
+            }
+        }
+
+        private void Player_TrackChangeEvent(object sender, EventArgs args)
+        {
+            UpdatePlaylistColours();
         }
 
         //use enurmated with yield
         public List<string> GetPlaylistsAsFiles()
         {
             List<string> plist = new List<string>();
-            foreach (Playlist p in Items)
+            foreach (VMPlaylist p in Items)
                 plist.Add(p.Filepath);
             return plist;
         }
 
+        VMPlaylist GetVMPlaylist(string file, bool readfile)
+        {
+            return GetVMPlaylist(new Playlist(file,readfile));
+        }
+
+        VMPlaylist GetVMPlaylist(Playlist p)
+        {
+            return new VMPlaylist(p);
+        }
+
         public void AddPlaylistFromFile(string file)
         {
-            Playlist p = new Playlist(file, true);
-            if (!p.failed)
+            VMPlaylist p = GetVMPlaylist(file,true);
+            if (!p.playlist.failed)
                 Items.Add(p);
-            p.UpdatePaths();
+            p.playlist.UpdatePaths();
         }
 
         internal void AddPlaylist(Playlist p)
         {
-            Items.Add(p);
+            VMPlaylist v_p = GetVMPlaylist(p);
+            Items.Add(v_p);
             p.UpdatePaths();
         }
 
         public void AddPlaylistFromFile(int index,string file)
         {
-            Playlist p = new Playlist(file,true);
+            VMPlaylist p = GetVMPlaylist(file,true);
             Items.Insert(index,p);
-            p.UpdatePaths();
+            p.playlist.UpdatePaths();
         }
 
         public void AddPlaylistFromFile(int index,Playlist p)
@@ -62,8 +107,9 @@ namespace Glaxion.ViewModel
                 tool.show(5, "Warning, playlist is null");
                 return;
             }
-            Items.Insert(index,p);
-            p.UpdatePaths();
+            VMPlaylist v_p = GetVMPlaylist(p);
+            Items.Insert(index,v_p);
+            v_p.playlist.UpdatePaths();
         }
 
         public Playlist CreateNewPlaylist()
@@ -94,26 +140,26 @@ namespace Glaxion.ViewModel
 
         internal void DeleteSelectedPlaylists(IList selectedItems)
         {
-            List<Playlist> removeItems = new List<Playlist>();
-            foreach(Playlist p in selectedItems)
+            List<VMPlaylist> removeItems = new List<VMPlaylist>();
+            foreach(VMPlaylist p in selectedItems)
             {
-                string path = p.Filepath;
+                string path = p.playlist.Filepath;
                 tool.DeleteFile(path, true, true);
                 removeItems.Add(p);
             }
 
-            foreach(Playlist p in removeItems)
+            foreach(VMPlaylist p in removeItems)
                 Items.Remove(p);
 
             removeItems.Clear();
         }
 
-        private void RemovePlaylist(Playlist p)
+        private void RemovePlaylist(VMPlaylist p)
         {
             Items.Remove(p);
         }
 
-        public void DeletePlaylist(Playlist p)
+        public void DeletePlaylist(VMPlaylist p)
         {
             Items.Remove(p);
             tool.DeleteAsync(p.Filepath);
@@ -124,14 +170,14 @@ namespace Glaxion.ViewModel
             if (sender is string)
                 AddPlaylistFromFile(sender as string);
         }
-
+        
         public void RemoveSelectedPlaylists(System.Collections.IList range)
         {
-            List<Playlist> plist = new List<Playlist>(range.Count);
-            foreach (Playlist item in range)
+            List<VMPlaylist> plist = new List<VMPlaylist>(range.Count);
+            foreach (VMPlaylist item in range)
                 plist.Add(item);
 
-            foreach (Playlist p in plist)
+            foreach (VMPlaylist p in plist)
                 Items.Remove(p);
         }
     }

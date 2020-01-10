@@ -1,4 +1,5 @@
-﻿using Glaxion.ViewModel;
+﻿using Glaxion.Tools;
+using Glaxion.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,78 +18,148 @@ namespace MusicWindow
         {
             AllowDrop = true;
             draggedItems = new ArrayList();
-            //DragEnter += ListViewEx_DragEnter;
             DragEnter += ListViewDragEnter;
             Drop += ListViewDrop;
             PreviewMouseLeftButtonDown += ListViewEx_PreviewMouseLeftButtonDown;
             PreviewMouseMove += ListViewEx_PreviewMouseMove;
             QueryContinueDrag += ListViewQueryContinueDrag;
             DataContext = viewModel;
-            highlightItem = new HighLightedItem();
+            Loaded += ListViewEx_Loaded;
+            dragThreshold = 150.0;
+            // SelectionMode = SelectionMode.Extended;
         }
-        
+
+        ScrollViewer viewer;
+        double dragThreshold;
+
+        VisualStateGroup FindVisualState(FrameworkElement element, string name)
+        {
+            if (element == null)
+                return null;
+
+            IList groups = VisualStateManager.GetVisualStateGroups(element);
+            foreach (VisualStateGroup group in groups)
+                if (group.Name == name)
+                    return group;
+
+            return null;
+        }
+
+        T FindSimpleVisualChild<T>(DependencyObject element) where T : class
+        {
+            if (VisualTreeHelper.GetChildrenCount(element) == 0)
+                return null;
+            while (element != null)
+            {
+                if (element is T)
+                    return element as T;
+                element = VisualTreeHelper.GetChild(element, 0);
+            }
+            return null;
+        }
+
+        private void ListViewEx_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (alreadyHookedScrollEvents)
+                return;
+
+            alreadyHookedScrollEvents = true;
+            viewer = FindSimpleVisualChild<ScrollViewer>(this);
+            if (viewer != null)
+            {
+                viewer.ScrollChanged += Viewer_ScrollChanged;
+                viewer.DragOver += Viewer_DragOver;
+                viewer.PreviewMouseLeftButtonDown += Viewer_PreviewMouseLeftButtonDown;
+                viewer.PreviewMouseMove += Viewer_PreviewMouseMove;
+                // Visual States are always on the first child of the control template 
+                
+            }
+        }
+
+        private void Viewer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+          //  _startPoint = e.GetPosition(this);
+
+        }
+
+        private void Viewer_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+           // _startPoint = e.GetPosition(this);
+            tool.debugSuccess(_startPoint.Y);
+        }
+
+        private void Viewer_DragOver(object sender, DragEventArgs e)
+        {
+            if (_adorner != null)
+            {
+
+               // Point p = e.GetPosition(viewer);
+                // _startPoint.Y -= e.VerticalOffset;
+               // _adorner.OffsetLeft += p.X;
+               // _adorner.OffsetTop += p.Y - _viewerstart.Y;
+            }
+        }
+        bool isScrolling;
+        private void Viewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if(_adorner != null)
+            {
+
+                double t_change = e.VerticalOffset;
+                tool.debugSuccess(t_change);
+
+                //      _layer.RenderTransformOrigin = new Point(_layer.RenderTransformOrigin.X, _layer.RenderTransformOrigin.Y + e.VerticalOffset);
+                // _layer = AdornerLayer.GetAdornerLayer(viewer as Visual);
+                //  _layer.Add(_adorner);
+
+                _adorner.SetOffsets(_adorner.OffsetLeft,50);
+                //  Point p = Mouse.GetPosition((IInputElement)viewer);
+              //    _startPoint.Y = e.VerticalOffset;
+                //  _adorner.OffsetLeft = p.X;
+                //  _adorner.OffsetTop = p.Y;
+                // _startPoint = Mouse.GetPosition(this);
+                // _startPoint = e.GetPosition(this);
+                //  if(e.VerticalChange)
+                // isDragScrolling = true;
+
+                // _startPoint.Y += p.Y + e.VerticalChange;
+                // _adorner.OffsetTop = e.VerticalChange;
+            }
+        }
+
+        private void Group_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool alreadyHookedScrollEvents = false;
+
         Point _startPoint;
         public DragAdorner _adorner;
+        public SimpleCircleAdorner _testAdorner;
         private AdornerLayer _layer;
+        public DragAdorner _hadorner;
+        private AdornerLayer _hlayer;
         private bool _dragIsOutOfScope;
         ArrayList draggedItems;
         internal VMListView<T> viewModel;
         public List<T> _selItems = new List<T>();
         public int CurrentIndex;
-        internal HighLightedItem highlightItem;
+
+        public bool isMouseWithinBounds { get; private set; }
         
-        internal class HighLightedItem
-        {
-            public HighLightedItem()
-            {
-                highlightColor = new SolidColorBrush(Color.FromArgb(100, 255, 0, 0));
-            }
-
-            Brush originalColor;
-            Brush highlightColor;
-            ListViewItem _item;
-
-            internal void HighlightBackground(ListViewItem item)
-            {
-                if (item == null)
-                    return;
-                originalColor = item.Background;
-                item.Background = highlightColor;
-                _item = item; 
-            }
-
-            internal void RestoreBackground()
-            {
-                if (originalColor == null||_item == null)
-                    return;
-                _item.Background = originalColor;
-                _item = null;
-            }
-
-            internal void RestoreBackground(Brush brush)
-            {
-                if (originalColor == null || _item == null)
-                    return;
-                _item.Background = brush;
-                _item = null;
-            }
-        }
-
         internal void UpdateItemSource()
         {
-          //  ItemsSource = null;
             ItemsSource = viewModel.Items;
         }
 
         public void RemoveSelectedItems()
         {
-
             for(int i=0;i < SelectedItems.Count;i++)
             {
                 viewModel.Items.Remove((T)SelectedItems[i]);
                 i--;
             }
-            
             SelectedItems.Clear();
             _selItems.Clear();
         }
@@ -100,24 +171,58 @@ namespace MusicWindow
                 RemoveSelectedItems();
         }
 
+        internal int PreContextIndex = -1;
         protected override void OnContextMenuOpening(ContextMenuEventArgs e)
         {
-            //   CacheSelectedItems();
-            GetCurrentIndex(Mouse.GetPosition);
+            PreContextIndex = GetCurrentIndex(Mouse.GetPosition);
             ListViewItem item = GetListViewItem(CurrentIndex);
-            item.IsSelected = false;
-            SelectedItems.Remove(item.DataContext);
-            highlightItem.RestoreBackground();
-            highlightItem.HighlightBackground(item);
-           // CurrentIndex++;
+            if (item == null)
+                return;
+            
+            UnHighlightItem();
+            HighlightItem(item);
             base.OnContextMenuOpening(e);
             RestoreCacheSelectedItems();
         }
+
+        ListViewItem _hitem;
+        List<VMItem> highlightedItems = new List<VMItem>();
+        private void HighlightItem(ListViewItem listViewItem)
+        {
+            VMItem vitem = listViewItem.Content as VMItem;
+            if(vitem != null)
+            {
+                vitem.ColourIndex = -2;
+                _hitem = listViewItem;
+                highlightedItems.Add(vitem);
+            }
+            return;
+        }
+
+        private void UnHighlightItem()
+        {
+            if (_hitem == null)
+                return;
+            VMItem vitem = _hitem.Content as VMItem;
+            if (vitem != null)
+            {
+                vitem.ColourIndex = 0;
+                _hitem = null;
+            }
+
+            foreach(VMItem item in highlightedItems)
+            {
+                item.ColourIndex = 0;
+            }
+            highlightedItems.Clear();
+            return;
+        }
+
         protected override void OnContextMenuClosing(ContextMenuEventArgs e)
         {
-           
+            UnHighlightItem();
             base.OnContextMenuClosing(e);
-            highlightItem.RestoreBackground(Background);
+            PreContextIndex = -1;
         }
 
         protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
@@ -154,14 +259,17 @@ namespace MusicWindow
                     break;
                 }
             }
-            if (index < 0)
-                index = Items.Count;
+
             CurrentIndex = index;
+            isMouseWithinBounds = IsMouseOverTarget(this, getPosition);
             return index;
         }
+        
 
         public ListViewItem GetListViewItem(int index)
         {
+            if (index < 0)
+                return null;
             if (ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 return null;
             return ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
@@ -174,52 +282,12 @@ namespace MusicWindow
             return bounds.Contains(mousePos);
         }
 
-        //currently using this
-        /*
-        int GetDragInsertionIndex(DragEventArgs e)
-        {
-            ListViewItem itemToReplace = FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
-           // object nameToReplace;
-            int index = Items.Count;
-            if (itemToReplace != null)
-            {
-                // nameToReplace = this.ItemContainerGenerator.ItemFromContainer(itemToReplace);
-                 index =this.ItemContainerGenerator.IndexFromContainer(itemToReplace);
-             //   FrameworkElement element = (FrameworkElement)e.OriginalSource;
-             //   ListViewItem lvi = (ListViewItem)this.ItemContainerGenerator.ContainerFromItem(element.DataContext);
-             //   index = Items.IndexOf(lvi);
-            }
-            if (index > Items.Count)
-                index = Items.Count;
-
-            return index;
-        }
-        */
-
+        Point _viewerstart;
         private void ListViewEx_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Store the mouse position
+            _viewerstart = e.GetPosition(viewer);
             _startPoint = e.GetPosition(this);
-            
-            /*
-            if(_selItems.Count == 0)
-            {
-                HitTestResult result = VisualTreeHelper.HitTest(this, _startPoint);
-                DependencyObject obj = result.VisualHit;
-                if (obj == null)
-                    return;
-
-                ListViewItem listViewItem =
-                    FindAnchestor<ListViewItem>(obj);
-                if (listViewItem == null)
-                    return;
-                //_selItems.AddRange(SelectedItems.Cast<object>());
-                object data = ItemContainerGenerator.ItemFromContainer(listViewItem);
-               // _selItems.Clear();
-                
-              //  _selItems.Add(data);
-            }
-            */
         }
 
         private void ListViewDragEnter(object sender, DragEventArgs e)
@@ -231,8 +299,7 @@ namespace MusicWindow
                 e.Effects = DragDropEffects.None;
             }
         }
-        
-        
+   
         private void ListViewEx_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             GetCurrentIndex(e.GetPosition);
@@ -240,8 +307,8 @@ namespace MusicWindow
             {
                 Point position = e.GetPosition(null);
 
-                if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance *2.0||
-                    Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance*2.0)
+                if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance *dragThreshold||
+                    Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance*dragThreshold)
                 {
                     BeingMultiDrag(e);
                 }
@@ -294,7 +361,6 @@ namespace MusicWindow
             DataObject data = new DataObject(typeof(ListViewEx<T>), this);
             DragDropEffects de = DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
             _selItems.Clear();
-
             //cleanup
             listView.PreviewDragOver -= ListViewDragOver;
             listView.DragLeave -= ListViewDragLeave;
@@ -319,7 +385,13 @@ namespace MusicWindow
             {
                 List<T> itemsToMove = new List<T>();
                 ListViewEx<T> source = e.Data.GetData(typeof(ListViewEx<T>)) as ListViewEx<T>;
-                int index = GetCurrentIndex(e.GetPosition);
+                int index = CurrentIndex;//GetCurrentIndex(e.GetPosition);
+                /*
+                if(index >= Items.Count)
+                {
+                    throw new Exception("Index should be valid with the range");
+                }
+                */
 
                 if (source == this)
                 {
@@ -328,15 +400,19 @@ namespace MusicWindow
 
                     MoveData(index, itemsToMove);
                     _selItems.Clear();
+                    return;
                 }
-                else if(source is ListViewEx<T>)
-                {
-                    foreach (T o in source._selItems)
-                        itemsToMove.Add(o);
-                    AddData(index, itemsToMove);
+                index = GetCurrentIndex(e.GetPosition);
+                if (index < 0)
+                    index = Items.Count;
 
-                    this.UpdateLayout();
-                }
+                SelectedItems.Clear();
+                _selItems.Clear();
+
+                foreach (T o in source._selItems)
+                    itemsToMove.Add(o);
+
+                AddData(index, itemsToMove);
             }
             else
             {
@@ -345,28 +421,88 @@ namespace MusicWindow
                 if (StringSource != null)
                 {
                     int index = GetCurrentIndex(e.GetPosition);
+                    if (index < 0)
+                        index = Items.Count;
+                    SelectedItems.Clear();
+                    _selItems.Clear();
                     AddDataFromFiles(index, StringSource);
                 }
             }
         }
-        
+
+        public class SimpleCircleAdorner : Adorner
+        {
+
+            public SimpleCircleAdorner(UIElement adornedElement)
+
+                : base(adornedElement)
+
+            { }
+
+            double X;
+            double Y;
+
+            public Point centre;
+            public ListViewItem item;
+
+            Point AddPoint(Point p1)
+            {
+                return new Point(X + p1.X, Y + p1.Y);
+            }
+
+            public void MovePosition(Point p)
+            {
+                this.X = p.X;
+                this.Y = p.Y;
+            }
+
+            protected override void OnRender(DrawingContext drawingContext)
+            {
+                Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
+
+                SolidColorBrush renderBrush = new SolidColorBrush(Colors.Green);
+
+                renderBrush.Opacity = 0.2;
+
+                Pen renderPen = new Pen(new SolidColorBrush(Colors.Navy), 1.5);
+
+                double renderRadius = 5.0;
+                
+                drawingContext.DrawEllipse(renderBrush, renderPen, AddPoint(adornedElementRect.TopLeft), renderRadius, renderRadius);
+
+                drawingContext.DrawEllipse(renderBrush, renderPen, AddPoint(adornedElementRect.TopRight), renderRadius, renderRadius);
+
+                drawingContext.DrawEllipse(renderBrush, renderPen, AddPoint(adornedElementRect.BottomLeft), renderRadius, renderRadius);
+
+                drawingContext.DrawEllipse(renderBrush, renderPen, AddPoint(adornedElementRect.BottomRight), renderRadius, renderRadius);
+
+            }
+
+        }
+
         private void InitialiseAdorner(ListViewItem listViewItem)
         {
             VisualBrush brush = new VisualBrush(listViewItem);
+            _testAdorner = new SimpleCircleAdorner(listViewItem);
             _adorner = new DragAdorner((UIElement)listViewItem, listViewItem.RenderSize, brush);
+            _testAdorner.Opacity = 0.5;
             _adorner.Opacity = 0.5;
             _layer = AdornerLayer.GetAdornerLayer(this as Visual);
+          //  _layer.Add(_testAdorner);
             _layer.Add(_adorner);
+            _testAdorner.item = listViewItem;
+            //_layer.Add(_adorner);
         }
 
         private void ListViewQueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
-            
+            /*
             if (this._dragIsOutOfScope)
             {
                 e.Action = DragAction.Cancel;
                 e.Handled = true;
             }
+            */
         }
 
         private void ListViewDragLeave(object sender, DragEventArgs e)
@@ -378,6 +514,7 @@ namespace MusicWindow
         }
 
         //need to compensate for scrolling
+        internal bool isDragScrolling;
         void ListViewDragOver(object sender, DragEventArgs e)
         {
             GetCurrentIndex(e.GetPosition);
@@ -385,19 +522,28 @@ namespace MusicWindow
             {
                 _adorner.OffsetLeft = e.GetPosition(this).X;
                 _adorner.OffsetTop = e.GetPosition(this).Y - _startPoint.Y;
+                
+               // tool.debugWarning(_adorner.OffsetTop);
             }
-            /*
-            Point point = e.GetPosition(this);
-            Rect rect = VisualTreeHelper.GetContentBounds(this);
-
-            //Check if within range of list view.
-            if (!rect.Contains(point))
+            if (_testAdorner!= null)
             {
-                e.Effects = DragDropEffects.Copy;
-               // this._dragIsOutOfScope = true;
-                //e.Handled = true;
+               // _testAdorner.centre = Mouse.GetPosition(MainControl.Current);
+                //_testAdorner.MovePosition(e.GetPosition(this));
+               // _testAdorner.= e.GetPosition(this).X;
+               // _testAdorner.OffsetTop = e.GetPosition(this).Y ;
+
+                //tool.debugWarning(_testAdorner.centre.Y);
             }
-            */
+
+        }
+        //dep
+        internal void UpdateDragAdorner()
+        {
+            if (_adorner != null)
+            {
+                _adorner.OffsetLeft = Mouse.GetPosition(null).X;
+                _adorner.OffsetTop = Mouse.GetPosition(null).Y - _startPoint.Y;
+            }
         }
 
         internal void SortCachedSelectedItems()
@@ -451,7 +597,7 @@ namespace MusicWindow
             return null;
         }
         #region Must Override
-        protected virtual void AddDataFromFiles(int insertionIndex, List<string> files)
+        internal virtual void AddDataFromFiles(int insertionIndex, List<string> files)
         {
             throw new NotImplementedException("Inherit this class and override this method to manipulate the view model's Items");
         }

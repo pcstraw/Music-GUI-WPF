@@ -4,6 +4,7 @@ using Glaxion.Tools;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace Glaxion.Music
 {
@@ -40,19 +41,20 @@ namespace Glaxion.Music
             DirectoriesLoadedEvent += On_DirectoriesLoaded;
             TrackChangeEvent += On_TrackChange;
             PlaybackFailedEvent += On_PlaybackFailed;
-            PrePlayEvent += MusicPlayer_BeforePlayEvent;
+           // PrePlayEvent += MusicPlayer_BeforePlayEvent;
             MusicUpdatedEvent += MusicPlayer_MusicUpdated;
             timer = new System.Windows.Forms.Timer();
             timer.Interval = 100;
             timer.Tick += t_Tick;
             CreateTempPlaybackFiles = true;
             _isRunning = false;
+            //LoopPlaylist = true;
             //initialise to -1.  If we start at 0 then loading trackmanager
             //will highlight the  first track of the playlist before we start playing anything
-            currentTrack = 0;
+            CurrentTrackIndex = 0;
             Volume = 10;
-            loop = false;
         }
+
         //used to call updatePlayliststate in trackmanager
         private void MusicPlayer_BeforePlayEvent(object sender, EventArgs args)
         {
@@ -60,8 +62,6 @@ namespace Glaxion.Music
         
         public static void Create(string[] args)
         {
-            //Player = new MusicPlayer();
-           // Player._startPlayer = true;
             Player.startArguments = args;
         }
         
@@ -69,14 +69,14 @@ namespace Glaxion.Music
        // public static Image MusicGUILogo = Glaxion.Music.Properties.Resources.music_gui_logo;
         public bool CreateTempPlaybackFiles { get; private set; }
        // bool _loop;
-        public bool loop { get;set; }
+       // public bool loop { get;set; }
 
         public WindowsMediaPlayer windowsMediaPlayer;
         public double trackPosition;
         public double trackDuration;
         public PlayState PlayState;
-
         Song _currentSong;
+
         public Song CurrentSong
         {
             get { return _currentSong; }
@@ -89,7 +89,8 @@ namespace Glaxion.Music
         }
 
         public bool mediaLoaded;
-        public bool mediaLoading;
+        //public bool LoopPlaylist;
+       // public bool mediaLoading;
         public bool ProgramInitialized;
         public bool Loop;
         public bool Muted;
@@ -98,7 +99,7 @@ namespace Glaxion.Music
         bool _isRunning;
         public Song prevTrack;
         public string[] startArguments;
-        public int currentTrack;
+        public int CurrentTrackIndex;
         public int trackbarValue;
         private int prevVolume;
         public int Volume;
@@ -148,22 +149,11 @@ namespace Glaxion.Music
         public event PlaybackFailedEventHandler PlaybackFailedEvent;
         protected void On_PlaybackFailed(object sender, EventArgs e)
         {
-            tool.debugError("Playback Failed");
-            if (!(sender is Song))
-                return;
-            Song s = sender as Song;
-            tool.debugError("Unable to plya file: ",s.Filepath);
-            if (IsPlaying)
-            {
-                int nextIndex = currentList.songs.IndexOf(s);
-                if (nextIndex > -1 && nextIndex < currentList.songs.Count)
-                {
-                    Song next_song = currentList.songs[nextIndex + 1];
-                    Play(next_song);
-                }
-                else
-                    NextTrack();
-            }
+            tool.ShowConsole();
+            if (sender is string)
+                tool.debugError("Unable to play file: ", sender as string);
+            else
+                tool.debugError("Playback Failed");
         }
 
         public delegate void PlayEventHandler(object sender, EventArgs args);
@@ -238,15 +228,9 @@ namespace Glaxion.Music
         {
         }
         
-        public bool Start()
+        public void Start()
         {
-            //needs to be called from music file manager
-            //GetSavedDirectories();
-            //maybe be more explicit and loading the file loader
-            //fileLoader = FileLoader.Instance;
-            //fileLoader.Load();
             timer.Start();
-            return true;
         }
 
         public void UseMediaKeys(Keys KeyCode)
@@ -308,8 +292,8 @@ namespace Glaxion.Music
                 index = p.songs.Count - 1;
 
             currentList = p;
-            currentTrack = index;
-            p.trackIndex = currentTrack;
+            CurrentTrackIndex = index;
+            p.trackIndex = CurrentTrackIndex;
             MusicUpdatedEvent(p, EventArgs.Empty);
         }
         
@@ -360,20 +344,14 @@ namespace Glaxion.Music
         public bool Mute()
         {
             Muted = !Muted;
-
-            if (Muted)
-            {
-                prevVolume = Volume;
-                SetVolume(0);
+            if (Muted){
+                windowsMediaPlayer.settings.volume = 0;
                 return Muted;
+            } else{
+                windowsMediaPlayer.settings.volume = Volume;
             }
-            else
-            {
-                SetVolume(prevVolume);
-                return Muted;
-            }
+            return Muted;
         }
-
         
         void t_Tick(object sender, EventArgs e)
         {
@@ -383,23 +361,28 @@ namespace Glaxion.Music
                 _isRunning = true;
             }
 
+            if (IsPaused)
+            {
+                if (!Muted)
+                    Mute();
+                windowsMediaPlayer.controls.pause();
+            }else{
+                if (Muted)
+                    Mute();
+            }
+
             TickEvent(sender, e);
+            
             if (windowsMediaPlayer.playState == WMPPlayState.wmppsStopped)
             {
-                if (loop)
-                    PrevTrack();
-                else
-                {
-                    if (IsPlaying)
-                        NextTrack();
-                }
+                if (IsPlaying)
+                    NextTrack();
             }
             
-            if (windowsMediaPlayer != null && windowsMediaPlayer.currentMedia != null)
+            if (windowsMediaPlayer.currentMedia != null)
             {
                 if (windowsMediaPlayer.openState == WMPLib.WMPOpenState.wmposMediaOpen)
                 {
-                   // mediaLoading = false;
                     if (!mediaLoaded)
                     {
                         if (MediaLoadedEvent != null)
@@ -409,10 +392,12 @@ namespace Glaxion.Music
                         }
                         trackDuration = windowsMediaPlayer.currentMedia.duration;
                     }
-                    trackbarValue = (int)windowsMediaPlayer.controls.currentPosition;/// trackBar.Maximum;
-                    trackPosition = trackbarValue;
-                }
-                else
+                    if (!IsPaused)
+                    {
+                        trackPosition = windowsMediaPlayer.controls.currentPosition;
+                        trackbarValue = (int)trackPosition;/// trackBar.Maximum;
+                    }
+                }else
                     mediaLoaded = false;
             }
         }
@@ -425,77 +410,84 @@ namespace Glaxion.Music
             return false;
         }
 
-        //used to update file paths based on file name
-        /*
-        public List<string> SearchMusicFiles(string fileName)
+        bool LoadTrack(int index)
         {
-            List<string> ls = new List<string>();
-            tool.debugWarning("Warning:  Lock fileLoader.MusicFiles before using it for searching");
-            foreach (KeyValuePair<string, string> kv in fileLoader.MusicFiles)
-            {
-                if (kv.Value == fileName)
-                    ls.Add(kv.Key);
-            }
-            return ls;
-        }
-        */
-        /*
-        public bool HasStopped()
-        {
-            if (windowsMediaPlayer.playState == WMPPlayState.wmppsStopped)
-                return true;
-            else
+            if (!LoadIntoWMP(index))
                 return false;
+            CurrentTrackIndex = index;
+            SetPlayingSong(currentList.songs[index]);
+            PlayEvent(CurrentSong, EventArgs.Empty);
+            return true;
         }
-        */
         
         public void NextTrack()
         {
-            if (currentList == null)
-                return;
-            Song next = CurrentSong;
-            int currentIndex = currentList.songs.IndexOf(next);
-            for(int i=currentIndex+1;i<currentList.songs.Count;i++)
+            int next = CurrentTrackIndex + 1;
+            if (next >= currentList.songs.Count)
             {
-                if(File.Exists(currentList.songs[i].Filepath))
-                {
-                    next = currentList.songs[i];
-                    break;
-                }
+                Stop();
+                return;
             }
-
-            if (IsPlaying)
-                Play(next);
-            else
-                CurrentSong = next;
-
-            NextEvent(null, EventArgs.Empty);
-            //else call playback failed?
+            
+            while( next < currentList.songs.Count)
+            {
+                if (!IsValidIndex(next))
+                {
+                    Stop();
+                    return;
+                }
+                if (IsPlaying)
+                {
+                    if (Play(next))
+                    {
+                        NextEvent(this, EventArgs.Empty);
+                        return;
+                    }
+                }else{
+                    if (LoadTrack(next))
+                    {
+                        NextEvent(this, EventArgs.Empty);
+                        trackPosition = 0;
+                        return;
+                    }
+                }
+                next++;
+            }
         }
 
         public void PrevTrack()
         {
-            if (currentList == null)
-                return;
-            Song next = CurrentSong;
-            int currentIndex = currentList.songs.IndexOf(next);
-            for (int i = currentIndex - 1; i > -1; i--)
-            {
-                if (File.Exists(currentList.songs[i].Filepath))
-                {
-                    next = currentList.songs[i];
-                    break;
-                }
-            }
+            int next = CurrentTrackIndex-1;
+            if (next < 0)
+                next = 0;
 
-            if (IsPlaying)
-                Play(next);
-            else
-                CurrentSong = next;
-            PrevEvent(null, EventArgs.Empty);
+            while (next > -1)
+            {
+                if (!IsValidIndex(next))
+                {
+                    Stop();
+                    return;
+                }
+                if (IsPlaying)
+                {
+                    if (Play(next))
+                    {
+                        NextEvent(this, EventArgs.Empty);
+                        return;
+                    }
+                } else{
+                    if (LoadTrack(next))
+                    {
+                        NextEvent(this, EventArgs.Empty);
+                        trackPosition = 0;
+                        return;
+                    }
+                }
+                next--;
+            }
         }
 
-        public bool PlayPlaylist(Playlist playlist, Song song)
+        public bool PlayPlaylist(Playlist playlist, int song)
         {
             if (playlist == null)
                 return false;
@@ -510,50 +502,77 @@ namespace Glaxion.Music
 
         public bool Play()
         {
-            return Play(CurrentSong);
+            return Play(CurrentTrackIndex);
+        }
+        
+        public bool IsValidIndex(int index)
+        {
+            if (currentList == null)
+            {
+                tool.show(2, "Playlist is null", index.ToString());
+                return false;
+            }
+            if (currentList.songs == null)
+            {
+                PlaybackFailedEvent(index, EventArgs.Empty);
+                tool.show(2, "Tracks are null", index.ToString());
+                return false;
+            }
+            if(currentList.songs.Count == 0)
+            {
+                PlaybackFailedEvent(index, EventArgs.Empty);
+                tool.show(2, "track count is 0", index.ToString());
+                return false;
+            }
+            if (currentList.songs[index] == null)
+            {
+                tool.show(2, "Song at index " + index.ToString() + " is null");
+                PlaybackFailedEvent(index, EventArgs.Empty);
+                return false;
+            }
+            return true;
         }
 
-        public bool Play(Song song)
+        internal bool LoadIntoWMP(int index)
         {
-            if (song == null)
-            {
-                PlaybackFailedEvent(null, EventArgs.Empty);
-                //Stop();
-                tool.show(2,"Playback Failed", "Song is null");
+            if (!IsValidIndex(index))
                 return false;
-            }
+
+            Song song = currentList.songs[index];
             string file = song.Filepath;
+
             if (!File.Exists(song.Filepath))
             {
+                //tool.show(2, "INVALID FILE", "", file, "", "Playback Failed");
                 PlaybackFailedEvent(file, EventArgs.Empty);
-                //Stop();
-                tool.show(2, "INVALID FILE", "", file, "", "Playback Failed");
                 return false;
             }
-            
-            PrePlayEvent(file, EventArgs.Empty);
 
-            string f = file;
-            if (CreateTempPlaybackFiles)
-                f = CreateTempPlayFile(file);  //quickly create a temp file for playback so when can edit the tags
+            //PrePlayEvent(file, EventArgs.Empty);
+            windowsMediaPlayer.URL = file;
+            return true;
+        }
 
-            windowsMediaPlayer.URL = f;
-            windowsMediaPlayer.controls.play();
-            if (CreateTempPlaybackFiles)
-                DeleteTMPPlayedFiles();
-            mediaLoading = true;
-            PlayState = PlayState.IsPlaying;
-            /*
-            if (index != currentTrack)
+        public bool Play(int index)
+        {
+            if (LoadIntoWMP(index))
             {
-                TrackChangeEvent(index, EventArgs.Empty);
-            }
-            */
-            if(currentList != null && currentList.songs.Contains(song))
-                currentTrack = currentList.songs.IndexOf(song);
+                string file = currentList.songs[index].Filepath;
+                if (CreateTempPlaybackFiles)
+                {
+                    string temp_f = CreateTempPlayFile(file);  //quickly create a temp file for playback so we can edit the tags
+                    windowsMediaPlayer.URL = temp_f;
+                }
+                windowsMediaPlayer.controls.play();
+                if (CreateTempPlaybackFiles)
+                    DeleteTMPPlayedFiles();
+            }else
+                return false;
 
-            SetPlayingSong(song);
-            PlayEvent(song, EventArgs.Empty);
+            PlayState = PlayState.IsPlaying;
+            CurrentTrackIndex = index;
+            SetPlayingSong(currentList.songs[index]);
+            PlayEvent(CurrentSong, EventArgs.Empty);
             return true;
         }
 
@@ -582,33 +601,36 @@ namespace Glaxion.Music
             await tool.DeleteAsyncFile(_lastPlayedTMP);
             _lastPlayedTMP = _currentPlayedTMP;
         }
+        
         string _lastPlayedTMP;
         string _currentPlayedTMP;
         private string CreateTempPlayFile(string file)
         {
+            if(!File.Exists(file))
+            {
+                return file;
+            }
             string temp_dir = tool.GetTempFolder();
-            string file_name = Path.GetFileName(file);
+            string file_name = Path.GetFileNameWithoutExtension(file);
             string ext = Path.GetExtension(file);
-            string new_file = string.Concat(temp_dir, file_name,ext);
+            string new_file = Path.Combine(temp_dir, string.Concat(file_name, ext));
 
-            if(File.Exists(new_file))
+            if (File.Exists(new_file))
+            {
+                _currentPlayedTMP = new_file;
                 return new_file;
+            }
             
             File.Copy(file, new_file, true);
+            _lastPlayedTMP = _currentPlayedTMP;
             _currentPlayedTMP = new_file;
             return new_file;
-        }
-        
-        public bool PlayFile(string file)
-        {
-            Song s = SongInfo.Instance.GetInfo(file);
-            return Play(s);
         }
         
         public void Replay()
         {
             Stop();
-            Play(CurrentSong);
+            Play(CurrentTrackIndex);
         }
 
         public void Stop()
@@ -623,8 +645,7 @@ namespace Glaxion.Music
         {
             windowsMediaPlayer.controls.pause();
             PlayState = PlayState.IsPaused;
-            trackPosition = windowsMediaPlayer.controls.currentPosition;
-            PauseEvent(null, EventArgs.Empty);
+            PauseEvent(this, EventArgs.Empty);
         }
 
         public void Resume(double position)
@@ -633,7 +654,8 @@ namespace Glaxion.Music
             windowsMediaPlayer.controls.currentPosition = position;
             PlayState = PlayState.IsPlaying;
             trackPosition = position;
-            ResumeEvent(null, EventArgs.Empty);
+            ResumeEvent(this, EventArgs.Empty);
+            PlayEvent(this, EventArgs.Empty);
         }
 
         public void Resume()
@@ -644,10 +666,7 @@ namespace Glaxion.Music
         public void SetVolume(int value)
         {
             Volume = value;
-            if (Muted)
-                windowsMediaPlayer.settings.volume = 0;
-            else
-                windowsMediaPlayer.settings.volume = Volume;
+            windowsMediaPlayer.settings.volume = Volume;
         }
     }
 }

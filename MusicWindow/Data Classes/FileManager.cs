@@ -13,7 +13,19 @@ namespace Glaxion.Music
     {
         public DirectoryCollection() : base()
         {
+        }
+    }
 
+    public class FileDirectory : List<string>
+    {
+        public string directory;
+        public FileDirectory() : base()
+        {
+        }
+
+        public FileDirectory(string directoryName) : base()
+        {
+            directory = directoryName;
         }
     }
 
@@ -21,51 +33,59 @@ namespace Glaxion.Music
     {
         public FileManager()
         {
-            Directories = new DirectoryCollection();
+            Directories = new List<FileDirectory>();
             Files = new List<string>();
         }
        
-        public DirectoryCollection Directories { get; set; }
+        public List<FileDirectory> Directories { get; set; }
         public List<string> Files { get; set; }
 
+        //dep
         public virtual List<string> LoadFiles(string directory)
         {
             //todo:  change to generic enumrate files
             return tool.LoadAudioFiles(directory, SearchOption.AllDirectories);
         }
         
-        public virtual bool AddDirectory(string folder)
+        public virtual FileDirectory AddDirectory(string folder)
         {
             if (!Directory.Exists(folder))
             {
                 if (folder.ToLower() == "default")
-                    return false;
+                    return null;
                 tool.show(3, "Directory: ", "", folder, "", " Does not exist");
-                return false;
+                return null;
             }
-            if (Directories.Contains(folder))
+            if (HasDirectory(folder))
             {
                 tool.show(3, "Directory: ", "", folder, "", "Already Added");
-                return false;
+                //todo: can return the already added fileDirectory
+                return null;
             }
-            Directories.Add(folder);
-            return true;
+            FileDirectory fd = new FileDirectory(folder);
+            Directories.Add(fd);
+            return fd;
         }
 
-        public void SavePlaylistDirectories()
+        public bool HasDirectory(string directory)
         {
-            throw new NotImplementedException("Need to save property list but data classes cannot access Application.Settings.  Should this function even be here?");
-           // tool.SetPropertyList(Playlist.Directories, Properties.Settings.Default.PlaylistDirectories);
-            //Properties.Settings.Default.Save();
+            foreach(FileDirectory fileDirectory in Directories)
+                if (fileDirectory.directory == directory)
+                    return true;
+            return false;
         }
 
-        public void SaveDirectories()
+        public bool RemoveDirectory(string directory)
         {
-            throw new NotImplementedException("Need to save property list but data classes cannot access Application.Settings.  Should this function even be here?");
-            //tool.SetPropertyList(MusicDirectories, Properties.Settings.Default.MusicDirectories);
-            // foreach (string s in Properties.Settings.Default.MusicDirectories)
-            //    tool.debug(s);
-            // Properties.Settings.Default.Save();
+            foreach (FileDirectory fileDirectory in Directories)
+            {
+                if (fileDirectory.directory == directory)
+                {
+                    Directories.Remove(fileDirectory);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

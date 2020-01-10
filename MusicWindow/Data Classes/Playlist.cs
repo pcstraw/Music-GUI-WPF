@@ -62,7 +62,6 @@ namespace Glaxion.Music
                         List<string> tracks = tool.LoadAudioFiles(filePath, SearchOption.TopDirectoryOnly);
                         //tracks.Reverse();
                         GetSongs(tracks);
-                       
                     }
                 }
                 else
@@ -403,7 +402,7 @@ namespace Glaxion.Music
                     continue;
 
                 string t = Path.GetFileNameWithoutExtension(songs[i].Filepath);
-                Song s = SongInfo.Instance.SearchForFile(t);
+                Song s = SongInfo.Instance.SearchByName(t);
                 if (s == null)
                     continue;
                 songs.RemoveAt(i);

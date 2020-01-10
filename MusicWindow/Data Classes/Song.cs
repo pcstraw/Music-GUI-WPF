@@ -43,7 +43,8 @@ namespace Glaxion.Music
         HasPlayed,
         Invalid,
         MissingTags,
-        InvalidTag
+        InvalidTag,
+        Searched
     }
 
     public class SongEventArgs : PropertyChangedEventArgs
@@ -84,7 +85,7 @@ namespace Glaxion.Music
         public Image image;
         public string Name { get; set; }
         public string comment;
-        public IPicture[] Pictures { get; set; }
+        //public IPicture[] Pictures { get; set; }
         public string Lyrics { get; set; }
         public string Length { get; set; }
         public TagLib.File file; //Dispose
@@ -96,7 +97,22 @@ namespace Glaxion.Music
             get { return _state; }
             set { _state = value; OnPropertyChanged(value); }
         }
-        
+
+        SongState _prevState;
+        public void CacheSongState()
+        {
+            _prevState = State;
+        }
+        public void MakeSearchedState()
+        {
+            CacheSongState();
+            State = SongState.Searched;
+        }
+        public void RestorePrevState()
+        {
+            State = _prevState;
+        }
+
         public static List<string> TagLoadingLog = new List<string>();
 
         public Song(string filePath)
@@ -142,43 +158,50 @@ namespace Glaxion.Music
             ThreadPool.QueueUserWorkItem( new WaitCallback(ProcessFile),null);
         }
 
-        private void ProcessFile(object a)
+        bool LoadFile()
         {
-            //ThreadInfo ti = a as ThreadInfo;
-            //ti.File = TagLib.File.Create(ti.Filepath);
-            Title = Path.GetFileNameWithoutExtension(Filepath);
+            if (!System.IO.File.Exists(Filepath))
+               return false;
             try
             {
                 file = TagLib.File.Create(Filepath);
                 file.GetTag(TagTypes.AllTags);
-
-                Album = file.Tag.Album;
-                Artist = file.Tag.FirstAlbumArtist;
-                Track = file.Tag.Track;
-                Lyrics = file.Tag.Lyrics;
-                Pictures = file.Tag.Pictures;
-                Year = file.Tag.Year.ToString();
-                Length = file.Length.ToString();
-                if (file.Tag.Genres.Length > 0)
-                    Genres = file.Tag.Genres; //genre loading appers tp be broken
-                if (!string.IsNullOrEmpty(file.Tag.Title) && !string.IsNullOrWhiteSpace(file.Tag.Title))
-                    Title = file.Tag.Title;
-
-                LoadAlbumArt();
-                dirty = false;
+                return true;
             }
             catch (Exception e)
             {
                 TagLoadingLog.Add(string.Concat("--> Failed to Get All Tags: \n", e.Message, "\n", Filepath));
                 State = SongState.MissingTags;
+                return false;
+               // if (file != null)
+               //     file.Dispose();
             }
-            finally
+        }
+
+        private void ProcessFile(object a)
+        {
+            //ThreadInfo ti = a as ThreadInfo;
+            //ti.File = TagLib.File.Create(ti.Filepath);
+            Title = Path.GetFileNameWithoutExtension(Filepath);
+            if (!LoadFile())
             {
-                //investigate:  we dispose of the taglib file here 
-                //but in the save function we don't reopen it
-                if (file != null) file.Dispose();
+                State = SongState.Invalid;
+                return;
             }
             loaded = true;
+            dirty = false;
+            Album = file.Tag.Album;
+            Artist = file.Tag.FirstAlbumArtist;
+            Track = file.Tag.Track;
+            Lyrics = file.Tag.Lyrics;
+            Year = file.Tag.Year.ToString();
+            Length = file.Length.ToString();
+            if (file.Tag.Genres.Length > 0)
+                Genres = file.Tag.Genres; //genre loading appers tp be broken
+            if (!string.IsNullOrEmpty(file.Tag.Title) && !string.IsNullOrWhiteSpace(file.Tag.Title))
+                Title = file.Tag.Title;
+
+            LoadAlbumArt();
         }
 
         public void ReadID3Info()
@@ -191,6 +214,17 @@ namespace Glaxion.Music
                     CreateFileAsync();
             }
         }
+
+        bool CheckFile()
+        {
+            if (file != null)
+                return true;
+
+            if (LoadFile())
+                return true;
+
+            return false;
+        }
         
         public bool SaveInfo()
         {
@@ -199,7 +233,9 @@ namespace Glaxion.Music
                 //investigate:  see comment in process file
                 //how come we don't need to create a new file
                 //even though we disposed of it in ProcessFile()
+                //if (CheckFile())
                 file.Save();
+               // Reset();
             }
             catch(Exception e)
             {
@@ -219,12 +255,11 @@ namespace Glaxion.Music
         {
             Reset();
             ReadID3Info();
-           // ReadID3Async();
         }
 
         public void SetTitle(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             file.Tag.Title = text;
             dirty = true;
@@ -232,7 +267,7 @@ namespace Glaxion.Music
 
         public void SetAlbum(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             file.Tag.Album = text;
             dirty = true;
@@ -240,7 +275,7 @@ namespace Glaxion.Music
 
         public void SetArtist(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             List<string> alb = file.Tag.AlbumArtists.ToList();
             alb.Clear();
@@ -251,7 +286,7 @@ namespace Glaxion.Music
 
         public void SetGenre(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             List<string> gen = file.Tag.Genres.ToList();
             gen.Insert(0,text);
@@ -261,7 +296,7 @@ namespace Glaxion.Music
 
         public void SetYear(uint num)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             file.Tag.Year = num;
             dirty = true;
@@ -269,7 +304,7 @@ namespace Glaxion.Music
 
         public void SetYear(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             uint result = 0;
             if(uint.TryParse(text,out result))
@@ -282,14 +317,14 @@ namespace Glaxion.Music
 
         public void SetTrack(uint num)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             file.Tag.Track = num;
             dirty = true;
         }
         public void SetLyrics(string text)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
             file.Tag.Lyrics = text;
             dirty = true;
@@ -308,14 +343,16 @@ namespace Glaxion.Music
 
         public void SetPictureFromImage(Image i)
         {
-            if (file == null)
+            if (!CheckFile())
                 return;
+
             if (i == null)
                 return;
 
             byte[] image_bytes = imageToByteArray(i);
             if (image_bytes == null)
                 return;
+
             image = i;
             file.Tag.Pictures = new TagLib.IPicture[]
             {
@@ -341,23 +378,36 @@ namespace Glaxion.Music
         public void LoadAlbumArt()
         {
             image = null;
-            if (loaded && Pictures != null && Pictures.Length > 0)
+            if (file != null && file.Tag.Pictures != null && file.Tag.Pictures.Length > 0)
             {
-                byte[] bytes = Pictures[0].Data.Data;
-                ImageConverter ic = new ImageConverter();
-                image = (Image)ic.ConvertFrom(bytes);
-                return;
+                try
+                {
+                    byte[] bytes = file.Tag.Pictures[0].Data.Data;
+                    ImageConverter ic = new ImageConverter();
+                    image = (Image)ic.ConvertFrom(bytes);
+                    return;
+                }
+                catch(Exception e)
+                {
+                    TagLoadingLog.Add(e.Message);
+                }
             }
 
             string pic = GetFolderImage();
             if (pic == null)
             {
                 string defaultimage = @"Resources\music_gui_logo.png";
-                if(System.IO.File.Exists(defaultimage))
+                if (System.IO.File.Exists(defaultimage))
+                {
                     image = Image.FromFile(defaultimage);  //no extension needed
+                   // SetPictureFromImage(image);
+                }
             }
             else
+            {
                 image = Image.FromFile(pic);
+                //SetPictureFromImage(image);
+            }
         }
     }
 }

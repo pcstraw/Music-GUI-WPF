@@ -40,11 +40,9 @@ namespace Glaxion.Music
             return ls;
         }
 
-        public Song SearchForFile(string searchText)
+        public Song SearchByName(string searchText)
         {
-            List<string> files = MusicFileManager.Instance.Files;
-
-            foreach(string s in files)
+            foreach(string s in MusicFileManager.Instance.Files)
             {
                 string name = Path.GetFileNameWithoutExtension(s);
                 if (name == searchText)

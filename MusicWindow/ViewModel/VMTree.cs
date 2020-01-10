@@ -16,6 +16,7 @@ namespace Glaxion.ViewModel
         public VMTree()
         {
             Nodes = new ObservableCollection<VMNode>();
+            _searchedNodes = new ObservableCollection<VMNode>();
         }
 
         ObservableCollection<VMNode> _nodes;
@@ -31,7 +32,7 @@ namespace Glaxion.ViewModel
         public FileManager fileLoader;
         public string searchText;
         bool _useCahcedNodes;
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -44,12 +45,14 @@ namespace Glaxion.ViewModel
             OpenPlaylist?.Invoke(filePath, EventArgs.Empty);
         }
         
+        //dep.  Switch to the FileDirectory version below
         private VMNode PopulateNodesFromDirectory(string directory)
         {
             VMNode root = new VMNode();
             root.Name = directory;
             root.FilePath = directory;
             List<string> files = fileLoader.LoadFiles(directory);
+           // List<string> files = tool.LoadAudioFiles(directory, SearchOption.AllDirectories);
             if (files.Count == 0)
                 return null;
 
@@ -60,12 +63,64 @@ namespace Glaxion.ViewModel
             return root;
         }
 
+        private VMNode PopulateNodesFromDirectory(FileDirectory fileDirectory)
+        {
+            VMNode root = new VMNode();
+            root.Name = fileDirectory.directory;
+            root.FilePath = fileDirectory.directory;
+            List<string> files = fileLoader.LoadFiles(fileDirectory.directory);
+            //List<string> files = tool.LoadAudioFiles(fileDirectory.directory, SearchOption.AllDirectories);
+            if (files.Count == 0)
+                return null;
+
+            fileDirectory.Clear();
+            fileDirectory.AddRange(files);
+
+            foreach (string f in fileDirectory)
+                root.BuildChildNodes(fileDirectory.directory, f, f);
+
+            root.SortNodes();
+            return root;
+        }
+
+        private VMNode PopulateNodesFromFileDirectory(FileDirectory fileDirectory)
+        {
+            VMNode root = new VMNode();
+            root.Name = fileDirectory.directory;
+            root.FilePath = fileDirectory.directory;
+            if (fileDirectory.Count == 0)
+                return null;
+            
+            foreach (string f in fileDirectory)
+                root.BuildChildNodes(fileDirectory.directory, f, f);
+
+            root.SortNodes();
+            return root;
+        }
+
         public void LoadFilesToTree()
         {
             cachedNodes.Clear();
-            foreach (string dir in fileLoader.Directories)
+            foreach (FileDirectory fileDirectory in fileLoader.Directories)
             {
-                VMNode root = PopulateNodesFromDirectory(dir);
+                VMNode root = PopulateNodesFromDirectory(fileDirectory);
+                if (root == null)
+                    continue;
+                cachedNodes.Add(root);
+            }
+            if (cachedNodes.Count == 0)
+                return;
+
+            cachedNodes[0].Expanded = true;
+            Nodes = cachedNodes;
+        }
+
+        public void LoadDirectoriesToTree()
+        {
+            cachedNodes.Clear();
+            foreach (FileDirectory fileDirectory in fileLoader.Directories)
+            {
+                VMNode root = PopulateNodesFromFileDirectory(fileDirectory);
                 if (root == null)
                     continue;
                 cachedNodes.Add(root);
@@ -78,24 +133,55 @@ namespace Glaxion.ViewModel
         }
 
         //pass the title from for the dialog box from the caller
-        public virtual void SelectAndLoadDirectory(string dialogBrowserTile)
+        public virtual List<FileDirectory> SelectAndLoadDirectory(string dialogBrowserTile)
         {
             List<string> folders = tool.SelectFiles(true, true, dialogBrowserTile);
             bool directoryAdded = false;
+            List<FileDirectory> addedFolders = new List<FileDirectory>();
 
             foreach (string folder in folders)
-                directoryAdded = AddDirectory(folder);
-
+            {
+                FileDirectory fd = AddDirectory(folder);
+                if (fd != null)
+                {
+                    addedFolders.Add(fd);
+                    directoryAdded = true;
+                }
+            }
             if (directoryAdded)
             {
-                LoadFilesToTree();
+                // LoadFilesToTree();
+                LoadDirectoriesToTree();
                 Nodes = cachedNodes;
             }
+            return addedFolders;
         }
 
-        public virtual bool AddDirectory(string directoryPath)
+        internal void RestorecachedNodes()
+        {
+            Nodes = cachedNodes;
+        }
+
+        public virtual FileDirectory AddDirectory(string directoryPath)
         {
             return fileLoader.AddDirectory(directoryPath);
+        }
+
+        ObservableCollection<VMNode> _searchedNodes;
+        public ObservableCollection<VMNode> SearchFiles(string text)
+        {
+            _searchedNodes.Clear();
+            foreach (string s in fileLoader.Files)
+            {
+                if(s.ToLower().Contains(text.ToLower()))
+                {
+                    VMNode newNode = VMNode.Create(s);
+                    _searchedNodes.Add(newNode);
+                }
+            }
+
+            Nodes = _searchedNodes;
+            return _searchedNodes;
         }
 
         public VMNode SearchTreeView(VMNode tree, string text)
@@ -106,7 +192,7 @@ namespace Glaxion.ViewModel
             {
                 foreach (VMNode t in tree.Nodes)
                 {
-                    if (t.Name == text)
+                    if (t.FilePath == text)
                         return t;
 
                     if (t.Nodes.Count > 0)
@@ -120,7 +206,7 @@ namespace Glaxion.ViewModel
             return null;
         }
 
-        public virtual void FindFile(string path)
+        public virtual VMNode FindFile(string path)
         {
             string s = path;
             VMNode t = null;
@@ -133,10 +219,11 @@ namespace Glaxion.ViewModel
                     {
                         t.Selected = true;
                         t.Expanded = true;
-                        return;
+                        return t;
                     }
                 }
             }
+            return t;
         }
 
         public void RemoveAncestorDirectory(VMNode node)
@@ -146,7 +233,7 @@ namespace Glaxion.ViewModel
             {
                 string dir = ancestor.FilePath;
                 Nodes.Remove(ancestor);
-                fileLoader.Directories.Remove(dir);
+                fileLoader.RemoveDirectory(dir);
             }
         }
 
@@ -159,81 +246,12 @@ namespace Glaxion.ViewModel
                 rootNode.Add(newNode);
             }
         }
-
+        /*
         public void CacheNodes()
         {
             cachedNodes.Clear();
             IterateTreeNodes(Nodes, cachedNodes);
         }
-
-        public List<VMNode> CopyTree()
-        {
-            List<VMNode> copied = new List<VMNode>();
-            foreach (VMNode n in Nodes)
-            {
-                copied.Add(n.Clone());
-            }
-            return copied;
-        }
-
-        public void SearchForText(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                if (!_useCahcedNodes)
-                {
-                    //_view.PopulateTree(cachedNodes);
-                    _useCahcedNodes = true;
-                    //TODO: restore last opened nodes
-                    if (Nodes.Count > 0)
-                    {
-                        Nodes[0].Expanded = true;
-                    }
-                }
-                return;
-            }
-            ObservableCollection<VMNode> results = new ObservableCollection<VMNode>();
-            SearchTree(text, cachedNodes, results);
-            if (results.Count > 0)
-            {
-                //_view.PopulateTree(results);
-                _useCahcedNodes = false;
-            }
-        }
-
-        //use ref for results to show we are modifying the list
-        public void SearchTree(string text, ObservableCollection<VMNode> nodes, ObservableCollection<VMNode> results)
-        {
-            foreach (VMNode t in nodes)
-            {
-                if (t.Name.ToLower().Contains(text.ToLower()))
-                {
-                    results.Add(t.Clone());
-                }
-                SearchTree(text, t.Nodes, results);
-            }
-        }
-
-        public void SetTree(ObservableCollection<VMNode> nodes, string SearchText)
-        {
-            foreach (VMNode n in nodes)
-            {
-                Nodes.Add(n);
-                if (tool.StringCheck(SearchText))
-                    SearchForText(SearchText);
-            }
-            //_view.PopulateTree(Nodes);
-        }
-
-        public void SetTree(VMNode node, string searchText)
-        {
-            //probably check if the node is a valid file?
-            if (node == null)
-                return;
-            Nodes.Add(node);
-            if (tool.StringCheck(searchText))
-                SearchForText(searchText);
-            //_view.PopulateTree(Nodes);
-        }
+        */
     }
 }

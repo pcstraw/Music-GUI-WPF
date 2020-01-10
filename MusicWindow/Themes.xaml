@@ -17,7 +17,16 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="0,6,0,0" />
     </Style>
-    
+
+    <Style x:Key="ListItemStyle" TargetType="{x:Type ListViewItem}">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="true" >
+                <Setter Property="Foreground" Value="Red" />
+                <Setter Property="Background" Value="Blue" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Round Button Template -->
     <Style x:Key="RoundButtonStyle"  TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="0,0,0,0"/>
@@ -59,7 +68,7 @@
         <Setter Property="Width" Value="50"/>
         <Setter Property="Height" Value="50"/>
         <Setter Property="FontFamily" Value="Verdana"/>
-        <Setter Property="FontSize" Value="18px"/>
+        <Setter Property="FontSize" Value="16px"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
@@ -84,9 +93,10 @@
                     Margin="0" 
                     BorderThickness="4" 
                     BorderBrush="LightSlateGray"
-                    Background="{TemplateBinding Property= ContentControl.Background}" >
-                    <ContentControl
-                        x:Name="mcc"
+                    Background="{TemplateBinding Property= ContentControl.Background}" 
+                    >
+                <ContentControl
+                     x:Name="mcc"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      Content= "{TemplateBinding Property= ContentControl.Content}"/>

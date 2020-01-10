@@ -27,7 +27,6 @@ namespace Glaxion.Music
             return list;
         }
         
-
        // Dictionary<string, Playlist> PlaylistFiles;
         /*
         public void LoadPlaylistDirectories()

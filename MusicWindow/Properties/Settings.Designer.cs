@@ -39,9 +39,6 @@ namespace MusicWindow.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Default</string>\r\n</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection MusicFileDirectories {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["MusicFileDirectories"]));
@@ -67,10 +64,10 @@ namespace MusicWindow.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
-        public string CurrentSong {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CurrentSong {
             get {
-                return ((string)(this["CurrentSong"]));
+                return ((int)(this["CurrentSong"]));
             }
             set {
                 this["CurrentSong"] = value;
@@ -136,6 +133,43 @@ namespace MusicWindow.Properties {
             }
             set {
                 this["PlayState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string EditingProgram {
+            get {
+                return ((string)(this["EditingProgram"]));
+            }
+            set {
+                this["EditingProgram"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"C:\\Users\\Solo\\Desktop\\Music " +
+            "GUI\\MusicWindow\\MusicGUIDatabase.mdf\";Integrated Security=True")]
+        public string DBConnectionPath {
+            get {
+                return ((string)(this["DBConnectionPath"]));
+            }
+            set {
+                this["DBConnectionPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowConsole {
+            get {
+                return ((bool)(this["ShowConsole"]));
+            }
+            set {
+                this["ShowConsole"] = value;
             }
         }
     }

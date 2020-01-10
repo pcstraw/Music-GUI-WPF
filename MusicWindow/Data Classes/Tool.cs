@@ -66,7 +66,7 @@ namespace Glaxion.Tools
     public class tool
     {
         static int _count; //count debug console writelines
-        public static string musicEditingProgram;
+        public static string MusicEditingProgram;
         public static Form GlobalForm { get; internal set; }
 
         public static async void DeleteAsync(string path)
@@ -154,7 +154,7 @@ namespace Glaxion.Tools
         }
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        public static extern IntPtr GetConsoleWindow();
         static ConsoleColor cf;
         static ConsoleColor cb;
         public static void SetConsoleErrorState()
@@ -220,15 +220,27 @@ namespace Glaxion.Tools
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+
+        public static void SetConsoleParent(IntPtr parent)
+        {
+            var handle = GetConsoleWindow();
+            SetParent(handle, parent);
+        }
+
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
-        public static bool ConsoleVisible = true;
+        public static bool ConsoleVisible;
 
         public static void ShowConsole()
         {
             var handle = GetConsoleWindow();
             tool.ConsoleVisible = true;
-            // Hide
             ShowWindow(handle, SW_SHOW);
         }
 
@@ -236,7 +248,6 @@ namespace Glaxion.Tools
         {
             var handle = GetConsoleWindow();
             tool.ConsoleVisible = false;
-            // Hide
             ShowWindow(handle, SW_HIDE);
         }
 
@@ -253,7 +264,15 @@ namespace Glaxion.Tools
                 return true;
             }
         }
-        
+
+        public static void ToggleConsole(bool show)
+        {
+            if (!show)
+                tool.HideConsole();
+            else
+                tool.ShowConsole();
+        }
+
         public static Color AddColor(Color color,int value)
         {
             int r = color.R + value;
@@ -373,6 +392,11 @@ namespace Glaxion.Tools
             if (!Directory.Exists(_tempFolder))
                 Directory.CreateDirectory(_tempFolder);
             return _tempFolder;
+        }
+
+        public static void DeleteTempFolder()
+        {
+            File.Delete(_tempFolder);
         }
 
         public static void OpenNodeDirectory(TreeNode node)
@@ -848,6 +872,7 @@ namespace Glaxion.Tools
                     || ext == ".mp3"
                     || ext == ".wma"
                     || ext == ".flac"
+                    || ext == ".ogg"
                     || ext == ".m4a")
                 return true;
            return false;
@@ -1025,7 +1050,6 @@ namespace Glaxion.Tools
             foreach (string f in files)
             {
                 string ext = Path.GetExtension(f);
-
                 string name = Path.GetFileNameWithoutExtension(f);
 
                 if (ext == extention)
@@ -1033,7 +1057,6 @@ namespace Glaxion.Tools
                     fs.Add(f);
                 }
             }
-
             return fs;
         }
 
@@ -1210,19 +1233,20 @@ namespace Glaxion.Tools
             OpenFileDialog ofd = new OpenFileDialog();
             {
                 ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                ofd.Title = "Select vegas exe";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    musicEditingProgram = ofd.FileName;
+                    MusicEditingProgram = ofd.FileName;
                 }
             }
         }
 
         public static void OpenVegas(List<string> list)
         {
-            if (!File.Exists(musicEditingProgram))
+            if (!File.Exists(MusicEditingProgram))
                 SetVegas();
 
-            if (list.Count > 0 && musicEditingProgram != null)
+            if (list.Count > 0 && MusicEditingProgram != null)
             {
                 string args = null;
                 foreach (string s in list)
@@ -1235,7 +1259,7 @@ namespace Glaxion.Tools
                 }
 
                 ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = musicEditingProgram;
+                info.FileName = MusicEditingProgram;
                 info.Arguments = args;
                 Process p = Process.Start(info);
                 p.Close();
@@ -1245,15 +1269,15 @@ namespace Glaxion.Tools
 
         public static void OpenVegas(string s)
         {
-            if (!File.Exists(musicEditingProgram))
+            if (!File.Exists(MusicEditingProgram))
                 SetVegas();
 
-            if (s != null && musicEditingProgram != null)
+            if (s != null && MusicEditingProgram != null)
             {
                 string args = '"'+s+'"';
 
                 ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = musicEditingProgram;
+                info.FileName = MusicEditingProgram;
                 info.Arguments = args;
                 if (Path.HasExtension(s))
                 {

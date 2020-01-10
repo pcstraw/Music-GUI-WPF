@@ -17,24 +17,23 @@
         <local:VMTreeControl
                 x:Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
-                Background="#FFFFE6D2" 
+                Background="#FF2B2725" 
                 Grid.Row="1"
-                SelectionMode="KeyboardModifiersMode" 
-                Foreground="#FFFFA51B">
+                Foreground="#FFFAF4EA">
             <MultiSelection:MSTreeView.ItemContainerStyle>
                 <Style TargetType="MultiSelection:MSTreeViewItem" 
                        BasedOn="{StaticResource FileTreeStyle}">
-                    <EventSetter Event="Selected" Handler="MusicFileTreeViewItem_Selected"/>
-                    <EventSetter Event="MouseDoubleClick" Handler="MusicFileNode_MouseDoubleClick" />
+                    <EventSetter Event="Expanded" Handler="MSTreeViewItem_Expanded"/>
                 </Style>
             </MultiSelection:MSTreeView.ItemContainerStyle>
             <MultiSelection:MSTreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
+                    
                     <TextBlock 
                         Text="{Binding Name}"
                         VerticalAlignment="Center" 
                         Margin="0,-4,0,0"
-                        Foreground="#FF000400"/>
+                        Foreground="#FFFFF697"/>
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>
@@ -42,12 +41,17 @@
             <MultiSelection:MSTreeView.ContextMenu>
                 <ContextMenu Name="PlaylistContext">
                     <MenuItem Header="Open As Playlist" Click="OpenFileAsPlaylistContext_Click"/>
+                    <MenuItem Header="Folder" Click="FolderDirectoryContext_Click"/>
+                    <MenuItem Header="Reload" Click="ReloadMusicFileContext_Click"/>
                     <MenuItem Header="Add Directory" Click="AddDirectoryFileContext_Click"/>
                     <MenuItem Header="Remove Directory" Click="RemoveDirectoryContext_Click"/>
                 </ContextMenu>
             </MultiSelection:MSTreeView.ContextMenu>
         </local:VMTreeControl>
-        <TextBox TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;"/>
-
+        <TextBox x:Name="searchBox" 
+                 TextWrapping="Wrap" 
+                 Text="Search" 
+                 LostFocus="searchBox_LostFocus" 
+                 GotFocus="searchBox_GotFocus" TextChanged="searchBox_TextInput"/>
     </Grid>
 </UserControl>

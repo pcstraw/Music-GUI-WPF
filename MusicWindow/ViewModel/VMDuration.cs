@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Glaxion.Music;
+using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Glaxion.Music;
-using Glaxion.Tools;
 
 namespace Glaxion.ViewModel
 {
@@ -89,12 +84,21 @@ OnPropertyChanged();
             TrackDuration = 100;
         }
         
+        internal void SetTrackPositionFromSlider()
+        {
+            // TrackDuration = player.trackDuration;
+            double mouseInput = _mouseInterface.GetMouseInput();
+            double sliderLength = _mouseInterface.GetSliderLength();
+            manipulatedPosition = GetMousePositionRelativeToSlider(mouseInput, sliderLength);
+            player.trackPosition = manipulatedPosition;
+            TrackPosition = manipulatedPosition;
+        }
         
         private void Player_TickEvent(object sender, EventArgs args)
         {
-            if (player != null && player.windowsMediaPlayer.currentMedia != null)
+            if (player != null )
             {
-                if (player.windowsMediaPlayer.currentMedia.duration != TrackDuration)
+                if (player.windowsMediaPlayer.currentMedia != null)
                 {
                     TrackDuration = player.trackDuration;
                     SliderMaximum = player.trackDuration;
@@ -106,10 +110,7 @@ OnPropertyChanged();
                 {
                     if (isUserdragging)
                     {
-                        double mouseInput = _mouseInterface.GetMouseInput();
-                        double sliderLength = _mouseInterface.GetSliderLength();
-                        manipulatedPosition = GetMousePositionRelativeToSlider(mouseInput, sliderLength);
-                        TrackPosition = manipulatedPosition;
+                        SetTrackPositionFromSlider();
                         wasdragging = true;
                     }
                     else
@@ -117,6 +118,7 @@ OnPropertyChanged();
                         if (wasdragging)
                         {
                             player.windowsMediaPlayer.controls.currentPosition = manipulatedPosition;
+                            player.trackPosition = manipulatedPosition;
                             TrackPosition = player.windowsMediaPlayer.controls.currentPosition;
                             wasdragging = false;
                         }
@@ -124,7 +126,7 @@ OnPropertyChanged();
                             TrackPosition = player.windowsMediaPlayer.controls.currentPosition;
                     }
                 }
-                else
+                else //hear the audio while the slider updates
                 {
                     if (isUserdragging)
                     {

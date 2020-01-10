@@ -48,9 +48,7 @@ namespace MusicWindow
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-       
-
+        
         private void InitEntries()
         {
             entryControls = new List<PropertyControl>();
@@ -113,7 +111,7 @@ namespace MusicWindow
                 pc._textBox.Width = _max;
             }
         }
-        
+        /*
         private void Player_TrackChangeEvent(object sender, EventArgs args)
         {
             if (!(sender is Song))
@@ -126,5 +124,6 @@ namespace MusicWindow
         {
             MusicPlayer.Player.TrackChangeEvent += Player_TrackChangeEvent;
         }
+        */
     }
 }

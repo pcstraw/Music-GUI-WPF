@@ -20,15 +20,13 @@ namespace MusicWindow
         {
             InitializeComponent();
             DataContext = this;
-            //manager = PlaylistFileManager.Instance;
             treeView.DataContext = this;
             ViewModel = new VMPlaylistFileTree();
         }
 
-        public VMPlaylistFileTree ViewModel { get; set; }
-
         object selectSource;
-
+        bool Search_init;
+        public VMPlaylistFileTree ViewModel { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -37,7 +35,8 @@ namespace MusicWindow
 
         private void BrowsePlaylistFileContext_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.SelectAndLoadDirectory("Select Playlist Directory");
+            List<FileDirectory> directories = ViewModel.SelectAndLoadDirectory("Select Playlist Directory");
+            LoadPlaylistFiles(directories);
         }
 
         private void OpenPlaylistFileContext_Click(object sender, RoutedEventArgs e)
@@ -62,7 +61,7 @@ namespace MusicWindow
         private void PlaylistFileTreeItem_Selected(object sender, RoutedEventArgs e)
         {
             selectSource = sender;
-            e.Handled = true; //doesn't stop event bubbling up
+            e.Handled = true; //doesn't seem stop event bubbling up
         }
 
         private void RemovePlaylistFileContext_Click(object sender, RoutedEventArgs e)
@@ -74,7 +73,55 @@ namespace MusicWindow
                     continue;
                 //move to VMMusicFiles
                 ViewModel.RemoveAncestorDirectory(node);
+                Database.Instance.DeletePlaylistDirectory(node.FilePath);
             }
+        }
+        
+        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text.Length == 0)
+            {
+                searchBox.Text = "Search";
+                ViewModel.RestorecachedNodes();
+                return;
+            }
+        }
+
+        private void searchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text == "Search")
+                searchBox.Text = "";
+            if (!Search_init)
+                Search_init = true;
+        }
+
+        private void searchBox_TextInput(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!Search_init)
+                return;
+            if (searchBox.Text.Length > 2)
+                ViewModel.SearchFiles(searchBox.Text);
+        }
+
+        private void FolderPlaylistFileContext_Click(object sender, RoutedEventArgs e)
+        {
+            treeView.OpenSelectedFolders();
+        }
+
+        private void ReloadPlaylistFileContext_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPlaylistFiles(ViewModel.fileLoader.Directories);
+        }
+
+        void LoadPlaylistFiles(List<FileDirectory> directories)
+        {
+            foreach (FileDirectory fd in directories)
+            {
+                List<string> list = tool.LoadFiles(fd.directory, ".m3u");
+                fd.AddRange(list);
+                Database.Instance.PopulatePlaylistFiles(fd);
+            }
+            ViewModel.LoadDirectoriesToTree();
         }
     }
 }

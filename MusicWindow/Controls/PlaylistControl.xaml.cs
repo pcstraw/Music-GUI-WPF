@@ -23,13 +23,18 @@ namespace MusicWindow
             vm = listView.viewModel as VMPlaylistManager;
             listView.UpdateItemSource();
         }
-
-        VMPlaylistManager vm;
-        internal List<TrackControl> trackControls = new List<TrackControl>();
         
+
+        internal VMPlaylistManager vm;
+        internal FileControl mainFileControl;
+        internal List<TrackControl> trackControls = new List<TrackControl>();
+
+        public TrackControl currentTrackControl { get; internal set; }
+
         public void LinkControls(FileControl fileControl)
         {
             vm.LinkFileManagers(fileControl.playlistFileControl.ViewModel,fileControl.musicFileControl.ViewModel);
+            mainFileControl = fileControl;
         }
 
         //move to view model
@@ -40,13 +45,13 @@ namespace MusicWindow
 
         private void Item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Playlist p = ((ListViewItem)sender).Content as Playlist;
+            VMPlaylist p = ((ListViewItem)sender).Content as VMPlaylist;
             AddDockColumn(p);
         }
 
         private void OpenPlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Playlist p in listView.SelectedItems)
+            foreach (VMPlaylist p in listView.SelectedItems)
                 AddDockColumn(p);
         }
 
@@ -153,28 +158,75 @@ namespace MusicWindow
             }
         }
 
-        public void AddDockColumn(Playlist playlist)
+        internal VMPlaylist FindPlaylist(string filePath)
+        {
+            foreach(VMPlaylist p in listView.Items)
+            {
+                if (p.Filepath == filePath)
+                    return p;
+            }
+            return null;
+        }
+
+        public TrackControl AddDockColumn(VMPlaylist playlist)
         {
             TrackControl tc = new TrackControl(playlist);
             DockTrackControl(tc);
+            return tc;
         }
         #endregion
 
         private void SaveAsPlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            foreach(Playlist p in listView.SelectedItems)
-                p.SaveAs();
+            foreach (VMPlaylist p in listView.SelectedItems)
+            {
+                p.playlist.SaveAs();
+                p.Refresh();
+            }
         }
 
         private void QuickSavePlaylistContext_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Playlist p in listView.SelectedItems)
-                p.Save();
+            foreach (VMPlaylist p in listView.SelectedItems)
+                p.playlist.Save();
         }
 
         private void FolderPlaylistContext_Click(object sender, RoutedEventArgs e)
         {
             listView.OpenPlaylistFolders();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void listView_Drop(object sender, DragEventArgs e)
+        {
+            bool isListViewEx = e.Data.GetDataPresent(typeof(ListViewEx<VMSong>));
+            if (!isListViewEx)
+                return;
+
+            List<string> itemsToMove = new List<string>();
+            ListViewEx<VMSong>source = e.Data.GetData(typeof(ListViewEx<VMSong>)) as ListViewEx<VMSong>;
+            int index = listView.CurrentIndex;//GetCurrentIndex(e.GetPosition);
+                                     /*
+                                     if(index >= Items.Count)
+                                     {
+                                         throw new Exception("Index should be valid with the range");
+                                     }
+                                     */
+                                     
+           // index = listView.GetCurrentIndex(e.GetPosition);
+
+            listView.SelectedItems.Clear();
+            listView._selItems.Clear();
+
+
+            foreach (VMSong s in source._selItems)
+                itemsToMove.Add(s.Filepath);
+
+            listView.AddDataFromFiles(index, itemsToMove);
         }
     }
 }

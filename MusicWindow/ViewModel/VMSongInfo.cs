@@ -6,7 +6,7 @@ using Glaxion.Music;
 
 namespace Glaxion.ViewModel
 {
-    public class VMSong : INotifyPropertyChanged
+    public class VMSong : VMItem
     {
         public VMSong()
         {
@@ -32,6 +32,7 @@ namespace Glaxion.ViewModel
             Genre = song.Genres[0];
             Picture = song.image;
             Filepath = song.Filepath;
+            State = song.State;
             if (_song != null)
                 _song.PropertyChanged -= _song_PropertyChanged;
             _song = song;
@@ -112,31 +113,27 @@ namespace Glaxion.ViewModel
                 _picture = value;
                 OnPropertyChanged(); }
         }
-        bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                if (_isSelected == value) return;
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
 
         SongState _state;
+        
         public SongState State
         {
             get { return _state; }
             set { _state = value; OnPropertyChanged(); }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        
+        public void MakeSearchedState()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _song.MakeSearchedState();
+           // CacheSongState();
+           // State = SongState.Searched;
+        }
+        public void RestorePrevState()
+        {
+            _song.RestorePrevState();
         }
 
+        
         public void ReloadTags()
         {
              _song.Reload();
@@ -158,9 +155,8 @@ namespace Glaxion.ViewModel
                 _song.SetGenre(Genre);
             if (_song.image != Picture)
                 _song.SetPictureFromImage(Picture);
-
-            if (_song.SaveInfo())
-                ReloadAsync();
+            _song.SaveInfo();
+              //  ReloadAsync();
         }
 
         //call reload on song asynchronusly and wait
@@ -174,10 +170,11 @@ namespace Glaxion.ViewModel
             _song.Reload();
             //wait until the song has loaded
             while (!_song.loaded)
-            { }
+            {
+            }
             //is this check relevant? Better to stay safe
             if(_song.State != SongState.MissingTags)
-            SetSong(_song);
+                SetSong(_song);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,17 +24,10 @@ namespace MusicWindow
             DataContext = this;
             treeView.DataContext = this;
             ViewModel = new VMMusicFiles();
-            this.Loaded += MusicFileControl_Loaded;
         }
 
-        //for testing.  Delete afterwards
-        private void MusicFileControl_Loaded(object sender, RoutedEventArgs e)
-        {
-           // tool.ShowConsole();
-        }
-
+        bool Search_init;
         public VMMusicFiles ViewModel { get; set; }
-        
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -51,9 +45,10 @@ namespace MusicWindow
 
         private void AddDirectoryFileContext_Click(object sender, RoutedEventArgs e)
         {
-           ViewModel.SelectAndLoadDirectory("Select Music Directory");
+           List<FileDirectory> addedFolders = ViewModel.SelectAndLoadDirectory("Select Music Directory");
+           LoadMusicFiles(addedFolders);
         }
-
+        
         private void RemoveDirectoryContext_Click(object sender, RoutedEventArgs e)
         {
             foreach(var i in treeView.SelectedItems)
@@ -63,17 +58,64 @@ namespace MusicWindow
                     continue;
                 //move to VMMusicFiles
                 ViewModel.RemoveAncestorDirectory(node);
+                Database.Instance.DeleteMusicDirectory(node.FilePath);
             }
         }
-
-        private void MusicFileTreeViewItem_Selected(object sender, RoutedEventArgs e)
+        
+        private void MSTreeViewItem_Expanded(object sender, RoutedEventArgs e)
         {
-
+            TreeViewItem tvi = e.OriginalSource as TreeViewItem;
+            if (tvi != null)
+                tvi.BringIntoView();
+        }
+        
+        private void searchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text.Length == 0)
+                ResetSearchState();
         }
 
-        private void MusicFileNode_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        internal void ResetSearchState()
         {
+            searchBox.Text = "Search";
+            ViewModel.RestorecachedNodes();
+        }
 
+        private void searchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text == "Search")
+                searchBox.Text = "";
+            if (!Search_init)
+                Search_init = true;
+        }
+
+        private void searchBox_TextInput(object sender, TextChangedEventArgs e)
+        {
+            if (!Search_init)
+                return;
+            if (searchBox.Text.Length > 2)
+                ViewModel.SearchFiles(searchBox.Text);
+        }
+
+        private void FolderDirectoryContext_Click(object sender, RoutedEventArgs e)
+        {
+            treeView.OpenSelectedFolders();
+        }
+
+        private void ReloadMusicFileContext_Click(object sender, RoutedEventArgs e)
+        {
+            LoadMusicFiles(ViewModel.fileLoader.Directories);
+        }
+
+        private void LoadMusicFiles(List<FileDirectory> directories)
+        {
+            foreach (FileDirectory fd in directories)
+            {
+                List<string> files = tool.LoadAudioFiles(fd.directory, SearchOption.AllDirectories);
+                fd.AddRange(files);
+                Database.Instance.PopulateMusicFiles(fd);
+            }
+            ViewModel.LoadDirectoriesToTree();
         }
     }
 }

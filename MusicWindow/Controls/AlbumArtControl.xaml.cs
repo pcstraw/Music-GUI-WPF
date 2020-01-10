@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
+﻿using Glaxion.Music;
+using Glaxion.Tools;
+using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Glaxion.Music;
-using Glaxion.Tools;
 
 namespace MusicWindow
 {
@@ -111,24 +102,70 @@ namespace MusicWindow
             discardTagButton.SetBinding(VisibilityProperty, visibilityBind);
         }
 
-        public Song song { get; private set; }
+     //   private Song song { get; private set; }
         ImageConverter imageConverter;
         bool hideArt;
+        bool blockSwap = false;
+
+        internal Window SetWindow(Window win)
+        {
+            if (window != null)
+                window.LocationChanged-= Window_LocationChanged;
+            window = win;
+            window.Title = infoControl.viewModel.Title;
+            window.LocationChanged += Window_LocationChanged;
+            return win;
+        }
+
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            blockSwap = true;
+        }
 
         void HideSaveTagButtons()
         {
            infoControl.ShowTagOptions = false;
         }
-        
+
+        //https://social.msdn.microsoft.com/Forums/vstudio/en-US/98cc1596-0fe7-42b1-b796-dec075ce0b84/programmatically-add-a-wpf-usercontrol-to-a-wpf-window?forum=wpf
+        static public Window CreateWindowHostingUserControl(UserControl userControlToHost,double width,double height)
+        {
+            //Create a border with the initial height and width of the user control.  
+            Border borderWithInitialDimensions = new Border();
+
+            borderWithInitialDimensions.Height = height;
+            borderWithInitialDimensions.Width = width;
+            userControlToHost.Height = height;
+            userControlToHost.Width = width;
+
+            //Set the user control's dimensions to double.NaN so that it auto sizes  
+            //to fill the window.  
+            userControlToHost.Height = double.NaN;
+            userControlToHost.Width = double.NaN;
+            
+            //Create a grid hosting both the border and the user control.  The   
+            //border results in the grid and window (created below) having initial  
+            //dimensions.  
+            Grid hostGrid = new Grid();
+
+            hostGrid.Children.Add(borderWithInitialDimensions);
+            hostGrid.Children.Add(userControlToHost);
+            
+            //Create a window that resizes to fit its content with the grid as its   
+            //content.  
+            Window hostWindow = new Window();
+
+            hostWindow.Content = hostGrid;
+           // hostWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            hostWindow.Width = width;
+            hostWindow.Height = height;
+            
+            return hostWindow;
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
-            {
-                MusicPlayer.Player.TrackChangeEvent += Player_TrackChangeEvent;
-                Song s = new Song("Track Name");
-                s.LoadAlbumArt();
-                infoControl.viewModel.SetSong(s);
-            }
+           
             //ImageBox.Source = new BitmapImage(new Uri("music_gui_logo.png", UriKind.Relative));
         }
 
@@ -137,7 +174,7 @@ namespace MusicWindow
         {
             if (!(sender is Song))
                 return;
-           // song = sender as Song;
+            //song = sender as Song;
            // SetAlbumart(song);
         }
 
@@ -175,6 +212,11 @@ namespace MusicWindow
 
         void Swap()
         {
+            if(blockSwap)
+            {
+                blockSwap = false;
+                return;
+            }
             hideArt = !hideArt;
             if (hideArt)
             {
@@ -195,19 +237,87 @@ namespace MusicWindow
 
         private void ImageBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Swap();
+          //  Swap();
         }
 
         private void discardTagButton_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             infoControl.viewModel.ReloadTags();
             HideSaveTagButtons();
+            Swap(); //hack to stop the controls from swapping 
+            //when buttoned is click, 
+            //because we use the click event for the entire control to swap
+
         }
 
         private void updateTagButton_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             infoControl.viewModel.SaveTags();
             HideSaveTagButtons();
+            Swap();  //hack, see above
+        }
+
+        private void ImageBox_Drop(object sender, DragEventArgs e)
+        {
+            string[] data = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (data == null)
+                return;
+
+            if (data.Length > 0)
+            {
+                foreach (string s in data)
+                {
+                    if (tool.IsImageFile(s))
+                    {
+                        if (File.Exists(s))
+                        {
+                            System.Drawing.Image img = System.Drawing.Image.FromFile(s);
+                            BitmapImage i = GetWpfImage(img);
+                            if (i == null)
+                                break;
+
+                            ImageBox.Source = i;
+                            infoControl.viewModel.Picture = img;
+                            infoControl.ShowTagOptions = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal Window window;
+
+        
+
+        private void infoControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+              Swap(); //hack.  see above
+            //blockSwap = true;
+        }
+
+        private void DockPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Swap(); //actual swap
+        }
+
+        private void RowDefinition_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+         //   Swap();
+        }
+
+        private void UserControl_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+                Swap();  //actual swap
+        }
+
+        private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (window == null)
+                return;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+                window.DragMove();
         }
     }
 }

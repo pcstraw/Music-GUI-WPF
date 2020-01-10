@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Glaxion.Tools;
 
 namespace Glaxion.ViewModel
 {
@@ -36,11 +32,59 @@ namespace Glaxion.ViewModel
             set { _SelectedItems = value; OnPropertyChanged(); }
         }
         
-        public void MoveItems(int index, List<T> items)
+        public void MoveItems(int index, IList<T> items)
         {
             if (Items.Count == 0 || items.Count == 0)
                 return;
 
+            if (index < 0)
+            {
+                return;
+                /*
+                if (Items.Count > 1)
+                    index = Items.Count - 1;  //probably causing issues with items falling down the bottom
+                else
+                    index = 0;
+                    */
+            }
+            
+            if(index == 0)
+            {
+              //  Tools.tool.show(4, "0 index test");
+            }
+            
+
+            int max_index = Items.Count;
+            int last_index = Items.IndexOf(items[items.Count - 1]);
+            if (index >= max_index)
+                throw new Exception("getting index is too high");
+
+            //insert below
+            if (index > last_index)
+            {
+                index = index - (items.Count-1);
+               // tool.show(5, "Drop below");
+            }
+            //throw new Exception("Handle drop below case");
+
+            foreach (T t in items)
+            {
+                if (index == Items.IndexOf(t))
+                    return;
+            }
+
+            foreach (T t in items)
+                Items.Remove(t);
+
+            if (index > Items.Count)
+                index = Items.Count;
+            
+            foreach (T t in items)
+            {
+                Items.Insert(index, t);
+            }
+            return;
+            /*
             //Sort(items, Items);
             List<T> insertedItems = new List<T>(items.Count);
             List<T> removedItems = new List<T>(items.Count);
@@ -64,14 +108,25 @@ namespace Glaxion.ViewModel
                 removedItems.Add(item);
             }
             
-            foreach (T t in removedItems)
-                Items.Remove(t);
+            
+            if (last_index <= index)
+            {
+                //index--;
+            }
 
             if (index > Items.Count)
                 index = Items.Count;
 
+
+            foreach (T t in removedItems)
+                Items.Remove(t);
+            
+
             foreach (T t in insertedItems)
+            {
                 Items.Insert(index, t);
+            }
+            */
         }
     }
 }

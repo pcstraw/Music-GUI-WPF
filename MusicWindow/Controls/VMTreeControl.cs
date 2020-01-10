@@ -21,6 +21,7 @@ namespace MusicWindow
             _dragThresh = 0.05;
             DropData = new List<string>();
             AllowDrop = true;
+            SelectionMode = SelectionModalities.KeyboardModifiersMode;
         }
 
         Point _capturedMousePosition;
@@ -38,7 +39,7 @@ namespace MusicWindow
             }
             return parent as parentItem;
         }
-
+        
         private bool IsDraggingScrollbar(MouseEventArgs e)
         {
             object original = e.OriginalSource;
@@ -87,20 +88,19 @@ namespace MusicWindow
         {
             DropData.Clear();
 
-            tool.debugHighlight("getting drop data");
+            //tool.debugHighlight("getting drop data");
 
             if (SelectedItems.Count == 0)
                 tool.debugWarning("No selected items");
 
             foreach (var node in SelectedItems)
             {
-                
                 VMNode n = node.DataContext as VMNode;
+                if (n == null)
+                    continue;
                 DropData.Add(n.FilePath);
             }
-
-            //TestDropData();
-
+            
             return DropData;
         }
         
@@ -133,7 +133,7 @@ namespace MusicWindow
                 DragDrop.DoDragDrop(this, DropData,
                      DragDropEffects.Copy);
 
-                tool.debugSuccess("Drag Started");
+              //  tool.debugSuccess("Drag Started");
             }
 
             if (_isDragging)
@@ -147,6 +147,16 @@ namespace MusicWindow
                     _isDragging = false;
                     e.Handled = true;
                 }
+            }
+        }
+
+        internal void OpenSelectedFolders()
+        {
+            foreach (TreeViewItem node in SelectedItems)
+            {
+                VMNode n = node.DataContext as VMNode;
+                if (n != null)
+                    tool.OpenFileDirectory(n.FilePath);
             }
         }
     }

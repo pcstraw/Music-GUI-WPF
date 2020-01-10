@@ -16,20 +16,19 @@ namespace Glaxion.ViewModel
             fileLoader = PlaylistFileManager.Instance;
         }
 
-        public override void SelectAndLoadDirectory(string dialogBrowserTile)
+        public override List<FileDirectory> SelectAndLoadDirectory(string dialogBrowserTile)
         {
-            base.SelectAndLoadDirectory(dialogBrowserTile);
+            return base.SelectAndLoadDirectory(dialogBrowserTile);
         }
 
-        public override bool AddDirectory(string dir)
+        public override FileDirectory AddDirectory(string dir)
         {
             if (!HasPlaylistFiles(dir))
-                return false;
-            if (!fileLoader.AddDirectory(dir))
-                return false;
+                return null;
+            FileDirectory fd = fileLoader.AddDirectory(dir);
             if (fileLoader.Directories.Count > 0)
-                Playlist.DefaultDirectory = fileLoader.Directories[0];
-            return true;
+                Playlist.DefaultDirectory = fileLoader.Directories[0].directory;
+            return fd;
         }
 
         bool HasPlaylistFiles(string path)

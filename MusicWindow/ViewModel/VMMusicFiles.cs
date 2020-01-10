@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Glaxion.Music;
-using Glaxion.Tools;
+﻿using Glaxion.Music;
 
 namespace Glaxion.ViewModel
 {
@@ -12,6 +6,7 @@ namespace Glaxion.ViewModel
     {
         public VMMusicFiles() : base()
         {
+            //move to parametre
             fileLoader = MusicFileManager.Instance;
         }
     }

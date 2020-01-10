@@ -30,6 +30,7 @@ namespace MusicWindow
 
         private void slider_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            vmDuration.SetTrackPositionFromSlider();
             vmDuration.SetUserIsDragging(false);
         }
         

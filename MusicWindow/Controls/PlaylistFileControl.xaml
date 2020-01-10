@@ -18,8 +18,7 @@
         <local:VMTreeControl
                 x:Name="treeView"
                 ItemsSource="{Binding Path= ViewModel.Nodes, UpdateSourceTrigger=PropertyChanged}" 
-                Background="#FFEBE8FB" 
-                SelectionMode="KeyboardModifiersMode"
+                Background="#FFFFE6D2" 
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
                 Height="Auto"
@@ -34,7 +33,9 @@
             </MultiSelection:MSTreeView.ItemContainerStyle>
             <MultiSelection:MSTreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
-                    <TextBlock Text="{Binding Name}"/>
+
+                    <TextBlock Text="{Binding Name}" 
+                               Foreground="#FF860000"/>
                     <!--MultiSelection:MSTreeViewItem Header="{Binding Path=Name}"/-->
                 </HierarchicalDataTemplate>
             </MultiSelection:MSTreeView.ItemTemplate>
@@ -42,11 +43,13 @@
             <MultiSelection:MSTreeView.ContextMenu>
                 <ContextMenu Name="PlaylistContext">
                     <MenuItem Header="Open Playlist" Click="OpenPlaylistFileContext_Click"/>
-                    <MenuItem Header="Browse Playlists" Click="BrowsePlaylistFileContext_Click"/>
+                    <MenuItem Header="Folder" Click="FolderPlaylistFileContext_Click"/>
+                    <MenuItem Header="Reload" Click="ReloadPlaylistFileContext_Click"/>
+                    <MenuItem Header="Add Directory" Click="BrowsePlaylistFileContext_Click"/>
                     <MenuItem Header="Remove Directory" Click="RemovePlaylistFileContext_Click"/>
                 </ContextMenu>
             </MultiSelection:MSTreeView.ContextMenu>
         </local:VMTreeControl>
-        <TextBox Height="20" TextWrapping="Wrap" Text="Search &lt;Not Implemented&gt;" VerticalAlignment="Top"/>
+        <TextBox x:Name="searchBox" Height="20" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" LostFocus="searchBox_LostFocus" GotFocus="searchBox_GotFocus" TextChanged="searchBox_TextInput"/>
     </Grid>
 </UserControl>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -66,6 +67,7 @@ namespace Glaxion.ViewModel
                 }
             }
         }
+       
         public VMNode Parent { get; set; }
         public string Text { get; internal set; }
         public bool IsFile { get; internal set; }
@@ -89,6 +91,10 @@ namespace Glaxion.ViewModel
         {
             VMNode node = new VMNode(Name);
             node.Name = Name;
+            node.FilePath = FilePath;
+            node.IsFile = IsFile;
+            node.Text = Text;
+            node.TreePath = TreePath;
             node.Expanded = Expanded;
             node.Selected = Selected;
 
@@ -98,6 +104,17 @@ namespace Glaxion.ViewModel
             }
             return node;
         }
+
+        internal static VMNode Create(string file)
+        {
+            VMNode new_node = new VMNode();
+            new_node.Name = Path.GetFileNameWithoutExtension(file);
+            if (Path.HasExtension(file))
+                new_node.IsFile = true;
+            new_node.FilePath = file;
+            return new_node;
+        }
+        
 
         //recursively build child nodes based on the filepath
         internal void BuildChildNodes(string directory, string fullPath, string subPath)

@@ -4,18 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicWindow"
-             mc:Ignorable="d" Loaded="UserControl_Loaded" Background="Black" Height="320" Width="400">
+             mc:Ignorable="d" Loaded="UserControl_Loaded" Background="Black" Height="320" Width="400" PreviewMouseLeftButtonUp="UserControl_PreviewMouseLeftButtonUp" PreviewMouseLeftButtonDown="UserControl_PreviewMouseLeftButtonDown">
 
-    <Grid x:Name="mainGrid">
+    <Grid x:Name="mainGrid" AllowDrop="True">
         <Grid.Resources>
             <ResourceDictionary Source="/MusicWindow;component/Themes.xaml"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="7*"/>
+            <RowDefinition Height="7*" PreviewMouseLeftButtonUp="RowDefinition_PreviewMouseLeftButtonUp"/>
         </Grid.RowDefinitions>
-        <Image x:Name="ImageBox" Margin="0" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp" OpacityMask="Black"/>
-        <DockPanel HorizontalAlignment="Center">
+        <DockPanel HorizontalAlignment="Center" PreviewMouseLeftButtonUp="DockPanel_PreviewMouseLeftButtonUp">
             <Viewbox HorizontalAlignment="Center" OpacityMask="#FFFFCE17">
                 <Label PreviewMouseLeftButtonUp="Viewbox_PreviewMouseLeftButtonUp" 
                        x:Name="titleLabel" 
@@ -39,8 +38,7 @@
                 Background="#FFF3AC7B"
                 PreviewMouseLeftButtonUp="discardTagButton_PreviewMouseLeftButtonUp"
                 Width="25" 
-                Height="25" VerticalAlignment="Top">
-        </Button>
+                Height="25" VerticalAlignment="Top"/>
         <Button x:Name="updateTagButton"
             Template="{StaticResource RoundButton}"  
                 HorizontalAlignment="Right" 
@@ -49,8 +47,8 @@
                 Background="#FFBCE495"
                 Width="25" 
                 PreviewMouseLeftButtonUp="updateTagButton_PreviewMouseLeftButtonUp"
-                Height="25" VerticalAlignment="Top" Margin="0,0,25,0">
-        </Button>
-        <local:MusicInfoControl x:Name="infoControl" Width="Auto" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden"/>
+                Height="25" VerticalAlignment="Top" Margin="0,0,25,0"/>
+        <local:MusicInfoControl x:Name="infoControl" Width="Auto" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden" PreviewMouseLeftButtonUp="infoControl_PreviewMouseLeftButtonUp"/>
+        <Image x:Name="ImageBox" Margin="0" Grid.Row="1" MouseLeftButtonUp="ImageBox_MouseLeftButtonUp" OpacityMask="Black" AllowDrop="True" Drop="ImageBox_Drop"/>
     </Grid>
 </UserControl>
